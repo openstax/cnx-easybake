@@ -2,6 +2,8 @@
 from setuptools import setup, find_packages
 
 install_requires = (
+    'cssselect',
+    'lxml',
     'tinycss',
     )
 
@@ -17,5 +19,8 @@ setup(
     install_requires=install_requires,
     include_package_data=True,
     entry_points={
+        'console_scripts': [
+            'cnx-easybake = cnxeasybake.scripts.main:main',
+            ],
         },
     )
