@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 
 install_requires = (
     'cssselect',
+    'cssselect2',
+    'tinycss2',
     'lxml',
     'tinycss',
     )
@@ -23,4 +25,5 @@ setup(
             'cnx-easybake = cnxeasybake.scripts.main:main',
             ],
         },
+    dependency_links=['git+https://github.com/SimonSapin/cssselect2.git#egg=cssselect2']
     )
