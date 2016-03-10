@@ -27,64 +27,49 @@ numbering_decls = [(u'counter-reset', ''),
 def main(css_in, html_in=sys.stdin, html_out=sys.stdout):
     """Process the given HTML file stream with the css stream."""
     html_parser = etree.HTMLParser()
-
     html_doc = etree.HTML(html_in.read(), html_parser)
-
-    # Recurse down tree, applying CSS collation
-    # At each level, check what rules match. Apply 'toplevel' ones,
-    # then recurse, and apply 'after' ones.
-
-    collate = Collator(css_in)
-
-    wrapped_html_tree = ElementWrapper.from_html_root(html_doc)
-    collate.do_collation(wrapped_html_tree)
-
-    # loop over pending dictionaries, doing moves and copies to etree
-
-    for key, actions in collate.state['pending'].iteritems():
-        target = None
-        for action, value in actions:
-            if action == 'target':
-                target = value
-            elif action == 'move':
-                target.append(value)
-            elif action == 'copy':
-                target.append(copy.deepcopy(value))
-
-    # Do numbering
-
-    # Do label/link updates
+    oven = Baker(css_in)
+    oven.bake(html_doc)
 
     # serialize out HTML
     print (etree.tostring(html_doc), file=html_out)
 
 
-class Collator():
-    """Collate HTML with CSS3.
+class Baker():
+    """Collate and number HTML with CSS3.
 
     An object that parses and stores rules defined in CSS3 and can apply
     them to an HTML file.
     """
 
     def __init__(self, css_in=None):
-        """Initialize collator, with optional inital CSS."""
+        """Initialize oven, with optional inital CSS."""
         matcher = cssselect2.Matcher()
         self.matcher = matcher
         if css_in:
-            self.update_css(css_in)
+            self.update_css(css_in)  # clears state as well
+        else:
+            self.clear_state()
+
+    def clear_state(self):
+        """Clear the recipe state."""
         self.state = {}
         self.state['pending'] = {}
         self.state['pending_elems'] = []
         self.state['counters'] = {}
         self.state['strings'] = {}
+        self.state['recipe'] = False
 
-    def update_css(self, css_in=None, clear=False):
+    def update_css(self, css_in=None, clear_css=False):
         """Add additional CSS rules, optionally replacing all."""
         # FIXME make polymorphic on css - bytes, fileobj, path to open ...
         if css_in is None:
             return
 
-        if clear:
+        # always clears state, since rules have changed
+        self.clear_state()
+
+        if clear_css:
             self.matcher = cssselect2.Matcher()
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css_in.read(),
@@ -102,15 +87,41 @@ class Collator():
                         for selector in selectors:
                             self.matcher.add_selector(selector, rule)
 
-    def do_collation(self, element, depth=0):
-        """Do the thing - collate an HTML doc starting from the element."""
-        # Rules match during a recusive descent HTML tree walk. Each
-        # declaration has a method that then runs, given the current element,
-        # the decaration value. State is maintained on the collator instance.
-        # Since matching occurs when entering a node, it's children have not
-        # yet been visited, so each declaration method can optionally return a
-        # deferred method to run when the current node's children have been
-        # processed.
+    def bake(self, element):
+        """Apply recipe to HTML tree. Will build recipe if needed."""
+        wrapped_html_tree = ElementWrapper.from_html_root(element)
+        if not self.state['recipe']:
+            recipe = self.build_recipe(wrapped_html_tree)
+        else:
+            recipe = self.state
+
+        # loop over pending dictionaries, doing moves and copies to etree
+
+        for key, actions in recipe['pending'].iteritems():
+            target = None
+            for action, value in actions:
+                if action == 'target':
+                    target = value
+                elif action == 'move':
+                    target.append(value)
+                elif action == 'copy':
+                    target.append(copy.deepcopy(value))
+
+        # Do numbering
+
+        # Do label/link updates
+
+    def build_recipe(self, element, depth=0):
+        """Construct a set of steps to collate (and number) an HTML doc.
+
+        Returns a state object that contains the steps. CSS rules match during
+        a recusive descent HTML tree walk. Each declaration has a method that
+        then runs, given the current element, the decaration value. State is
+        maintained on the collator instance.  Since matching occurs when
+        entering a node, it's children have not yet been visited, so each
+        declaration method can optionally return a deferred method to run when
+        the current node's children have been processed.
+        """
         deferred = []
         for rule in self.matcher.match(element):
             declarations = parse_declaration_list(rule.content,
@@ -121,13 +132,14 @@ class Collator():
                 deferred.append(method(element, decl.value))
 
         for el in element.iter_children():
-            _state = self.do_collation(el, depth=depth+1)  # noqa
+            _state = self.build_recipe(el, depth=depth+1)  # noqa
 
         if any(deferred):
             for d in deferred:
                 if d:
                     d(element)
 
+        self.state['recipe'] = True
         return self.state
 
     def do_copy_to(self, element, value):
