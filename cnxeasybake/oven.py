@@ -11,6 +11,7 @@ import argparse
 import functools
 import copy
 
+verbose = False
 collation_decls = [(u'move-to', ''),
                    (u'copy-to', ''),
                    (u'content', u'pending')]
@@ -55,6 +56,7 @@ class Baker():
         """Clear the recipe state."""
         self.state = {}
         self.state['pending'] = {}
+        self.state['actions'] = {}
         self.state['pending_elems'] = []
         self.state['counters'] = {}
         self.state['strings'] = {}
@@ -62,9 +64,16 @@ class Baker():
 
     def update_css(self, css_in=None, clear_css=False):
         """Add additional CSS rules, optionally replacing all."""
-        # FIXME make polymorphic on css - bytes, fileobj, path to open ...
         if css_in is None:
             return
+        try:
+            with open(css_in) as f:  # is it a path/filename?
+                css = f.read()
+        except (IOError, TypeError):
+            try:
+                css = css_in.read()  # Perhaps a file obj?
+            except AttributeError:
+                css = css_in         # Treat it as a string
 
         # always clears state, since rules have changed
         self.clear_state()
@@ -72,8 +81,7 @@ class Baker():
         if clear_css:
             self.matcher = cssselect2.Matcher()
 
-        rules, _ = tinycss2.parse_stylesheet_bytes(css_in.read(),
-                                                   skip_whitespace=True)
+        rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
             # Ignore all at-rules
             if rule.type == 'qualified-rule':
@@ -84,8 +92,11 @@ class Baker():
                           % (serialize(rule.prelude), error))
                 else:
                     if is_collation_rule(rule):
-                        for selector in selectors:
-                            self.matcher.add_selector(selector, rule)
+                        decls = parse_declaration_list(rule.content,
+                                                       skip_whitespace=True)
+                        for sel in selectors:
+                            pseudo = sel.pseudo_element
+                            self.matcher.add_selector(sel, (decls, pseudo))
 
     def bake(self, element):
         """Apply recipe to HTML tree. Will build recipe if needed."""
@@ -97,7 +108,7 @@ class Baker():
 
         # loop over pending dictionaries, doing moves and copies to etree
 
-        for key, actions in recipe['pending'].iteritems():
+        for key, actions in recipe['actions'].iteritems():
             target = None
             for action, value in actions:
                 if action == 'target':
@@ -122,41 +133,59 @@ class Baker():
         declaration method can optionally return a deferred method to run when
         the current node's children have been processed.
         """
-        deferred = []
-        for rule in self.matcher.match(element):
-            declarations = parse_declaration_list(rule.content,
-                                                  skip_whitespace=True)
-            for decl in declarations:
-                method = getattr(self, 'do_{}'.format(
-                                 decl.name).replace('-', '_'))
-                deferred.append(method(element, decl.value))
+        # FIXME  Extending to deal with pseudo elements now match also return
+        # pseudo, which will be one of None, before, or after.  Need after
+        # declaration methods will fire _after_ recursing to children.  Move
+        # 'pending' actions in state to 'actions' move-to, copy-to push things
+        # to 'pending' dict.  pending() on content then moves that to 'actions'
+        # with appropriate 'target' steps prepended.
+        # FIXME Do declaration methods need to know if they are pseudo or not,
+        # and if so, which?
+
+        # FIXME  deal w/ order of execution of content: pending() and
+        # class|display - keep a local node pointer somewhere, or pending
+        # actions so only pending() does the create-a-node?
+
+        # FIXME remove the method returning something to fire after child
+        # processing Think it's a YAGNI - current use by class won't survive
+
+        for declarations, pseudo in self.matcher.match(element):
+            if pseudo in (None, 'before'):
+                for decl in declarations:
+                    method = getattr(self, 'do_{}'.format(
+                                     (decl.name).replace('-', '_')))
+                    method(element, decl.value, pseudo)
 
         for el in element.iter_children():
             _state = self.build_recipe(el, depth=depth+1)  # noqa
 
-        if any(deferred):
-            for d in deferred:
-                if d:
-                    d(element)
+        # FIXME don't run matcher twice!!!
+
+        for declarations, pseudo in self.matcher.match(element):
+            if pseudo == 'after':
+                for decl in declarations:
+                    method = getattr(self, 'do_{}'.format(
+                                     (decl.name).replace('-', '_')))
+                    method(element, decl.value, pseudo)
 
         self.state['recipe'] = True
         return self.state
 
-    def do_copy_to(self, element, value):
+    def do_copy_to(self, element, value, pseudo):
         """Implement copy-to declaration - pre-match."""
         debug(element.local_name, 'copy-to', serialize(value))
         target = serialize(value).strip()
         self.state['pending'].setdefault(target, []).append(
                                          ('copy', element.etree_element))
 
-    def do_move_to(self, element, value):
+    def do_move_to(self, element, value, pseudo):
         """Implement move-to declaration - pre-match."""
         debug(element.local_name, 'move-to', serialize(value))
         target = serialize(value).strip()
         self.state['pending'].setdefault(target, []).append(
                                          ('move', element.etree_element))
 
-    def do_display(self, element, value):
+    def do_display(self, element, value, pseduo):
         """Implement display, esp. wrapping of content."""
         debug(element.local_name, 'display', serialize(value))
         # This is where we create the wrapping element, then stuff it in the
@@ -179,14 +208,8 @@ class Baker():
             self.state['pending_elems'].append((elem, element))
             return self.pop_pending_elem
 
-    def pop_pending_elem(self, element):
-        """Remove pending target element from stack."""
-        if len(self.state['pending_elems']) > 0:
-            if self.state['pending_elems'][-1][1] == element:
-                self.state['pending_elems'].pop()
-
-    def do_content(self, element, value):
-        """Implement content declaration - pre-match."""
+    def do_content(self, element, value, pseudo):
+        """Implement content declaration - after."""
         debug(element.local_name, 'content', serialize(value))
         retval = None
 
@@ -202,19 +225,22 @@ class Baker():
                 self.state['pending_elems'].append((elem, element))
                 retval = self.pop_pending_elem
 
-            self.state['pending'].setdefault(target, []).append(
+            self.state['actions'].setdefault(target, []).append(
                                              ('target', element.etree_element))
-            self.state['pending'].setdefault(target, []).append(
-                                             ('move', elem))
-            self.state['pending'].setdefault(target, []).append(
-                                             ('target', elem))
+            self.state['actions'][target].append(('move', elem))
+            self.state['actions'][target].append(('target', elem))
+            self.state['actions'][target].extend(self.state['pending'][target])
+            del self.state['pending'][target]
+
         return retval
 
-    def do_pending(self, element, value):
-        """Implement pending content move/copy."""
-        pass
+    def pop_pending_elem(self, element):
+        """Remove pending target element from stack."""
+        if len(self.state['pending_elems']) > 0:
+            if self.state['pending_elems'][-1][1] == element:
+                self.state['pending_elems'].pop()
 
-    def do_class(self, element, value):
+    def do_class(self, element, value, pseudo):
         """Implement class declaration - pre-match."""
         debug(element.local_name, 'class', serialize(value))
         if is_pending_element(self.state, element):
@@ -224,11 +250,11 @@ class Baker():
         else:  # it's not there yet, perhaps after
             return functools.partial(self.do_class, value=value)
 
-    def do_group_by(self, element, value):
+    def do_group_by(self, element, value, pseudo):
         """Implement group-by declaration - pre-match."""
         debug(element.local_name, 'group-by', serialize(value))
 
-    def do_sort_by(self, element, value):
+    def do_sort_by(self, element, value, pseudo):
         """Implement sort-by declaration - pre-match."""
         debug(element.local_name, 'sort-by', serialize(value))
 
