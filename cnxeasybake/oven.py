@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 """Implement a collator that moves content defined by CSS3 rules to HTML."""
-from __future__ import print_function
-import sys
+import logging
 from lxml import etree
 import tinycss2
 from tinycss2 import serialize, parse_declaration_list
 import cssselect2
 from cssselect2 import ElementWrapper
-import argparse
 import functools
 import copy
 
@@ -24,16 +22,7 @@ numbering_decls = [(u'counter-reset', ''),
                    (u'content', u'counter'),
                    (u'content', u'target-counter')]
 
-
-def main(css_in, html_in=sys.stdin, html_out=sys.stdout):
-    """Process the given HTML file stream with the css stream."""
-    html_parser = etree.HTMLParser()
-    html_doc = etree.HTML(html_in.read(), html_parser)
-    oven = Baker(css_in)
-    oven.bake(html_doc)
-
-    # serialize out HTML
-    print (etree.tostring(html_doc), file=html_out)
+logger = logging.getLogger('cnx-easybake')
 
 
 class Baker():
@@ -88,8 +77,8 @@ class Baker():
                 try:
                     selectors = cssselect2.compile_selector_list(rule.prelude)
                 except cssselect2.SelectorError as error:
-                    debug('Invalid selector: %s %s'
-                          % (serialize(rule.prelude), error))
+                    logger.debug('Invalid selector: %s %s'
+                                 % (serialize(rule.prelude), error))
                 else:
                     if is_collation_rule(rule):
                         decls = parse_declaration_list(rule.content,
@@ -173,21 +162,24 @@ class Baker():
 
     def do_copy_to(self, element, value, pseudo):
         """Implement copy-to declaration - pre-match."""
-        debug(element.local_name, 'copy-to', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'copy-to', serialize(value)))
         target = serialize(value).strip()
         self.state['pending'].setdefault(target, []).append(
                                          ('copy', element.etree_element))
 
     def do_move_to(self, element, value, pseudo):
         """Implement move-to declaration - pre-match."""
-        debug(element.local_name, 'move-to', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'move-to', serialize(value)))
         target = serialize(value).strip()
         self.state['pending'].setdefault(target, []).append(
                                          ('move', element.etree_element))
 
     def do_display(self, element, value, pseduo):
         """Implement display, esp. wrapping of content."""
-        debug(element.local_name, 'display', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'display', serialize(value)))
         # This is where we create the wrapping element, then stuff it in the
         # state
         disp_value = serialize(value).strip()
@@ -210,7 +202,8 @@ class Baker():
 
     def do_content(self, element, value, pseudo):
         """Implement content declaration - after."""
-        debug(element.local_name, 'content', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'content', serialize(value)))
         retval = None
 
         if 'pending(' in serialize(value):
@@ -242,7 +235,8 @@ class Baker():
 
     def do_class(self, element, value, pseudo):
         """Implement class declaration - pre-match."""
-        debug(element.local_name, 'class', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'class', serialize(value)))
         if is_pending_element(self.state, element):
             elem = self.state['pending_elems'][-1][0]
             elem.set('class', serialize(value).strip())
@@ -252,11 +246,13 @@ class Baker():
 
     def do_group_by(self, element, value, pseudo):
         """Implement group-by declaration - pre-match."""
-        debug(element.local_name, 'group-by', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'group-by', serialize(value)))
 
     def do_sort_by(self, element, value, pseudo):
         """Implement sort-by declaration - pre-match."""
-        debug(element.local_name, 'sort-by', serialize(value))
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'sort-by', serialize(value)))
 
 
 def extract_pending_target(value):
@@ -287,41 +283,3 @@ def is_numbering_rule(rule):
     return any([d.name == dn and dv in serialize(d.value)
                 for dn, dv in numbering_decls
                 for d in declarations])
-
-
-def match(root, matcher):
-    """Test matching."""
-    pending = []
-    for element in ElementWrapper.from_html_root(root).iter_subtree():
-        for rule in matcher.match(element):
-            pending.append((element, rule))
-    debug(len(pending))
-
-
-def debug(*args, **kwargs):
-    """Wrapped print for verbose output to stderr."""
-    if verbose:
-        print(*args, file=sys.stderr, **kwargs)
-
-
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser(description="Process raw HTML to cooked"
-                                                 " (embedded numbering and"
-                                                 " collation)")
-    parser.add_argument("css_rules",
-                        type=argparse.FileType('r'),
-                        help="CSS3 ruleset stylesheet recipe")
-    parser.add_argument("html_in", nargs="?",
-                        type=argparse.FileType('r'),
-                        help="raw HTML file to cook (default stdin)",
-                        default=sys.stdin)
-    parser.add_argument("html_out", nargs="?",
-                        type=argparse.FileType('w'),
-                        help="cooked HTML file output (default stdout)",
-                        default=sys.stdout)
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='Send debugging info to stderr')
-    args = parser.parse_args()
-    verbose = args.verbose
-    main(args.css_rules, args.html_in, args.html_out)
