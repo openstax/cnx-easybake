@@ -7,7 +7,7 @@ import logging
 import sys
 from lxml import etree
 
-from ..oven import Baker
+from cnxeasybake import Oven
 
 logger = logging.getLogger('cnx-easybake')
 
@@ -16,7 +16,7 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout):
     """Process the given HTML file stream with the css stream."""
     html_parser = etree.HTMLParser()
     html_doc = etree.HTML(html_in.read(), html_parser)
-    oven = Baker(css_in)
+    oven = Oven(css_in)
     oven.bake(html_doc)
 
     # serialize out HTML
