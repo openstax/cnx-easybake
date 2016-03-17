@@ -10,17 +10,20 @@ import functools
 import copy
 
 verbose = False
-collation_decls = [(u'move-to', ''),
-                   (u'copy-to', ''),
-                   (u'content', u'pending')]
 
-labeling_decls = [(u'string-set', ''),
-                  (u'class', '')]
-
-numbering_decls = [(u'counter-reset', ''),
-                   (u'counter-increment', ''),
-                   (u'content', u'counter'),
-                   (u'content', u'target-counter')]
+# steps = ('collation', 'numbering', 'labelling')
+steps = ('collation',)
+decls = {'collation': [(u'move-to', ''),
+                       (u'copy-to', ''),
+                       (u'content', u'pending')],
+         'numbering': [(u'string-set', ''),
+                       (u'class', ''),
+                       (u'content', u'string')],
+         'labelling': [(u'counter-reset', ''),
+                       (u'counter-increment', ''),
+                       (u'content', u'counter'),
+                       (u'content', u'target-counter')]
+         }
 
 logger = logging.getLogger('cnx-easybake')
 
@@ -34,22 +37,23 @@ class Oven():
 
     def __init__(self, css_in=None):
         """Initialize oven, with optional inital CSS."""
-        matcher = cssselect2.Matcher()
-        self.matcher = matcher
         if css_in:
-            self.update_css(css_in)  # clears state as well
+            self.update_css(css_in, clear_css=True)  # clears state as well
         else:
             self.clear_state()
 
     def clear_state(self):
         """Clear the recipe state."""
         self.state = {}
-        self.state['pending'] = {}
-        self.state['actions'] = {}
-        self.state['pending_elems'] = []
-        self.state['counters'] = {}
-        self.state['strings'] = {}
-        self.state['recipe'] = False
+        for step in steps:
+            self.state[step] = {}
+            self.state[step]['pending'] = {}
+            self.state[step]['actions'] = {}
+            self.state[step]['pending_elems'] = []
+            self.state[step]['counters'] = {}
+            self.state[step]['strings'] = {}
+            # FIXME rather than boolean should ref HTML tree
+            self.state[step]['recipe'] = False
 
     def update_css(self, css_in=None, clear_css=False):
         """Add additional CSS rules, optionally replacing all."""
@@ -68,11 +72,13 @@ class Oven():
         self.clear_state()
 
         if clear_css:
-            self.matcher = cssselect2.Matcher()
+            self.matchers = {}
+            for step in steps:
+                self.matchers[step] = cssselect2.Matcher()
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
-            # Ignore all at-rules
+            # Ignore all at-rules FIXME probably need @counters
             if rule.type == 'qualified-rule':
                 try:
                     selectors = cssselect2.compile_selector_list(rule.prelude)
@@ -80,38 +86,41 @@ class Oven():
                     logger.debug('Invalid selector: %s %s'
                                  % (serialize(rule.prelude), error))
                 else:
-                    if is_collation_rule(rule):
+                    step = rule_step(rule)
+                    if step in steps:
                         decls = parse_declaration_list(rule.content,
                                                        skip_whitespace=True)
                         for sel in selectors:
                             pseudo = sel.pseudo_element
-                            self.matcher.add_selector(sel, (decls, pseudo))
+                            self.matchers[step].add_selector(sel,
+                                                             (decls, pseudo))
 
     def bake(self, element):
-        """Apply recipe to HTML tree. Will build recipe if needed."""
+        """Apply recipes to HTML tree. Will build recipes if needed."""
         wrapped_html_tree = ElementWrapper.from_html_root(element)
-        if not self.state['recipe']:
-            recipe = self.build_recipe(wrapped_html_tree)
-        else:
-            recipe = self.state
+        for step in steps:
+            # loop over steps, collation, then numbering, then labelling
 
-        # loop over pending dictionaries, doing moves and copies to etree
+            if not self.state[step]['recipe']:
+                recipe = self.build_recipe(wrapped_html_tree, step)
+            else:
+                recipe = self.state[step]
 
-        for key, actions in recipe['actions'].iteritems():
-            target = None
-            for action, value in actions:
-                if action == 'target':
-                    target = value
-                elif action == 'move':
-                    target.append(value)
-                elif action == 'copy':
-                    target.append(copy.deepcopy(value))
+            for key, actions in recipe['actions'].iteritems():
+                target = None
+                for action, value in actions:
+                    if action == 'target':
+                        target = value
+                    elif action == 'move':
+                        target.append(value)
+                    elif action == 'copy':
+                        target.append(copy.deepcopy(value))
 
         # Do numbering
 
         # Do label/link updates
 
-    def build_recipe(self, element, depth=0):
+    def build_recipe(self, element, step, depth=0):
         """Construct a set of steps to collate (and number) an HTML doc.
 
         Returns a state object that contains the steps. CSS rules match during
@@ -138,34 +147,47 @@ class Oven():
         # FIXME remove the method returning something to fire after child
         # processing Think it's a YAGNI - current use by class won't survive
 
-        for declarations, pseudo in self.matcher.match(element):
+        for declarations, pseudo in self.matchers[step].match(element):
             if pseudo in (None, 'before'):
                 for decl in declarations:
-                    method = getattr(self, 'do_{}'.format(
-                                     (decl.name).replace('-', '_')))
-                    method(element, decl.value, pseudo)
+                    try:
+                        method = getattr(self, 'do_{}'.format(
+                                         (decl.name).replace('-', '_')))
+                        method(element, decl.value, pseudo)
+                    except AttributeError:
+                        logger.debug('Missing method {}'.format(
+                                         (decl.name).replace('-', '_')))
+            # deal w/ pending_elements, per rule
+            self.pop_pending_elem(element)
 
         for el in element.iter_children():
-            _state = self.build_recipe(el, depth=depth+1)  # noqa
+            _state = self.build_recipe(el, step, depth=depth+1)  # noqa
 
         # FIXME don't run matcher twice!!!
 
-        for declarations, pseudo in self.matcher.match(element):
+        for declarations, pseudo in self.matchers[step].match(element):
             if pseudo == 'after':
                 for decl in declarations:
-                    method = getattr(self, 'do_{}'.format(
-                                     (decl.name).replace('-', '_')))
-                    method(element, decl.value, pseudo)
+                    try:
+                        method = getattr(self, 'do_{}'.format(
+                                         (decl.name).replace('-', '_')))
+                        method(element, decl.value, pseudo)
+                    except AttributeError:
+                        logger.debug('Missing method {}'.format(
+                                         (decl.name).replace('-', '_')))
+            # deal w/ pending_elements, per rule
+            self.pop_pending_elem(element)
 
-        self.state['recipe'] = True
-        return self.state
+        if depth == 0:
+            self.state[step]['recipe'] = True  # FIXME should ref HTML tree
+        return self.state[step]
 
     def do_copy_to(self, element, value, pseudo):
         """Implement copy-to declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'copy-to', serialize(value)))
         target = serialize(value).strip()
-        self.state['pending'].setdefault(target, []).append(
+        self.state['collation']['pending'].setdefault(target, []).append(
                                          ('copy', element.etree_element))
 
     def do_move_to(self, element, value, pseudo):
@@ -173,7 +195,7 @@ class Oven():
         logger.debug("{} {} {}".format(
                      element.local_name, 'move-to', serialize(value)))
         target = serialize(value).strip()
-        self.state['pending'].setdefault(target, []).append(
+        self.state['collation']['pending'].setdefault(target, []).append(
                                          ('move', element.etree_element))
 
     def do_display(self, element, value, pseduo):
@@ -183,12 +205,12 @@ class Oven():
         # This is where we create the wrapping element, then stuff it in the
         # state
         disp_value = serialize(value).strip()
-        if len(self.state['pending_elems']) > 0:
-            if self.state['pending_elems'][-1][1] == element:  # do_content
+        if len(self.state['collation']['pending_elems']) > 0:
+            if self.state['collation']['pending_elems'][-1][1] == element:
                 if 'block' in disp_value:
                     pass
                 else:
-                    elem = self.state['pending_elems'][-1][0]
+                    elem = self.state['collation']['pending_elems'][-1][0]
                     if elem.tag != 'span':
                         elem.tag = 'span'
         else:
@@ -197,7 +219,7 @@ class Oven():
                 elem.set('data-type', 'composite-page')
             else:
                 elem = etree.Element('span')
-            self.state['pending_elems'].append((elem, element))
+            self.state['collation']['pending_elems'].append((elem, element))
             return self.pop_pending_elem
 
     def do_content(self, element, value, pseudo):
@@ -208,37 +230,40 @@ class Oven():
 
         if 'pending(' in serialize(value):
             target = extract_pending_target(value)
-            if len(self.state['pending_elems']) > 0 \
-                    and self.state['pending_elems'][-1][1] == element:
+            if len(self.state['collation']['pending_elems']) > 0 \
+                    and \
+                    self.state['collation']['pending_elems'][-1][1] == element:
 
-                elem = self.state['pending_elems'][-1][0]
+                elem = self.state['collation']['pending_elems'][-1][0]
             else:
                 elem = etree.Element('div')
                 elem.set('data-type', 'composite-page')
-                self.state['pending_elems'].append((elem, element))
+                self.state['collation']['pending_elems'].append(
+                                                         (elem, element))
                 retval = self.pop_pending_elem
 
-            self.state['actions'].setdefault(target, []).append(
+            self.state['collation']['actions'].setdefault(target, []).append(
                                              ('target', element.etree_element))
-            self.state['actions'][target].append(('move', elem))
-            self.state['actions'][target].append(('target', elem))
-            self.state['actions'][target].extend(self.state['pending'][target])
-            del self.state['pending'][target]
+            self.state['collation']['actions'][target].append(('move', elem))
+            self.state['collation']['actions'][target].append(('target', elem))
+            self.state['collation']['actions'][target].extend(
+                                    self.state['collation']['pending'][target])
+            del self.state['collation']['pending'][target]
 
         return retval
 
     def pop_pending_elem(self, element):
         """Remove pending target element from stack."""
-        if len(self.state['pending_elems']) > 0:
-            if self.state['pending_elems'][-1][1] == element:
-                self.state['pending_elems'].pop()
+        if len(self.state['collation']['pending_elems']) > 0:
+            if self.state['collation']['pending_elems'][-1][1] == element:
+                self.state['collation']['pending_elems'].pop()
 
     def do_class(self, element, value, pseudo):
         """Implement class declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'class', serialize(value)))
         if is_pending_element(self.state, element):
-            elem = self.state['pending_elems'][-1][0]
+            elem = self.state['collation']['pending_elems'][-1][0]
             elem.set('class', serialize(value).strip())
 
         else:  # it's not there yet, perhaps after
@@ -265,21 +290,16 @@ def extract_pending_target(value):
 
 def is_pending_element(state, element):
     """Determine if most recent pending is for this element."""
-    return len(state['pending_elems']) > 0 \
-        and state['pending_elems'][-1][1] == element
+    return len(state['collation']['pending_elems']) > 0 \
+        and state['collation']['pending_elems'][-1][1] == element
 
 
-def is_collation_rule(rule):
+def rule_step(rule):
     """A collation rule contains a declaration needed to complete collation."""
     declarations = parse_declaration_list(rule.content, skip_whitespace=True)
-    return any([d.name == dn and dv in serialize(d.value)
-                for dn, dv in collation_decls
-                for d in declarations])
-
-
-def is_numbering_rule(rule):
-    """A numbering rule contains a declaration needed to complete numbering."""
-    declarations = parse_declaration_list(rule.content, skip_whitespace=True)
-    return any([d.name == dn and dv in serialize(d.value)
-                for dn, dv in numbering_decls
-                for d in declarations])
+    for step in steps:
+        if any([d.name == dn and dv in serialize(d.value)
+                for dn, dv in decls[step]
+                for d in declarations]):
+            return step
+    return 'unknown'
