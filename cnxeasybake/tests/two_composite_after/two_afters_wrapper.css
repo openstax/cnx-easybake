@@ -1,22 +1,23 @@
 div[data-type='chapter'] section.practice-test {
   move-to: eoc-practice-test;
-  display: block;
 }
 div[data-type='chapter'] section.key-equations {
   move-to: eoc-key-equations;
-  display: block;
 }
 div[data-type='chapter']::after {
   class: eoc-practice-test;
+  display: block;
   content: pending(eoc-practice-test);
   move-to: eoc-all;
 }
 div[data-type='chapter']::after {
   class: eoc-key-equations;
+  display: block;
   content: pending(eoc-key-equations);
   move-to: eoc-all;
 }
 div[data-type='chapter']::after {
   class: eoc-stuff;
+  display: block;
   content: pending(eoc-all);
 }
