@@ -48,3 +48,6 @@ def main(argv=None):
     logger.info('info')
 
     easybake(args.css_rules, args.html_in, args.html_out)
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
