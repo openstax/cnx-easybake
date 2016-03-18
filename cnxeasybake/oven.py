@@ -187,16 +187,24 @@ class Oven():
         logger.debug("{} {} {}".format(
                      element.local_name, 'copy-to', serialize(value)))
         target = serialize(value).strip()
+        if pseudo is None:
+            elem = element.etree_element
+        elif self.state['collation']['pending_elems'][-1][1] == element:
+            elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
-                                         ('copy', element.etree_element))
+                                         ('copy', elem))
 
     def do_move_to(self, element, value, pseudo):
         """Implement move-to declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'move-to', serialize(value)))
         target = serialize(value).strip()
+        if pseudo is None:
+            elem = element.etree_element
+        elif self.state['collation']['pending_elems'][-1][1] == element:
+            elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
-                                         ('move', element.etree_element))
+                             ('move', elem))
 
     def do_display(self, element, value, pseduo):
         """Implement display, esp. wrapping of content."""
