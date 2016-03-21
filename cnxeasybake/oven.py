@@ -122,29 +122,16 @@ class Oven():
     def build_recipe(self, element, step, depth=0):
         """Construct a set of steps to collate (and number) an HTML doc.
 
-        Returns a state object that contains the steps. CSS rules match during
-        a recusive descent HTML tree walk. Each declaration has a method that
-        then runs, given the current element, the decaration value. State is
-        maintained on the collator instance.  Since matching occurs when
-        entering a node, it's children have not yet been visited, so each
-        declaration method can optionally return a deferred method to run when
-        the current node's children have been processed.
+        Returns a state object that contains the steps to apply to the HTML
+        tree. CSS rules match during a recusive descent HTML tree walk. Each
+        declaration has a method that then runs, given the current element, the
+        decaration value. State is maintained on the collator instance.  Since
+        matching occurs when entering a node, declaration methods are ran
+        either before or after recursing into its children, depending on the
+        presence of a pseudo-element and it's value.
         """
-        # FIXME  Extending to deal with pseudo elements now match also return
-        # pseudo, which will be one of None, before, or after.  Need after
-        # declaration methods will fire _after_ recursing to children.  Move
-        # 'pending' actions in state to 'actions' move-to, copy-to push things
-        # to 'pending' dict.  pending() on content then moves that to 'actions'
-        # with appropriate 'target' steps prepended.
         # FIXME Do declaration methods need to know if they are pseudo or not,
-        # and if so, which?
-
-        # FIXME  deal w/ order of execution of content: pending() and
-        # class|display - keep a local node pointer somewhere, or pending
-        # actions so only pending() does the create-a-node?
-
-        # FIXME remove the method returning something to fire after child
-        # processing Think it's a YAGNI - current use by class won't survive
+        # and if so, which? - currently passing it, but not using it.
 
         matching_rules = {}
         for declarations, pseudo in self.matchers[step].match(element):
