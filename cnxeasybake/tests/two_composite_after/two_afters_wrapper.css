@@ -18,6 +18,7 @@ div[data-type='chapter']::after {
 }
 div[data-type='chapter']::after {
   class: eoc-stuff;
+  data-type: composite-page;
   display: block;
   content: pending(eoc-all);
 }

@@ -6,7 +6,6 @@ import tinycss2
 from tinycss2 import serialize, parse_declaration_list
 import cssselect2
 from cssselect2 import ElementWrapper
-import functools
 import copy
 
 verbose = False
@@ -147,8 +146,15 @@ class Oven():
         # FIXME remove the method returning something to fire after child
         # processing Think it's a YAGNI - current use by class won't survive
 
+        matching_rules = {}
         for declarations, pseudo in self.matchers[step].match(element):
-            if pseudo in (None, 'before'):
+            matching_rules.setdefault(pseudo, []).append(declarations)
+
+        # Do before
+        if 'before' in matching_rules.keys():
+            for declarations in matching_rules.get('before'):
+                # pseudo element, create wrapper
+                self.push_pending_elem(element)
                 for decl in declarations:
                     try:
                         method = getattr(self, 'do_{}'.format(
@@ -157,16 +163,30 @@ class Oven():
                     except AttributeError:
                         logger.debug('Missing method {}'.format(
                                          (decl.name).replace('-', '_')))
-            # deal w/ pending_elements, per rule
-            self.pop_pending_elem(element)
+                # deal w/ pending_elements, per rule
+                self.pop_pending_elem(element)
 
+        # Do non-pseudo
+        if None in matching_rules.keys():
+            for declarations in matching_rules.get(None):
+                for decl in declarations:
+                    try:
+                        method = getattr(self, 'do_{}'.format(
+                                         (decl.name).replace('-', '_')))
+                        method(element, decl.value, pseudo)
+                    except AttributeError:
+                        logger.debug('Missing method {}'.format(
+                                         (decl.name).replace('-', '_')))
+
+        # Recurse
         for el in element.iter_children():
             _state = self.build_recipe(el, step, depth=depth+1)  # noqa
 
-        # FIXME don't run matcher twice!!!
-
-        for declarations, pseudo in self.matchers[step].match(element):
-            if pseudo == 'after':
+        # Do after
+        if 'after' in matching_rules.keys():
+            for declarations in matching_rules.get('after'):
+                # pseudo element, create wrapper
+                self.push_pending_elem(element)
                 for decl in declarations:
                     try:
                         method = getattr(self, 'do_{}'.format(
@@ -175,8 +195,8 @@ class Oven():
                     except AttributeError:
                         logger.debug('Missing method {}'.format(
                                          (decl.name).replace('-', '_')))
-            # deal w/ pending_elements, per rule
-            self.pop_pending_elem(element)
+                # deal w/ pending_elements, per rule
+                self.pop_pending_elem(element)
 
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
@@ -228,13 +248,12 @@ class Oven():
             else:
                 elem = etree.Element('span')
             self.state['collation']['pending_elems'].append((elem, element))
-            return self.pop_pending_elem
+            return
 
     def do_content(self, element, value, pseudo):
         """Implement content declaration - after."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'content', serialize(value)))
-        retval = None
 
         if 'pending(' in serialize(value):
             target = extract_pending_target(value)
@@ -248,7 +267,6 @@ class Oven():
                 elem.set('data-type', 'composite-page')
                 self.state['collation']['pending_elems'].append(
                                                          (elem, element))
-                retval = self.pop_pending_elem
 
             self.state['collation']['actions'].setdefault(target, []).append(
                                              ('target', element.etree_element))
@@ -258,7 +276,13 @@ class Oven():
                                     self.state['collation']['pending'][target])
             del self.state['collation']['pending'][target]
 
-        return retval
+        return
+
+    def push_pending_elem(self, element):
+        """Remove pending target element from stack."""
+        elem = etree.Element('div')
+        self.state['collation']['pending_elems'].append(
+                                                 (elem, element))
 
     def pop_pending_elem(self, element):
         """Remove pending target element from stack."""
@@ -274,8 +298,13 @@ class Oven():
             elem = self.state['collation']['pending_elems'][-1][0]
             elem.set('class', serialize(value).strip())
 
-        else:  # it's not there yet, perhaps after
-            return functools.partial(self.do_class, value=value)
+    def do_data_type(self, element, value, pseudo):
+        """Implement class declaration - pre-match."""
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'data-type', serialize(value)))
+        if is_pending_element(self.state, element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            elem.set('data-type', serialize(value).strip())
 
     def do_group_by(self, element, value, pseudo):
         """Implement group-by declaration - pre-match."""
