@@ -7,12 +7,12 @@ div[data-type='chapter'] section.key-equations {
 div[data-type='chapter']::after {
   class: eoc-practice-test;
   data-type: composite-page;
-  display: block;
+  container: div;
   content: pending(eoc-practice-test);
 }
 div[data-type='chapter']::after {
   class: eoc-key-equations;
   data-type: composite-page;
-  display: block;
+  container: div;
   content: pending(eoc-key-equations);
 }

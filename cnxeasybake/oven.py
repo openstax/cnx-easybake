@@ -138,50 +138,35 @@ class Oven():
             matching_rules.setdefault(pseudo, []).append(declarations)
 
         # Do before
-        if 'before' in matching_rules.keys():
+        if 'before' in matching_rules:
             for declarations in matching_rules.get('before'):
                 # pseudo element, create wrapper
                 self.push_pending_elem(element)
                 for decl in declarations:
-                    try:
-                        method = getattr(self, 'do_{}'.format(
-                                         (decl.name).replace('-', '_')))
-                        method(element, decl.value, pseudo)
-                    except AttributeError:
-                        logger.debug('Missing method {}'.format(
-                                         (decl.name).replace('-', '_')))
+                    method = self.find_method(decl.name)
+                    method(element, decl, 'before')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_elem(element)
 
         # Do non-pseudo
-        if None in matching_rules.keys():
+        if None in matching_rules:
             for declarations in matching_rules.get(None):
                 for decl in declarations:
-                    try:
-                        method = getattr(self, 'do_{}'.format(
-                                         (decl.name).replace('-', '_')))
-                        method(element, decl.value, pseudo)
-                    except AttributeError:
-                        logger.debug('Missing method {}'.format(
-                                         (decl.name).replace('-', '_')))
+                    method = self.find_method(decl.name)
+                    method(element, decl, None)
 
         # Recurse
         for el in element.iter_children():
             _state = self.build_recipe(el, step, depth=depth+1)  # noqa
 
         # Do after
-        if 'after' in matching_rules.keys():
+        if 'after' in matching_rules:
             for declarations in matching_rules.get('after'):
                 # pseudo element, create wrapper
                 self.push_pending_elem(element)
                 for decl in declarations:
-                    try:
-                        method = getattr(self, 'do_{}'.format(
-                                         (decl.name).replace('-', '_')))
-                        method(element, decl.value, pseudo)
-                    except AttributeError:
-                        logger.debug('Missing method {}'.format(
-                                         (decl.name).replace('-', '_')))
+                    method = self.find_method(decl.name)
+                    method(element, decl, 'after')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_elem(element)
 
@@ -189,11 +174,34 @@ class Oven():
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
 
-    def do_copy_to(self, element, value, pseudo):
+    def find_method(self, name):
+        """Find class method to call for declaration based on name."""
+        method = None
+        try:
+            method = getattr(self, 'do_{}'.format(
+                             (name).replace('-', '_')))
+        except AttributeError:
+            try:
+                if name.startswith('data-'):
+                    method = getattr(self, 'do_data_any')
+                elif name.startswith('attr-'):
+                    method = getattr(self, 'do_attr_any')
+                else:
+                    logger.debug('Missing method {}'.format(
+                                     (name).replace('-', '_')))
+            except AttributeError:
+                logger.debug('Missing method {}'.format(
+                                 (name).replace('-', '_')))
+        if method:
+            return method
+        else:
+            return lambda x, y, z: None
+
+    def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration - pre-match."""
+        target = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
-                     element.local_name, 'copy-to', serialize(value)))
-        target = serialize(value).strip()
+                     element.local_name, 'copy-to', target))
         if pseudo is None:
             elem = element.etree_element
         elif self.state['collation']['pending_elems'][-1][1] == element:
@@ -201,11 +209,11 @@ class Oven():
         self.state['collation']['pending'].setdefault(target, []).append(
                                          ('copy', elem))
 
-    def do_move_to(self, element, value, pseudo):
+    def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration - pre-match."""
+        target = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
-                     element.local_name, 'move-to', serialize(value)))
-        target = serialize(value).strip()
+                     element.local_name, 'move-to', target))
         if pseudo is None:
             elem = element.etree_element
         elif self.state['collation']['pending_elems'][-1][1] == element:
@@ -213,45 +221,45 @@ class Oven():
         self.state['collation']['pending'].setdefault(target, []).append(
                              ('move', elem))
 
-    def do_display(self, element, value, pseduo):
+    def do_container(self, element, decl, pseudo):
         """Implement display, esp. wrapping of content."""
+        value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
-                     element.local_name, 'display', serialize(value)))
-        # This is where we create the wrapping element, then stuff it in the
-        # state
-        disp_value = serialize(value).strip()
-        if len(self.state['collation']['pending_elems']) > 0:
-            if self.state['collation']['pending_elems'][-1][1] == element:
-                if 'block' in disp_value:
-                    pass
-                else:
-                    elem = self.state['collation']['pending_elems'][-1][0]
-                    if elem.tag != 'span':
-                        elem.tag = 'span'
-        else:
-            if 'block' in disp_value:
-                elem = etree.Element('div')
-                elem.set('data-type', 'composite-page')
-            else:
-                elem = etree.Element('span')
-            self.state['collation']['pending_elems'].append((elem, element))
-            return
+                     element.local_name, 'container', value))
+        if is_pending_element(self.state, element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            elem.tag = value
 
-    def do_content(self, element, value, pseudo):
+    def do_attr_any(self, element, decl, pseudo):
+        """Implement generic attribute setting."""
+        value = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, decl.name, value))
+        if is_pending_element(self.state, element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            elem.set(decl.name[5:], value)
+
+    def do_data_any(self, element, decl, pseudo):
+        """Implement generic data attribute setting."""
+        value = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, decl.name, value))
+        if is_pending_element(self.state, element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            elem.set(decl.name, value)
+
+    def do_content(self, element, decl, pseudo):
         """Implement content declaration - after."""
+        value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
-                     element.local_name, 'content', serialize(value)))
+                     element.local_name, 'content', value))
 
-        if 'pending(' in serialize(value):
-            target = extract_pending_target(value)
-            if len(self.state['collation']['pending_elems']) > 0 \
-                    and \
-                    self.state['collation']['pending_elems'][-1][1] == element:
-
+        if 'pending(' in value:  # FIXME need to handle multi-param values
+            target = extract_pending_target(decl.value)
+            if is_pending_element(self.state, element):
                 elem = self.state['collation']['pending_elems'][-1][0]
             else:
                 elem = etree.Element('div')
-                elem.set('data-type', 'composite-page')
                 self.state['collation']['pending_elems'].append(
                                                          (elem, element))
 
@@ -262,8 +270,6 @@ class Oven():
             self.state['collation']['actions'][target].extend(
                                     self.state['collation']['pending'][target])
             del self.state['collation']['pending'][target]
-
-        return
 
     def push_pending_elem(self, element):
         """Remove pending target element from stack."""
@@ -277,21 +283,14 @@ class Oven():
             if self.state['collation']['pending_elems'][-1][1] == element:
                 self.state['collation']['pending_elems'].pop()
 
-    def do_class(self, element, value, pseudo):
+    def do_class(self, element, decl, pseudo):
         """Implement class declaration - pre-match."""
+        value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
-                     element.local_name, 'class', serialize(value)))
+                     element.local_name, 'class', value))
         if is_pending_element(self.state, element):
             elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set('class', serialize(value).strip())
-
-    def do_data_type(self, element, value, pseudo):
-        """Implement class declaration - pre-match."""
-        logger.debug("{} {} {}".format(
-                     element.local_name, 'data-type', serialize(value)))
-        if is_pending_element(self.state, element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set('data-type', serialize(value).strip())
+            elem.set('class', value)
 
     def do_group_by(self, element, value, pseudo):
         """Implement group-by declaration - pre-match."""
