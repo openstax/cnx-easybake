@@ -1,0 +1,27 @@
+# Development #
+###############
+*.pyc
+*.pyo
+*.egg-info
+*.egg
+.tox
+*.*~
+.DS_Store
+/*.log
+/.eggs
+
+# Virtualenv #
+##############
+bin
+lib
+include
+
+# Build file #
+##############
+build/
+dist/
+
+# Coverage #
+############
+.coverage
+htmlcov
