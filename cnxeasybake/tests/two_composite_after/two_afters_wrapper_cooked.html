@@ -4,21 +4,27 @@
   </head>
   <body>
     <div data-type="chapter">
-      <p>Stuff not in a section, should stay in chapter.</p>
-      <section class="this one doesn't move">
-        <p>Stuff that stays, as well</p>
-      </section>
-      <div data-type="composite-page">
-        <div data-type="composite-page">
+      <div data-type="page">
+        <p>Stuff not in a section, should stay in chapter.</p>
+        <section class="this one doesn't move">
+          <p>Stuff that stays, as well</p>
+        </section>
+      </div>
+      <div data-type="page"></div>
+      <div class="eoc-stuff" data-type="composite-page">
+        <div class="eoc-practice-test">
+          <section class="practice-test">
+            <p>Hi, I'm a practice test section</p>
+          </section>
+          <section class="practice-test">
+            <p>Hi, I'm a practice test section, too</p>
+          </section>
+        </div>
+        <div class="eoc-key-equations">
           <section class="key-equations">
             <p>Hi, I'm a key equation</p>
           </section>
         </div>
-      </div>
-      <div data-type="composite-page">
-        <section class="practice-test">
-          <p>Hi, I'm a practice test section</p>
-        </section>
       </div>
     </div>
   </body>
