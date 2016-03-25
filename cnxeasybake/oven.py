@@ -47,7 +47,7 @@ class Oven():
         for step in steps:
             self.state[step] = {}
             self.state[step]['pending'] = {}
-            self.state[step]['actions'] = {}
+            self.state[step]['actions'] = []
             self.state[step]['pending_elems'] = []
             self.state[step]['counters'] = {}
             self.state[step]['strings'] = {}
@@ -105,15 +105,14 @@ class Oven():
             else:
                 recipe = self.state[step]
 
-            for key, actions in recipe['actions'].iteritems():
-                target = None
-                for action, value in actions:
-                    if action == 'target':
-                        target = value
-                    elif action == 'move':
-                        target.append(value)
-                    elif action == 'copy':
-                        target.append(copy.deepcopy(value))
+            target = None
+            for action, value in recipe['actions']:
+                if action == 'target':
+                    target = value
+                elif action == 'move':
+                    target.append(value)
+                elif action == 'copy':
+                    target.append(copy.deepcopy(value))
 
         # Do numbering
 
@@ -263,11 +262,11 @@ class Oven():
                 self.state['collation']['pending_elems'].append(
                                                          (elem, element))
 
-            self.state['collation']['actions'].setdefault(target, []).append(
+            self.state['collation']['actions'].append(
                                              ('target', element.etree_element))
-            self.state['collation']['actions'][target].append(('move', elem))
-            self.state['collation']['actions'][target].append(('target', elem))
-            self.state['collation']['actions'][target].extend(
+            self.state['collation']['actions'].append(('move', elem))
+            self.state['collation']['actions'].append(('target', elem))
+            self.state['collation']['actions'].extend(
                                     self.state['collation']['pending'][target])
             del self.state['collation']['pending'][target]
 
