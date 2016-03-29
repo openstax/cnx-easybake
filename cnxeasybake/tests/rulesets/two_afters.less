@@ -1,3 +1,4 @@
+// Test two pending buckets targeting same after
 div[data-type='chapter'] {
     section.practice-test {
         move-to: eoc-practice-test;
@@ -17,6 +18,7 @@ div[data-type='chapter'] {
     &::after {
       class: eoc-key-equations;
       data-type: composite-page;
+      attr-my-type: study-this;
       container: div;
       content: pending(eoc-key-equations);
 

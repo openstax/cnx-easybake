@@ -106,6 +106,7 @@ class Oven():
                 recipe = self.state[step]
 
             target = None
+            # FIXME Handle sort actions
             for action, value in recipe['actions']:
                 if action == 'target':
                     target = value
@@ -197,31 +198,31 @@ class Oven():
             return lambda x, y, z: None
 
     def do_copy_to(self, element, decl, pseudo):
-        """Implement copy-to declaration - pre-match."""
+        """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'copy-to', target))
         if pseudo is None:
             elem = element.etree_element
-        elif self.state['collation']['pending_elems'][-1][1] == element:
+        elif is_pending_element(self.state, element):
             elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
                                          ('copy', elem))
 
     def do_move_to(self, element, decl, pseudo):
-        """Implement move-to declaration - pre-match."""
+        """Implement move-to declaration."""
         target = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'move-to', target))
         if pseudo is None:
             elem = element.etree_element
-        elif self.state['collation']['pending_elems'][-1][1] == element:
+        elif is_pending_element(self.state, element):
             elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
                              ('move', elem))
 
     def do_container(self, element, decl, pseudo):
-        """Implement display, esp. wrapping of content."""
+        """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'container', value))
@@ -230,7 +231,7 @@ class Oven():
             elem.tag = value
 
     def do_attr_any(self, element, decl, pseudo):
-        """Implement generic attribute setting."""
+        """Implement generic attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
@@ -239,7 +240,7 @@ class Oven():
             elem.set(decl.name[5:], value)
 
     def do_data_any(self, element, decl, pseudo):
-        """Implement generic data attribute setting."""
+        """Implement generic data attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
@@ -248,7 +249,8 @@ class Oven():
             elem.set(decl.name, value)
 
     def do_content(self, element, decl, pseudo):
-        """Implement content declaration - after."""
+        """Implement content declaration."""
+        # FIXME rework completely to cover all cases, pseudo and non-
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'content', value))
@@ -271,7 +273,7 @@ class Oven():
             del self.state['collation']['pending'][target]
 
     def push_pending_elem(self, element):
-        """Remove pending target element from stack."""
+        """Create and place pending target element onto stack."""
         elem = etree.Element('div')
         self.state['collation']['pending_elems'].append(
                                                  (elem, element))
@@ -291,15 +293,15 @@ class Oven():
             elem = self.state['collation']['pending_elems'][-1][0]
             elem.set('class', value)
 
-    def do_group_by(self, element, value, pseudo):
+    def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
-                     element.local_name, 'group-by', serialize(value)))
+                     element.local_name, 'group-by', serialize(decl.value)))
 
     def do_sort_by(self, element, value, pseudo):
         """Implement sort-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
-                     element.local_name, 'sort-by', serialize(value)))
+                     element.local_name, 'sort-by', serialize(decl.value)))
 
 
 def extract_pending_target(value):

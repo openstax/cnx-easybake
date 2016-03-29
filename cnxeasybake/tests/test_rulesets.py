@@ -14,7 +14,7 @@ TEST_HTML_DIR = os.path.join(here, 'html')
 
 
 def tidy(input_):
-    """Pretty Print XHTML"""
+    """Pretty Print XHTML."""
     proc = subprocess.Popen(['tidy', '-xml', '-qi'],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
@@ -25,7 +25,7 @@ def tidy(input_):
 
 
 def lessc(input_):
-    """Convert less to css"""
+    """Convert less to css."""
     proc = subprocess.Popen(['lessc', '-'],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
@@ -36,7 +36,7 @@ def lessc(input_):
 
 
 class RulesetTestCase(unittest.TestCase):
-    """Ruleset test cases
+    """Ruleset test cases.
 
     Use easybake to transform <name>_raw.html with <name>.less and compare
     with <name>_cooked.html files
@@ -50,6 +50,10 @@ class RulesetTestCase(unittest.TestCase):
                                        '*.less')):
             filename_no_ext = less_filename.rsplit('.less', 1)[0]
             with open('{}.less'.format(filename_no_ext), 'rb') as f_less:
+                first_line = f_less.read()
+                f_less.seek(0)
+                if first_line.startswith('//'):
+                    desc = first_line[2:]
                 with open('{}.css'.format(filename_no_ext), 'wb') as f_css:
                     f_css.write(lessc(f_less.read()))
 
@@ -66,10 +70,10 @@ class RulesetTestCase(unittest.TestCase):
 
             setattr(cls, 'test_{}'.format(test_name),
                     cls.create_test('{}.css'.format(filename_no_ext),
-                                    html, cooked_html))
+                                    html, cooked_html, desc))
 
     @classmethod
-    def create_test(cls, css, html, cooked_html):
+    def create_test(cls, css, html, cooked_html, desc):
         def run_test(self):
             element = etree.HTML(html)
             oven = Oven(css)
@@ -78,6 +82,8 @@ class RulesetTestCase(unittest.TestCase):
 
             # https://bugs.python.org/issue10164
             self.assertEqual(output.split(b'\n'), cooked_html.split(b'\n'))
+        if desc:
+            run_test.__doc__ = desc
         return run_test
 
 

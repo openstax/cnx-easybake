@@ -1,0 +1,8 @@
+div[data-type='chapter'] dl.definition {
+  copy-to: eoc-key-terms;
+}
+div[data-type='chapter']::after {
+  class: eoc-key-terms;
+  content: pending(eoc-key-terms);
+  container: section;
+}
