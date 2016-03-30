@@ -6,6 +6,7 @@ import tinycss2
 from tinycss2 import serialize, parse_declaration_list
 import cssselect2
 from cssselect2 import ElementWrapper
+from cssselect import HTMLTranslator
 import copy
 
 verbose = False
@@ -96,9 +97,10 @@ class Oven():
 
     def bake(self, element):
         """Apply recipes to HTML tree. Will build recipes if needed."""
-        wrapped_html_tree = ElementWrapper.from_html_root(element)
+        # loop over steps: collation, then numbering, then labelling
         for step in steps:
-            # loop over steps, collation, then numbering, then labelling
+            # Need to wrap each loop, since tree may have changed
+            wrapped_html_tree = ElementWrapper.from_html_root(element)
 
             if not self.state[step]['recipe']:
                 recipe = self.build_recipe(wrapped_html_tree, step)
@@ -106,14 +108,27 @@ class Oven():
                 recipe = self.state[step]
 
             target = None
-            # FIXME Handle sort actions
+            sort = None
             for action, value in recipe['actions']:
                 if action == 'target':
-                    target = value
+                    target, sort = value
                 elif action == 'move':
-                    target.append(value)
+                    if sort and len(target) > 0:
+                        for child in target:
+                            if sort(child) > sort(value):
+                                break
+                        child.addprevious(value)
+                    else:
+                        target.append(value)
                 elif action == 'copy':
-                    target.append(copy.deepcopy(value))
+                    mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
+                    if sort and len(target) > 0:
+                        for child in target:
+                            if sort(child) > sort(value):
+                                break
+                        child.addprevious(mycopy)
+                    else:
+                        target.append(mycopy)
 
         # Do numbering
 
@@ -174,6 +189,24 @@ class Oven():
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
 
+    # Maintain stack of pending wrapper elements
+    def push_pending_elem(self, element):
+        """Create and place pending target element onto stack."""
+        elem = etree.Element('div')
+        self.state['collation']['pending_elems'].append(
+                                                 (elem, element, None))
+
+    def pop_pending_elem(self, element):
+        """Remove pending target element from stack."""
+        if self.is_pending_element(element):
+            self.state['collation']['pending_elems'].pop()
+
+    def is_pending_element(self, element):
+        """Determine if most recent pending is for this element."""
+        return len(self.state['collation']['pending_elems']) > 0 \
+            and self.state['collation']['pending_elems'][-1][1] == element
+
+    # Declaration methods and accessor
     def find_method(self, name):
         """Find class method to call for declaration based on name."""
         method = None
@@ -204,7 +237,7 @@ class Oven():
                      element.local_name, 'copy-to', target))
         if pseudo is None:
             elem = element.etree_element
-        elif is_pending_element(self.state, element):
+        elif self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
                                          ('copy', elem))
@@ -216,7 +249,7 @@ class Oven():
                      element.local_name, 'move-to', target))
         if pseudo is None:
             elem = element.etree_element
-        elif is_pending_element(self.state, element):
+        elif self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
         self.state['collation']['pending'].setdefault(target, []).append(
                              ('move', elem))
@@ -226,16 +259,25 @@ class Oven():
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'container', value))
-        if is_pending_element(self.state, element):
+        if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
             elem.tag = value
+
+    def do_class(self, element, decl, pseudo):
+        """Implement class declaration - pre-match."""
+        value = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'class', value))
+        if self.is_pending_element(element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            elem.set('class', value)
 
     def do_attr_any(self, element, decl, pseudo):
         """Implement generic attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
-        if is_pending_element(self.state, element):
+        if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
             elem.set(decl.name[5:], value)
 
@@ -244,7 +286,7 @@ class Oven():
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
-        if is_pending_element(self.state, element):
+        if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
             elem.set(decl.name, value)
 
@@ -264,51 +306,39 @@ class Oven():
                 logger.warning("WARNING: {} empty bucket".format(value))
                 return
 
-            if is_pending_element(self.state, element):
-                elem = self.state['collation']['pending_elems'][-1][0]
-            else:
-                elem = etree.Element('div')
-                self.state['collation']['pending_elems'].append(
-                                                         (elem, element))
-
-            self.state['collation']['actions'].append(
-                                             ('target', element.etree_element))
-            self.state['collation']['actions'].append(('move', elem))
-            self.state['collation']['actions'].append(('target', elem))
-            self.state['collation']['actions'].extend(
-                                    self.state['collation']['pending'][target])
-            del self.state['collation']['pending'][target]
-
-    def push_pending_elem(self, element):
-        """Create and place pending target element onto stack."""
-        elem = etree.Element('div')
-        self.state['collation']['pending_elems'].append(
-                                                 (elem, element))
-
-    def pop_pending_elem(self, element):
-        """Remove pending target element from stack."""
-        if len(self.state['collation']['pending_elems']) > 0:
-            if self.state['collation']['pending_elems'][-1][1] == element:
-                self.state['collation']['pending_elems'].pop()
-
-    def do_class(self, element, decl, pseudo):
-        """Implement class declaration - pre-match."""
-        value = serialize(decl.value).strip()
-        logger.debug("{} {} {}".format(
-                     element.local_name, 'class', value))
-        if is_pending_element(self.state, element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set('class', value)
+            if self.is_pending_element(element):
+                elem, _, sort = step['pending_elems'][-1]
+            actions.append(('target', (element.etree_element, None)))
+            actions.append(('move', elem))
+            actions.append(('target', (elem, sort)))
+            actions.extend(step['pending'][target])
+            del step['pending'][target]
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'group-by', serialize(decl.value)))
 
-    def do_sort_by(self, element, value, pseudo):
+    def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'sort-by', serialize(decl.value)))
+
+        css = serialize(decl.value)
+        sort = etree.XPath(HTMLTranslator().css_to_xpath(css) + '/text()')
+
+        if self.is_pending_element(element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            self.state['collation']['pending_elems'][-1] = \
+                (elem, element, sort)
+            #  Find current target, set its sort as well
+            for pos, action in \
+                    enumerate(reversed(self.state['collation']['actions'])):
+                if action[0] == 'target' and action[1][0] == elem:
+                    target_index = - pos - 1
+                    break
+            self.state['collation']['actions'][target_index] = \
+                (action[0], (action[1][0], sort))
 
 
 def extract_pending_target(value):
@@ -317,12 +347,6 @@ def extract_pending_target(value):
         if type(v) is tinycss2.ast.FunctionBlock:
             if v.name == u'pending':
                 return serialize(v.arguments)
-
-
-def is_pending_element(state, element):
-    """Determine if most recent pending is for this element."""
-    return len(state['collation']['pending_elems']) > 0 \
-        and state['collation']['pending_elems'][-1][1] == element
 
 
 def rule_step(rule):
