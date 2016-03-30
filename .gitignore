@@ -1,6 +1,7 @@
 # Development #
 ###############
 *.pyc
+*,cover
 *.pyo
 *.egg-info
 *.egg

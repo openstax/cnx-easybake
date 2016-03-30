@@ -255,8 +255,15 @@ class Oven():
         logger.debug("{} {} {}".format(
                      element.local_name, 'content', value))
 
+        step = self.state['collation']
+        actions = step['actions']
+
         if 'pending(' in value:  # FIXME need to handle multi-param values
             target = extract_pending_target(decl.value)
+            if target not in step['pending']:
+                logger.warning("WARNING: {} empty bucket".format(value))
+                return
+
             if is_pending_element(self.state, element):
                 elem = self.state['collation']['pending_elems'][-1][0]
             else:
