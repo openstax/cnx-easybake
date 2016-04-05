@@ -3,7 +3,7 @@
 import logging
 from lxml import etree
 import tinycss2
-from tinycss2 import serialize, parse_declaration_list
+from tinycss2 import serialize, parse_declaration_list, ast
 import cssselect2
 from cssselect2 import ElementWrapper
 from cssselect import HTMLTranslator
@@ -15,14 +15,16 @@ verbose = False
 steps = ('collation',)
 decls = {'collation': [(u'move-to', ''),
                        (u'copy-to', ''),
+                       (u'string-set', ''),
+                       (u'content', u'string'),
                        (u'content', u'pending')],
-         'numbering': [(u'string-set', ''),
-                       (u'class', ''),
-                       (u'content', u'string')],
-         'labelling': [(u'counter-reset', ''),
+         'numbering': [(u'counter-reset', ''),
                        (u'counter-increment', ''),
                        (u'content', u'counter'),
-                       (u'content', u'target-counter')]
+                       (u'content', u'target-counter')],
+         'labelling': [(u'string-set', ''),
+                       (u'class', ''),
+                       (u'content', u'string')],
          }
 
 logger = logging.getLogger('cnx-easybake')
@@ -41,6 +43,9 @@ class Oven():
             self.update_css(css_in, clear_css=True)  # clears state as well
         else:
             self.clear_state()
+            self.matchers = {}
+            for step in steps:
+                self.matchers[step] = cssselect2.Matcher()
 
     def clear_state(self):
         """Clear the recipe state."""
@@ -112,6 +117,8 @@ class Oven():
             for action, value in recipe['actions']:
                 if action == 'target':
                     target, sort = value
+                if action == 'string':
+                    append_string(target, value)
                 elif action == 'move':
                     if sort and len(target) > 0:
                         for child in target:
@@ -122,6 +129,7 @@ class Oven():
                         target.append(value)
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
+                    mycopy.tail = None
                     if sort and len(target) > 0:
                         for child in target:
                             if sort(child) > sort(value):
@@ -230,6 +238,64 @@ class Oven():
         else:
             return lambda x, y, z: None
 
+    def do_string_set(self, element, decl, pseudo):
+        """Implement string-set declaration."""
+        args = serialize(decl.value)
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'string-set', args))
+        step = self.state['collation']
+        strval = ''
+        strname = None
+        for term in decl.value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.StringToken:
+                if strname is not None:
+                    strval += term.value
+                else:
+                    logger.warning("Bad string-set: {}".format(args))
+
+            elif type(term) is ast.IdentToken:
+                if strname is not None:
+                    logger.warning("Bad string-set: {}".format(args))
+                else:
+                    strname = term.value
+
+            elif type(term) is ast.LiteralToken:
+                if strname is None:
+                    logger.warning("Bad string-set: {}".format(args))
+                else:
+                    step['strings'][strname] = strval
+                    strval = ''
+                    strname = None
+
+            elif type(term) is ast.FunctionBlock:
+                if term.name == 'string':
+                    other_strname = serialize(term.arguments)
+                    if other_strname not in step['strings']:
+                        logger.warning("WARNING: {} blank string".
+                                       format(strname))
+                        continue
+                    if strname is not None:
+                        strval += step['strings'][other_strname]
+                    else:
+                        logger.warning("Bad string-set: {}".format(args))
+
+                elif term.name == u'attr':
+                    if strname is not None:
+                        att_name = serialize(term.arguments)
+                        strval += element.etree_element.get(att_name, '')
+                    else:
+                        logger.warning("Bad string-set: {}".format(args))
+
+                elif term.name == u'pending':
+                    logger.warning("Bad string-set:pending() not allowed. {}".
+                                   format(args))
+
+        if strname is not None:
+            step['strings'][strname] = strval
+
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
@@ -293,6 +359,8 @@ class Oven():
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
         # FIXME rework completely to cover all cases, pseudo and non-
+        # Need: content() string(x) attr(x) link(id)
+        #
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'content', value))
@@ -300,19 +368,50 @@ class Oven():
         step = self.state['collation']
         actions = step['actions']
 
-        if 'pending(' in value:  # FIXME need to handle multi-param values
-            target = extract_pending_target(decl.value)
-            if target not in step['pending']:
-                logger.warning("WARNING: {} empty bucket".format(value))
-                return
+        elem = None
+        if self.is_pending_element(element):
+            elem, _, sort = step['pending_elems'][-1]
 
-            if self.is_pending_element(element):
-                elem, _, sort = step['pending_elems'][-1]
-            actions.append(('target', (element.etree_element, None)))
+        actions.append(('target', (element.etree_element, None)))
+        if self.is_pending_element(element):
             actions.append(('move', elem))
             actions.append(('target', (elem, sort)))
-            actions.extend(step['pending'][target])
-            del step['pending'][target]
+
+        # decl.value is parsed representation: loop over it
+        # if a string, to pending elem - either text, or tail of last child
+        # if a string(x) retrieve value from state and attach as tail
+        # if a pending(x), do the target/extend dance
+        # content() attr(x), link(x,y) etc.
+        for term in decl.value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.StringToken:
+                actions.append(('string', term.value))
+
+            elif type(term) is ast.FunctionBlock:
+                if term.name == 'string':
+                    strname = serialize(term.arguments)
+                    if strname not in step['strings']:
+                        logger.warning("WARNING: {} blank string".
+                                       format(strname))
+                        continue
+                    actions.append(('string', step['strings'][strname]))
+
+                elif term.name == u'attr':
+                    att_name = serialize(term.arguments)
+                    actions.append(('string',
+                                    element.etree_element.get(att_name, '')))
+
+                elif term.name == u'pending':
+                    target = serialize(term.arguments)
+                    if target not in step['pending']:
+                        logger.warning("WARNING: {} empty bucket".
+                                       format(target))
+                        continue
+
+                    actions.extend(step['pending'][target])
+                    del step['pending'][target]
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
@@ -336,17 +435,23 @@ class Oven():
                     enumerate(reversed(self.state['collation']['actions'])):
                 if action[0] == 'target' and action[1][0] == elem:
                     target_index = - pos - 1
-                    break
-            self.state['collation']['actions'][target_index] = \
-                (action[0], (action[1][0], sort))
+                    self.state['collation']['actions'][target_index] = \
+                        (action[0], (action[1][0], sort))
 
 
-def extract_pending_target(value):
-    """Return the unicode value of the first pending() content function."""
-    for v in value:
-        if type(v) is tinycss2.ast.FunctionBlock:
-            if v.name == u'pending':
-                return serialize(v.arguments)
+def append_string(node, string):
+    """Append a string to a node, as text or tail of last child."""
+    if len(node) == 0:
+        if node.text is not None:
+            node.text += string
+        else:
+            node.text = string
+    else:  # Get last child
+        child = list(node)[-1]
+        if child.tail is not None:
+            child.tail += string
+        else:
+            child.tail = string
 
 
 def rule_step(rule):

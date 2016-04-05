@@ -8,7 +8,7 @@ from StringIO import StringIO
 
 
 @contextmanager
-def tempinput(data):
+def _tempinput(data):
     temp = tempfile.NamedTemporaryFile(delete=False)
     temp.write(data)
     temp.close()
@@ -36,16 +36,38 @@ class OvenCssTest(unittest.TestCase):
         """Test empty oven."""
         oven = self.target_cls()
 
+    def test_update_css_none(self):
+        """Test empty oven."""
+        oven = self.target_cls()
+        oven.update_css(None)
+
     def test_string_css(self):
         """Test oven with initial CSS as string."""
         oven = self.target_cls(CSS)
+
+    def test_update_css_string(self):
+        """Test empty oven."""
+        oven = self.target_cls()
+        oven.update_css(CSS)
 
     def test_fileob_css(self):
         """Test oven with initial CSS as open file handle."""
         css_f = StringIO(CSS)
         oven = self.target_cls(css_f)
 
+    def test_update_css_fileob(self):
+        """Test oven with initial CSS as open file handle."""
+        css_f = StringIO(CSS)
+        oven = self.target_cls()
+        oven.update_css(css_f)
+
     def test_filename_css(self):
-        """Test ocen with initial CSS as a filename to open."""
-        with tempinput(CSS) as tempfilename:
+        """Test oven with initial CSS as a filename to open."""
+        with _tempinput(CSS) as tempfilename:
             oven = self.target_cls(tempfilename)
+
+    def test_update_css_filename(self):
+        """Test oven with initial CSS as a filename to open."""
+        with _tempinput(CSS) as tempfilename:
+            oven = self.target_cls()
+            oven.update_css(tempfilename)

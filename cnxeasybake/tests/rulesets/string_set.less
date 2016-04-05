@@ -1,0 +1,22 @@
+// Test move and sort
+div[data-type='chapter'] {
+  div[data-type='page'] {
+  string-set: section "My Section String", section2 "My Second Section String", myid attr(data-type);
+  }
+  dl.definition {
+    move-to: eoc-key-terms;
+  }
+}
+
+// Containers
+div[data-type='chapter']::after {
+  class: strings;
+  content: string(section) ":" string(section2) ":" string(myid);
+  container: h1;
+}
+div[data-type='chapter']::after {
+  class: eoc-key-terms;
+  content: pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type);
+  container: section;
+  sort-by: dl > dt;
+}

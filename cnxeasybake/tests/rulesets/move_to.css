@@ -1,0 +1,9 @@
+div[data-type='chapter'] dl.definition {
+  move-to: eoc-key-terms;
+}
+div[data-type='chapter']::after {
+  class: eoc-key-terms;
+  content: pending(eoc-key-terms);
+  container: section;
+  sort-by: dl > dt;
+}
