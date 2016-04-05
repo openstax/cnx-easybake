@@ -17,6 +17,8 @@ def _tempinput(data):
 
 CSS = 'div { copy-to: end-of-chapter;}'
 
+BAD_CSS = 'not a selector {}'
+
 
 class OvenCssTest(unittest.TestCase):
     """Oven Css test cases.
@@ -49,6 +51,11 @@ class OvenCssTest(unittest.TestCase):
         """Test empty oven."""
         oven = self.target_cls()
         oven.update_css(CSS)
+
+    def test_update_css_string_bad(self):
+        """Test empty oven."""
+        oven = self.target_cls()
+        oven.update_css(BAD_CSS)
 
     def test_fileob_css(self):
         """Test oven with initial CSS as open file handle."""

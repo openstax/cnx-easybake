@@ -116,9 +116,12 @@ class Oven():
             sort = None
             for action, value in recipe['actions']:
                 if action == 'target':
-                    target, sort = value
+                    target, location, sort = value
                 if action == 'string':
-                    append_string(target, value)
+                    if location == 'before':
+                        prepend_string(target, value)
+                    else:
+                        append_string(target, value)
                 elif action == 'move':
                     if sort and len(target) > 0:
                         for child in target:
@@ -126,7 +129,10 @@ class Oven():
                                 break
                         child.addprevious(value)
                     else:
-                        target.append(value)
+                        if location == 'before':
+                            target.insert(0, value)
+                        else:
+                            target.append(value)
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
@@ -136,7 +142,10 @@ class Oven():
                                 break
                         child.addprevious(mycopy)
                     else:
-                        target.append(mycopy)
+                        if location == 'before':
+                            target.insert(0, mycopy)
+                        else:
+                            target.append(mycopy)
 
         # Do numbering
 
@@ -372,10 +381,10 @@ class Oven():
         if self.is_pending_element(element):
             elem, _, sort = step['pending_elems'][-1]
 
-        actions.append(('target', (element.etree_element, None)))
+        actions.append(('target', (element.etree_element, pseudo, None)))
         if self.is_pending_element(element):
             actions.append(('move', elem))
-            actions.append(('target', (elem, sort)))
+            actions.append(('target', (elem, None, sort)))
 
         # decl.value is parsed representation: loop over it
         # if a string, to pending elem - either text, or tail of last child
@@ -436,7 +445,7 @@ class Oven():
                 if action[0] == 'target' and action[1][0] == elem:
                     target_index = - pos - 1
                     self.state['collation']['actions'][target_index] = \
-                        (action[0], (action[1][0], sort))
+                        (action[0], (action[1][0], None, sort))
 
 
 def append_string(node, string):
@@ -452,6 +461,14 @@ def append_string(node, string):
             child.tail += string
         else:
             child.tail = string
+
+
+def prepend_string(node, string):
+    """Prepend a string to a node as text."""
+    if node.text is not None:
+        node.text += string
+    else:
+        node.text = string
 
 
 def rule_step(rule):
