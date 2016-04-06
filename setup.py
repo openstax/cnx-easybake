@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2016 Rice University
+Copyright (C) 2016 Rice University.
 
 This software is subject to the provisions of the
 GNU AFFERO GENERAL PUBLIC LICENSE Version 3.0 (AGPL).
@@ -14,6 +14,10 @@ install_requires = (
     'lxml',
     )
 
+tests_require = (
+    'testfixtures',
+    )
+
 setup(
     name='cnx-easybake',
     version='0.0.1',
@@ -23,6 +27,7 @@ setup(
     license='LGPL, See also LICENSE.txt',
     description='',
     packages=find_packages(),
+    tests_require=tests_require,
     test_suite='cnxeasybake.tests',
     install_requires=install_requires,
     include_package_data=True,

@@ -41,11 +41,13 @@ def main(argv=None):
                         help='Send debugging info to stderr')
     args = parser.parse_args(argv)
 
-    logger.addHandler(logging.StreamHandler(sys.stderr))
+    formatter = logging.Formatter('%(name)s %(levelname)s %(message)s')
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    logger.debug('debug')
-    logger.info('info')
 
     easybake(args.css_rules, args.html_in, args.html_out)
 
