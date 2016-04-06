@@ -1,0 +1,25 @@
+div[data-type='chapter'] section.practice-test {
+  move-to: eoc-practice-test;
+}
+div[data-type='chapter'] section.key-equations {
+  move-to: eoc-key-equations;
+}
+div[data-type='chapter']::before {
+  class: boc-preface;
+  data-type: composite-page;
+  container: div;
+  content: "This is a very small page with a string on it";
+}
+div[data-type='chapter']::after {
+  class: eoc-practice-test;
+  data-type: composite-page;
+  container: div;
+  content: pending(eoc-practice-test);
+}
+div[data-type='chapter']::after {
+  class: eoc-key-equations;
+  data-type: composite-page;
+  attr-my-type: study-this;
+  container: div;
+  content: pending(eoc-key-equations);
+}

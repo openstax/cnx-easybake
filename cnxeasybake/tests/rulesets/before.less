@@ -1,0 +1,50 @@
+// Test before pseudo target
+
+div[data-type='chapter'] {
+    section.practice-test {
+        move-to: eoc-practice-test;
+    }
+    section.key-equations {
+          move-to: eoc-key-equations;
+    }
+
+    &::before {
+      class: boc-preface;
+      data-type: composite-page;
+      container: div;
+      content: "This is a very small page with a string on it";
+    }
+
+    &::after {
+      class: eoc-practice-test;
+      data-type: composite-page;
+      container: div;
+      content: pending(eoc-practice-test);
+
+    }
+
+    &::after {
+      class: eoc-key-equations;
+      data-type: composite-page;
+      attr-my-type: study-this;
+      container: div;
+      content: pending(eoc-key-equations);
+
+    }
+}
+// LOG: cnx-easybake DEBUG div class boc-preface
+// LOG: cnx-easybake DEBUG div data-type composite-page
+// LOG: cnx-easybake DEBUG div container div
+// LOG: cnx-easybake DEBUG div content "This is a very small page with a string on it"
+// LOG: cnx-easybake DEBUG section move-to eoc-practice-test
+// LOG: cnx-easybake DEBUG section move-to eoc-key-equations
+// LOG: cnx-easybake DEBUG section move-to eoc-practice-test
+// LOG: cnx-easybake DEBUG div class eoc-practice-test
+// LOG: cnx-easybake DEBUG div data-type composite-page
+// LOG: cnx-easybake DEBUG div container div
+// LOG: cnx-easybake DEBUG div content pending(eoc-practice-test)
+// LOG: cnx-easybake DEBUG div class eoc-key-equations
+// LOG: cnx-easybake DEBUG div data-type composite-page
+// LOG: cnx-easybake DEBUG div attr-my-type study-this
+// LOG: cnx-easybake DEBUG div container div
+// LOG: cnx-easybake DEBUG div content pending(eoc-key-equations)
