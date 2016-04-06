@@ -1,17 +1,23 @@
-// Test move and sort
+// Test string-set and string()
 div[data-type='chapter'] {
   div[data-type='page'] {
-  string-set: section "My Section String", section2 "My Second Section String", myid attr(data-type);
-  }
-  dl.definition {
-    move-to: eoc-key-terms;
+  string-set: section "My Section String", section2 "My Second Section String", mytype attr(data-type);
+  
+      div[data-type='title'] {
+        string-set: myid attr(id) " " string(section) string(no-such-string);
+      }
+  
+      dl.definition {
+        move-to: eoc-key-terms;
+        string-set: string(section);
+      }
   }
 }
 
 // Containers
 div[data-type='chapter']::after {
   class: strings;
-  content: string(section) ":" string(section2) ":" string(myid);
+  content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
   container: h1;
 }
 div[data-type='chapter']::after {
@@ -20,13 +26,24 @@ div[data-type='chapter']::after {
   container: section;
   sort-by: dl > dt;
 }
-// LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", myid attr(data-type)
+// LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+// LOG: cnx-easybake DEBUG div string-set  myid attr(id) " " string(section) string(no-such-string)
+// LOG: cnx-easybake WARNING WARNING: myid blank string
 // LOG: cnx-easybake DEBUG dl move-to eoc-key-terms
+// LOG: cnx-easybake DEBUG dl string-set  string(section)
+// LOG: cnx-easybake WARNING Bad string-set:  string(section)
 // LOG: cnx-easybake DEBUG dl move-to eoc-key-terms
+// LOG: cnx-easybake DEBUG dl string-set  string(section)
+// LOG: cnx-easybake WARNING Bad string-set:  string(section)
 // LOG: cnx-easybake DEBUG dl move-to eoc-key-terms
-// LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", myid attr(data-type)
+// LOG: cnx-easybake DEBUG dl string-set  string(section)
+// LOG: cnx-easybake WARNING Bad string-set:  string(section)
+// LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+// LOG: cnx-easybake DEBUG div string-set  myid attr(id) " " string(section) string(no-such-string)
+// LOG: cnx-easybake WARNING WARNING: myid blank string
 // LOG: cnx-easybake DEBUG div class strings
-// LOG: cnx-easybake DEBUG div content string(section) ":" string(section2) ":" string(myid)
+// LOG: cnx-easybake DEBUG div content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
+// LOG: cnx-easybake WARNING WARNING: no-such-string blank string
 // LOG: cnx-easybake DEBUG div container h1
 // LOG: cnx-easybake DEBUG div class eoc-key-terms
 // LOG: cnx-easybake DEBUG div content pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type)

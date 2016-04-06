@@ -4,6 +4,12 @@ To generate a new ruleset test, create a `LESS` file  in the `rulesets` folder, 
 with `cnx-easybake` as so:
 
 ```
-$ lessc rulesets/testname.less rulesets.testname.css
+$ lessc rulesets/testname.less rulesets/testname.css
 $ cnx-easybake rulesets/testname.css html/testname_raw.html html/testname_cooked.html
+```
+The test framework now runs in DEBUG level logging and checks for log output as well. This
+can be added to the LESS file as so:
+
+```
+$ cnx-easybake -v rulesets/testname.css html/testname_raw.html /dev/null 2>&1 | sed 's;^;// LOG: ;' >> rulesets/testname.less
 ```
