@@ -16,7 +16,9 @@ steps = ('collation',)
 decls = {'collation': [(u'move-to', ''),
                        (u'copy-to', ''),
                        (u'string-set', ''),
+                       (u'node-set', ''),
                        (u'content', u'string'),
+                       (u'content', u'nodes'),
                        (u'content', u'pending')],
          'numbering': [(u'counter-reset', ''),
                        (u'counter-increment', ''),
@@ -305,6 +307,17 @@ class Oven():
         if strname is not None:
             step['strings'][strname] = strval
 
+    def do_node_set(self, element, decl, pseudo):
+        """Implement node-set declaration."""
+        target = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'node-set', target))
+        if pseudo is None:
+            elem = element.etree_element
+        elif self.is_pending_element(element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+        self.state['collation']['pending'][target] = [('copy', elem)]
+
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
@@ -412,15 +425,15 @@ class Oven():
                     actions.append(('string',
                                     element.etree_element.get(att_name, '')))
 
-                elif term.name == u'pending':
+                elif term.name in ('nodes', 'pending'):
                     target = serialize(term.arguments)
                     if target not in step['pending']:
                         logger.warning("WARNING: {} empty bucket".
                                        format(target))
                         continue
-
                     actions.extend(step['pending'][target])
-                    del step['pending'][target]
+                    if term.name == u'pending':
+                        del step['pending'][target]
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""

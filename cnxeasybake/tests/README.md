@@ -11,5 +11,6 @@ The test framework now runs in DEBUG level logging and checks for log output as 
 can be added to the LESS file as so:
 
 ```
-$ cnx-easybake -v rulesets/testname.css html/testname_raw.html /dev/null 2>&1 | sed 's;^;// LOG: ;' >> rulesets/testname.less
+$ ./update-log-less.sh [testname]
 ```
+ If the testname is omitted, all LESS files will be updated.
