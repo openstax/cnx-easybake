@@ -20,7 +20,7 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout):
     oven.bake(html_doc)
 
     # serialize out HTML
-    print (etree.tostring(html_doc), file=html_out)
+    print (etree.tostring(html_doc, method="html"), file=html_out)
 
 
 def main(argv=None):
