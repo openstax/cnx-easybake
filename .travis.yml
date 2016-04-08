@@ -14,6 +14,7 @@ before_script:
   - pep8 --exclude=tests *.py cnxeasybake/
   - pep8 --max-line-length=1000 cnxeasybake/tests
 script:
+  - pip install testfixtures  # in setup under tests_require
   - coverage run --source=cnxeasybake -m unittest discover
 after_success:
   # Report test coverage to coveralls.io
