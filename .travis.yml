@@ -1,0 +1,22 @@
+language: python
+sudo: false
+python:
+  - "2.7"
+    #  - "3.3" Not yet
+before_install:
+  # Install the coverage utility and coveralls reporting utility
+  - pip install coverage
+  - pip install coveralls
+install:
+  - python setup.py install
+before_script:
+  - pip install pep8
+  - pep8 --exclude=tests *.py cnxeasybake/
+  - pep8 --max-line-length=1000 cnxeasybake/tests
+script:
+  - coverage run --source=cnxeasybake -m unittest discover
+after_success:
+  # Report test coverage to coveralls.io
+  - coveralls
+notifications:
+  email: false
