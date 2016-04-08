@@ -3,6 +3,7 @@ div[data-type='chapter'] div[data-type='page'] {
 }
 div[data-type='chapter'] div[data-type='page'] div[data-type='title'] {
   string-set: myid attr(id) " " string(section) string(no-such-string);
+  string-set: mytitle content();
 }
 div[data-type='chapter'] div[data-type='page'] dl.definition {
   move-to: eoc-key-terms;
@@ -12,6 +13,9 @@ div[data-type='chapter'] div[data-type='page'] dl.definition {
   string-set: badname badname;
   string-set: , badname;
   string-set: mystring pending(eoc-key-terms);
+}
+div[data-type='chapter'] div[data-type='page']::after {
+  content: string(mytitle);
 }
 div[data-type='chapter']::after {
   class: strings;

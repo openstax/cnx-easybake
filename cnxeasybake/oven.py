@@ -300,6 +300,13 @@ class Oven():
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
+                elif term.name == u'content':
+                    if strname is not None:
+                        att_name = serialize(term.arguments)
+                        strval += element.etree_element.xpath('./text()')[0]
+                    else:
+                        logger.warning("Bad string-set: {}".format(args))
+
                 elif term.name == u'pending':
                     logger.warning("Bad string-set:pending() not allowed. {}".
                                    format(args))
