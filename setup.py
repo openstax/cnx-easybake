@@ -9,6 +9,7 @@ See LICENSE.txt for details.
 from setuptools import setup, find_packages
 
 install_requires = (
+    'cssselect',
     'cssselect2',
     'tinycss2',
     'lxml',
