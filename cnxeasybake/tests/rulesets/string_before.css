@@ -1,0 +1,10 @@
+body {
+  string-set: astring "Here's a string";
+}
+div::before {
+  string-set: mystring "My Cool String";
+  content: string(astring);
+}
+div::after {
+  content: string(mystring);
+}

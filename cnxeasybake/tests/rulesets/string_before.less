@@ -1,0 +1,19 @@
+// An test doing string-set in a before
+body {
+    string-set: astring "Here's a string";
+    }
+div::before {
+    string-set: mystring "My Cool String";
+    content: string(astring);
+    }
+
+div::after {
+    content: string(mystring);
+    }
+// LOG: cnx-easybake DEBUG body string-set  astring "Here's a string"
+// LOG: cnx-easybake DEBUG div string-set  mystring "My Cool String"
+// LOG: cnx-easybake DEBUG div content string(astring)
+// LOG: cnx-easybake DEBUG div content string(mystring)
+// LOG: cnx-easybake DEBUG div string-set  mystring "My Cool String"
+// LOG: cnx-easybake DEBUG div content string(astring)
+// LOG: cnx-easybake DEBUG div content string(mystring)

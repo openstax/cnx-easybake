@@ -119,7 +119,7 @@ class Oven():
             for action, value in recipe['actions']:
                 if action == 'target':
                     target, location, sort = value
-                if action == 'string':
+                elif action == 'string':
                     if location == 'before':
                         prepend_string(target, value)
                     else:
@@ -132,6 +132,8 @@ class Oven():
                         child.addprevious(value)
                     else:
                         if location == 'before':
+                            value.tail = target.text
+                            target.text = None
                             target.insert(0, value)
                         else:
                             target.append(value)
@@ -145,6 +147,8 @@ class Oven():
                         child.addprevious(mycopy)
                     else:
                         if location == 'before':
+                            mycopy.tail = target.text
+                            target.text = None
                             target.insert(0, mycopy)
                         else:
                             target.append(mycopy)

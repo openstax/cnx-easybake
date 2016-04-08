@@ -39,6 +39,7 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
 // LOG: cnx-easybake DEBUG div string-set  myid attr(id) " " string(section) string(no-such-string)
 // LOG: cnx-easybake WARNING WARNING: myid blank string
+// LOG: cnx-easybake DEBUG div string-set  mytitle content()
 // LOG: cnx-easybake DEBUG dl move-to eoc-key-terms
 // LOG: cnx-easybake DEBUG dl string-set  "bad bad"
 // LOG: cnx-easybake WARNING Bad string-set:  "bad bad"
@@ -78,9 +79,12 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake WARNING Bad string-set:  , badname
 // LOG: cnx-easybake DEBUG dl string-set  mystring pending(eoc-key-terms)
 // LOG: cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc-key-terms)
+// LOG: cnx-easybake DEBUG div content string(mytitle)
 // LOG: cnx-easybake DEBUG div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
 // LOG: cnx-easybake DEBUG div string-set  myid attr(id) " " string(section) string(no-such-string)
 // LOG: cnx-easybake WARNING WARNING: myid blank string
+// LOG: cnx-easybake DEBUG div string-set  mytitle content()
+// LOG: cnx-easybake DEBUG div content string(mytitle)
 // LOG: cnx-easybake DEBUG div class strings
 // LOG: cnx-easybake DEBUG div content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
 // LOG: cnx-easybake WARNING WARNING: no-such-string blank string
