@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Test all rulesets."""
 import glob
 import os
 import subprocess
@@ -20,7 +21,7 @@ logger.setLevel(logging.DEBUG)
 
 def tidy(input_):
     """Pretty Print XHTML."""
-    proc = subprocess.Popen(['tidy', '-xml', '-qi'],
+    proc = subprocess.Popen(['{}/utils/xmlpp.pl'.format(here), '-sSten'],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
@@ -51,6 +52,7 @@ class RulesetTestCase(unittest.TestCase):
 
     @classmethod
     def generate_tests(cls):
+        """Build tests from css and html files."""
         for less_filename in glob.glob(os.path.join(TEST_RULESET_DIR,
                                        '*.less')):
             filename_no_ext = less_filename.rsplit('.less', 1)[0]
@@ -62,8 +64,11 @@ class RulesetTestCase(unittest.TestCase):
                     if line.startswith('// '):
                         header.append(line[3:])
                 f_less.seek(0)
-                with open('{}.css'.format(filename_no_ext), 'wb') as f_css:
-                    f_css.write(lessc(f_less.read()))
+                css_fname = '{}.css'.format(filename_no_ext)
+                fnum = f_less.fileno()
+                if os.fstat(fnum).st_mtime > os.stat(css_fname).st_mtime:
+                    with open(css_fname, 'wb') as f_css:
+                        f_css.write(lessc(f_less.read()))
 
             if len(header) > 0:
                 desc = header[0]
@@ -90,12 +95,13 @@ class RulesetTestCase(unittest.TestCase):
 
     @classmethod
     def create_test(cls, css, html, cooked_html, desc, logs):
+        """Create a specific ruleset test."""
         @log_capture()
         def run_test(self, logcap):
             element = etree.HTML(html)
             oven = Oven(css)
             oven.bake(element)
-            output = tidy(etree.tostring(element))
+            output = tidy(etree.tostring(element, method='html'))
             # https://bugs.python.org/issue10164
             self.assertEqual(output.split(b'\n'), cooked_html.split(b'\n'))
             if len(logs) == 0:
