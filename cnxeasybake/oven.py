@@ -243,10 +243,10 @@ class Oven():
                 elif name.startswith('attr-'):
                     method = getattr(self, 'do_attr_any')
                 else:
-                    logger.debug('Missing method {}'.format(
+                    logger.warning('Missing method {}'.format(
                                      (name).replace('-', '_')))
             except AttributeError:
-                logger.debug('Missing method {}'.format(
+                logger.warning('Missing method {}'.format(
                                  (name).replace('-', '_')))
         if method:
             return method
@@ -289,7 +289,7 @@ class Oven():
                 if term.name == 'string':
                     other_strname = serialize(term.arguments)
                     if other_strname not in step['strings']:
-                        logger.warning("WARNING: {} blank string".
+                        logger.warning("{} blank string".
                                        format(strname))
                         continue
                     if strname is not None:
@@ -426,7 +426,7 @@ class Oven():
                 if term.name == 'string':
                     strname = serialize(term.arguments)
                     if strname not in step['strings']:
-                        logger.warning("WARNING: {} blank string".
+                        logger.warning("{} blank string".
                                        format(strname))
                         continue
                     actions.append(('string', step['strings'][strname]))
@@ -439,12 +439,18 @@ class Oven():
                 elif term.name in ('nodes', 'pending'):
                     target = serialize(term.arguments)
                     if target not in step['pending']:
-                        logger.warning("WARNING: {} empty bucket".
+                        logger.warning("{} empty bucket".
                                        format(target))
                         continue
                     actions.extend(step['pending'][target])
                     if term.name == u'pending':
                         del step['pending'][target]
+                else:
+                    logger.warning("Unknown function {}".
+                                   format(term.name))
+            else:
+                logger.warning("Unknown term {}".
+                               format(decl.value))
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
