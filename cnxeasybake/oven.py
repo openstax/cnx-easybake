@@ -130,7 +130,11 @@ class Oven():
                         old_content['children'].append(child)
                         target.remove(child)
                 elif action == 'content':
-                    if old_content:
+                    if value is not None:
+                        append_string(target, value['text'])
+                        for child in value['children']:
+                            target.append(child)
+                    elif old_content:
                         append_string(target, old_content['text'])
                         for child in old_content['children']:
                             target.append(child)
@@ -268,12 +272,55 @@ class Oven():
         else:
             return lambda x, y, z: None
 
+    def eval_string_value(self, element, value):
+        """Evaluate parsed string and return its value."""
+        step = self.state['collation']
+        strval = ''
+        args = serialize(value)
+
+        for term in value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.StringToken:
+                strval += term.value
+
+            elif type(term) is ast.IdentToken:
+                logger.debug("IdentToken as string: {}".format(args))
+                strval += term.value
+
+            elif type(term) is ast.LiteralToken:
+                logger.debug("LiteralToken as string: {}".format(args))
+                strval += term.value
+
+            elif type(term) is ast.FunctionBlock:
+                if term.name == 'string':
+                    strname = serialize(term.arguments)
+                    if strname not in step['strings']:
+                        logger.warning("{} blank string".
+                                       format(strname))
+                        continue
+                    strval += step['strings'][strname]
+
+                elif term.name == u'attr':
+                    att_name = serialize(term.arguments)
+                    strval += element.etree_element.get(att_name, '')
+
+                elif term.name == u'content':
+                    strval += element.etree_element.xpath('./text()')[0]
+
+                elif term.name == u'pending':
+                    logger.warning("Bad string value: pending() not allowed."
+                                   "{}".format(args))
+        return strval
+
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
         args = serialize(decl.value)
         logger.debug("{} {} {}".format(
                      element.local_name, 'string-set', args))
         step = self.state['collation']
+
         strval = ''
         strname = None
         for term in decl.value:
@@ -321,7 +368,6 @@ class Oven():
 
                 elif term.name == u'content':
                     if strname is not None:
-                        att_name = serialize(term.arguments)
                         strval += element.etree_element.xpath('./text()')[0]
                     else:
                         logger.warning("Bad string-set: {}".format(args))
@@ -382,27 +428,30 @@ class Oven():
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'class', value))
+        strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set('class', value)
+            elem.set('class', strval)
 
     def do_attr_any(self, element, decl, pseudo):
         """Implement generic attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
+        strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set(decl.name[5:], value)
+            elem.set(decl.name[5:], strval)
 
     def do_data_any(self, element, decl, pseudo):
         """Implement generic data attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
+        strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set(decl.name, value)
+            elem.set(decl.name, strval)
 
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
@@ -454,7 +503,14 @@ class Oven():
                                     element.etree_element.get(att_name, '')))
 
                 elif term.name == u'content':
-                    actions.append(('content', None))
+                    if pseudo:
+                        elem = {'text': element.etree_element.text,
+                                'children': []}
+                        for child in element.etree_element:
+                            elem['children'].append(child)
+                        actions.append(('content', elem))
+                    else:
+                        actions.append(('content', None))
 
                 elif term.name in ('nodes', 'pending'):
                     target = serialize(term.arguments)
