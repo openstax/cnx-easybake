@@ -115,10 +115,24 @@ class Oven():
                 recipe = self.state[step]
 
             target = None
+            old_content = {}
             sort = None
             for action, value in recipe['actions']:
                 if action == 'target':
                     target, location, sort = value
+                    old_content = {}
+                elif action == 'clear':
+                    old_content['text'] = target.text
+                    target.text = None
+                    old_content['children'] = []
+                    for child in target:
+                        old_content['children'].append(child)
+                        target.remove(child)
+                elif action == 'content':
+                    if old_content:
+                        append_string(target, old_content['text'])
+                        for child in old_content['children']:
+                            target.append(child)
                 elif action == 'string':
                     if location == 'before':
                         prepend_string(target, value)
@@ -409,6 +423,8 @@ class Oven():
         if self.is_pending_element(element):
             actions.append(('move', elem))
             actions.append(('target', (elem, None, sort)))
+        else:
+            actions.append(('clear', elem))
 
         # decl.value is parsed representation: loop over it
         # if a string, to pending elem - either text, or tail of last child
@@ -435,6 +451,9 @@ class Oven():
                     att_name = serialize(term.arguments)
                     actions.append(('string',
                                     element.etree_element.get(att_name, '')))
+
+                elif term.name == u'content':
+                    actions.append(('content', None))
 
                 elif term.name in ('nodes', 'pending'):
                     target = serialize(term.arguments)
@@ -480,17 +499,18 @@ class Oven():
 
 def append_string(node, string):
     """Append a string to a node, as text or tail of last child."""
-    if len(node) == 0:
-        if node.text is not None:
-            node.text += string
-        else:
-            node.text = string
-    else:  # Get last child
-        child = list(node)[-1]
-        if child.tail is not None:
-            child.tail += string
-        else:
-            child.tail = string
+    if string:
+        if len(node) == 0:
+            if node.text is not None:
+                node.text += string
+            else:
+                node.text = string
+        else:  # Get last child
+            child = list(node)[-1]
+            if child.tail is not None:
+                child.tail += string
+            else:
+                child.tail = string
 
 
 def prepend_string(node, string):
