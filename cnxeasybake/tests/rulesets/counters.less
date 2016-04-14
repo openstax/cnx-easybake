@@ -1,0 +1,18 @@
+// Test counters
+ul {
+  counter-reset: lights;
+  }
+
+li[data-type='light'] {
+    counter-increment: lights;
+}
+
+body::after {
+    content: "There are " counter(lights) " lights!"
+    }
+// LOG: cnx-easybake DEBUG ul counter-reset lights
+// LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG body content "There are " counter(lights) " lights!"

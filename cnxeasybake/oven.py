@@ -21,8 +21,8 @@ decls = {'collation': [(u'move-to', ''),
                        (u'content', u'string'),
                        (u'content', u'attr'),
                        (u'content', u'nodes'),
-                       (u'content', u'pending')],
-         'numbering': [(u'counter-reset', ''),
+                       (u'content', u'pending'),
+                       (u'counter-reset', ''),
                        (u'counter-increment', ''),
                        (u'content', u'counter'),
                        (u'content', u'target-counter')],
@@ -365,6 +365,11 @@ class Oven():
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
+                elif term.name == 'counter':
+                    countername = serialize(term.arguments)
+                    count = step['counters'].get(countername, 1)
+                    strval += str(count)
+
                 elif term.name == u'attr':
                     if strname is not None:
                         att_name = serialize(term.arguments)
@@ -389,6 +394,39 @@ class Oven():
 
         if strname is not None:
             step['strings'][strname] = strval
+
+    def do_counter_reset(self, element, decl, pseudo):
+        """Clear specified counters."""
+        target = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'counter-reset', target))
+        for term in decl.value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.IdentToken:
+                self.state['collation']['counters'][term.value] = 0
+            else:
+                logger.warning("Unrecognized counter-reset term {}".
+                               format(type(term)))
+
+    def do_counter_increment(self, element, decl, pseudo):
+        """Increment specified counters."""
+        target = serialize(decl.value).strip()
+        logger.debug("{} {} {}".format(
+                     element.local_name, 'counter-increment', target))
+        for term in decl.value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.IdentToken:
+                if term.value in self.state['collation']['counters']:
+                    self.state['collation']['counters'][term.value] += 1
+                else:
+                    self.state['collation']['counters'][term.value] = 1
+            else:
+                logger.warning("Unrecognized counter-increment term {}".
+                               format(type(term)))
 
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""
@@ -516,6 +554,11 @@ class Oven():
                                        format(strname))
                         continue
                     actions.append(('string', step['strings'][strname]))
+
+                elif term.name == 'counter':
+                    countername = serialize(term.arguments)
+                    count = step['counters'].get(countername, 1)
+                    actions.append(('string', str(count)))
 
                 elif term.name == u'attr':
                     att_name = serialize(term.arguments)

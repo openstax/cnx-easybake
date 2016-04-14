@@ -1,0 +1,9 @@
+ul {
+  counter-reset: lights;
+}
+li[data-type='light'] {
+  counter-increment: lights;
+}
+body::after {
+  content: "There are " counter(lights) " lights!";
+}
