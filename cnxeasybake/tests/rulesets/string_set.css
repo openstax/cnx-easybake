@@ -18,7 +18,7 @@ div[data-type='chapter'] div[data-type='page']::after {
   content: string(mytitle);
 }
 div[data-type='chapter']::after {
-  class: strings;
+  class: strings, and things;
   content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
   container: h1;
 }

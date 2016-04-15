@@ -4,7 +4,9 @@ body {
 div::before {
   string-set: mystring "My Cool String";
   content: string(astring);
+  class: content() pending(astring) string(nostring);
 }
 div::after {
   content: string(mystring);
+  class: string(astring);
 }

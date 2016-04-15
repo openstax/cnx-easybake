@@ -1,0 +1,4 @@
+div {
+  string-set: content();
+  my-bad-directive: here it is;
+}

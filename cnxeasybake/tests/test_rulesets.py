@@ -66,7 +66,9 @@ class RulesetTestCase(unittest.TestCase):
                 f_less.seek(0)
                 css_fname = '{}.css'.format(filename_no_ext)
                 fnum = f_less.fileno()
-                if os.fstat(fnum).st_mtime > os.stat(css_fname).st_mtime:
+
+                if not os.path.isfile(css_fname) or \
+                   os.fstat(fnum).st_mtime > os.stat(css_fname).st_mtime:
                     with open(css_fname, 'wb') as f_css:
                         f_css.write(lessc(f_less.read()))
 

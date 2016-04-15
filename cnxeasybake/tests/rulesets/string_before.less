@@ -4,16 +4,26 @@ body {
     }
 div::before {
     string-set: mystring "My Cool String";
-    content: string(astring);
+    content: string(astring) ;
+    class: content() pending(astring) string(nostring);
     }
 
 div::after {
     content: string(mystring);
+    class: string(astring);
     }
 // LOG: cnx-easybake DEBUG body string-set  astring "Here's a string"
 // LOG: cnx-easybake DEBUG div string-set  mystring "My Cool String"
 // LOG: cnx-easybake DEBUG div content string(astring)
+// LOG: cnx-easybake DEBUG div class content() pending(astring) string(nostring)
+// LOG: cnx-easybake WARNING Bad string value: pending() not allowed. content() pending(astring) string(nostring)
+// LOG: cnx-easybake WARNING nostring blank string
 // LOG: cnx-easybake DEBUG div content string(mystring)
+// LOG: cnx-easybake DEBUG div class string(astring)
 // LOG: cnx-easybake DEBUG div string-set  mystring "My Cool String"
 // LOG: cnx-easybake DEBUG div content string(astring)
+// LOG: cnx-easybake DEBUG div class content() pending(astring) string(nostring)
+// LOG: cnx-easybake WARNING Bad string value: pending() not allowed. content() pending(astring) string(nostring)
+// LOG: cnx-easybake WARNING nostring blank string
 // LOG: cnx-easybake DEBUG div content string(mystring)
+// LOG: cnx-easybake DEBUG div class string(astring)

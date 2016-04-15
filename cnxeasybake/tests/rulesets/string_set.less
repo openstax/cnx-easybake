@@ -26,7 +26,7 @@ div[data-type='chapter'] {
 
 // Containers
 div[data-type='chapter']::after {
-  class: strings;
+  class: strings, and things;
   content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
   container: h1;
 }
@@ -85,13 +85,16 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake WARNING myid blank string
 // LOG: cnx-easybake DEBUG div string-set  mytitle content()
 // LOG: cnx-easybake DEBUG div content string(mytitle)
-// LOG: cnx-easybake DEBUG div class strings
-// LOG: cnx-easybake DEBUG IdentToken as string:  strings
+// LOG: cnx-easybake DEBUG div class strings, and things
+// LOG: cnx-easybake DEBUG IdentToken as string: strings
+// LOG: cnx-easybake DEBUG LiteralToken as string: ,
+// LOG: cnx-easybake DEBUG IdentToken as string: and
+// LOG: cnx-easybake DEBUG IdentToken as string: things
 // LOG: cnx-easybake DEBUG div content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
 // LOG: cnx-easybake WARNING no-such-string blank string
 // LOG: cnx-easybake DEBUG div container h1
 // LOG: cnx-easybake DEBUG div class eoc-key-terms
-// LOG: cnx-easybake DEBUG IdentToken as string:  eoc-key-terms
+// LOG: cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 // LOG: cnx-easybake DEBUG div content pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type)
 // LOG: cnx-easybake DEBUG div container section
 // LOG: cnx-easybake DEBUG div sort-by  dl > dt

@@ -260,15 +260,11 @@ class Oven():
             method = getattr(self, 'do_{}'.format(
                              (name).replace('-', '_')))
         except AttributeError:
-            try:
-                if name.startswith('data-'):
-                    method = getattr(self, 'do_data_any')
-                elif name.startswith('attr-'):
-                    method = getattr(self, 'do_attr_any')
-                else:
-                    logger.warning('Missing method {}'.format(
-                                     (name).replace('-', '_')))
-            except AttributeError:
+            if name.startswith('data-'):
+                method = getattr(self, 'do_data_any')
+            elif name.startswith('attr-'):
+                method = getattr(self, 'do_attr_any')
+            else:
                 logger.warning('Missing method {}'.format(
                                  (name).replace('-', '_')))
         if method:
@@ -422,6 +418,7 @@ class Oven():
             if action[0] == 'move' and action[1] == elem:
                 target_index = - pos - 1
                 actions[target_index:] = actions[target_index+1:]
+                break
 
         self.state['collation']['pending'].setdefault(target, []).append(
                              ('move', elem))
