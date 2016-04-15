@@ -147,8 +147,10 @@ class Oven():
                     if sort and len(target) > 0:
                         for child in target:
                             if sort(child) > sort(value):
+                                child.addprevious(value)
                                 break
-                        child.addprevious(value)
+                        else:
+                            target.append(value)
                     else:
                         if location == 'before':
                             value.tail = target.text
@@ -161,9 +163,11 @@ class Oven():
                     mycopy.tail = None
                     if sort and len(target) > 0:
                         for child in target:
-                            if sort(child) > sort(value):
+                            if sort(child) > sort(mycopy):
+                                child.addprevious(mycopy)
                                 break
-                        child.addprevious(mycopy)
+                        else:
+                            target.append(mycopy)
                     else:
                         if location == 'before':
                             mycopy.tail = target.text

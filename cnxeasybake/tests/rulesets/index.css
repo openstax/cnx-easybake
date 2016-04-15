@@ -10,7 +10,7 @@ div[data-type="page"] span[data-type="term"]::after {
 div[data-type="page"] span[data-type="term"]::after {
   content: string(section-title);
   container: a;
-  attr-href: attr(id);
+  attr-href: "#" attr(id);
   move-to: link;
 }
 div[data-type="page"] span[data-type="term"]::after {
