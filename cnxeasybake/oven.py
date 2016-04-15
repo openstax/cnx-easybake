@@ -17,6 +17,7 @@ decls = {'collation': [(u'move-to', ''),
                        (u'copy-to', ''),
                        (u'string-set', ''),
                        (u'node-set', ''),
+                       (u'content', ''),
                        (u'content', u'string'),
                        (u'content', u'attr'),
                        (u'content', u'nodes'),
@@ -309,6 +310,11 @@ class Oven():
                 elif term.name == u'content':
                     strval += element.etree_element.xpath('./text()')[0]
 
+                elif term.name == u'first-letter':
+                    tmpstr = self.eval_string_value(element, term.arguments)
+                    if tmpstr:
+                        strval += tmpstr[0]
+
                 elif term.name == u'pending':
                     logger.warning("Bad string value: pending() not allowed."
                                    "{}".format(args))
@@ -371,6 +377,11 @@ class Oven():
                         strval += element.etree_element.xpath('./text()')[0]
                     else:
                         logger.warning("Bad string-set: {}".format(args))
+
+                elif term.name == u'first-letter':
+                    tmpstr = self.eval_string_value(element, term.arguments)
+                    if tmpstr:
+                        strval += tmpstr[0]
 
                 elif term.name == u'pending':
                     logger.warning("Bad string-set:pending() not allowed. {}".
@@ -510,6 +521,11 @@ class Oven():
                     att_name = serialize(term.arguments)
                     actions.append(('string',
                                     element.etree_element.get(att_name, '')))
+
+                elif term.name == u'first-letter':
+                    tmpstr = self.eval_string_value(element, term.arguments)
+                    if tmpstr:
+                        actions.append(('string', tmpstr[0]))
 
                 elif term.name == u'content':
                     if pseudo:

@@ -3,7 +3,7 @@ div[data-type='chapter'] div[data-type='page'] {
 }
 div[data-type='chapter'] div[data-type='page'] div[data-type='title'] {
   string-set: myid attr(id) " " string(section) string(no-such-string);
-  string-set: mytitle content();
+  string-set: mytitle first-letter(content()) ": " content();
 }
 div[data-type='chapter'] div[data-type='page'] dl.definition {
   move-to: eoc-key-terms;
@@ -16,6 +16,10 @@ div[data-type='chapter'] div[data-type='page'] dl.definition {
 }
 div[data-type='chapter'] div[data-type='page']::after {
   content: string(mytitle);
+}
+div[data-type='chapter'] div[data-type='page']::after {
+  content: first-letter(string(mytitle));
+  class: first-letter(mytitle);
 }
 div[data-type='chapter']::after {
   class: strings, and things;
