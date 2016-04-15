@@ -131,8 +131,8 @@ class Oven():
                         target.remove(child)
                 elif action == 'content':
                     if value is not None:
-                        append_string(target, value['text'])
-                        for child in value['children']:
+                        append_string(target, value.text)
+                        for child in value:
                             target.append(child)
                     elif old_content:
                         append_string(target, old_content['text'])
@@ -284,17 +284,17 @@ class Oven():
 
         for term in value:
             if type(term) is ast.WhitespaceToken:
-                continue
+                strval += term.value
 
             elif type(term) is ast.StringToken:
                 strval += term.value
 
             elif type(term) is ast.IdentToken:
-                logger.debug("IdentToken as string: {}".format(args))
+                logger.debug("IdentToken as string: {}".format(term.value))
                 strval += term.value
 
             elif type(term) is ast.LiteralToken:
-                logger.debug("LiteralToken as string: {}".format(args))
+                logger.debug("LiteralToken as string: {}".format(term.value))
                 strval += term.value
 
             elif type(term) is ast.FunctionBlock:
@@ -316,7 +316,7 @@ class Oven():
                 elif term.name == u'pending':
                     logger.warning("Bad string value: pending() not allowed."
                                    "{}".format(args))
-        return strval
+        return strval.strip()
 
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
@@ -516,11 +516,9 @@ class Oven():
 
                 elif term.name == u'content':
                     if pseudo:
-                        elem = {'text': element.etree_element.text,
-                                'children': []}
-                        for child in element.etree_element:
-                            elem['children'].append(child)
-                        actions.append(('content', elem))
+                        # FIXME deal w/ IDs
+                        mycopy = copy.deepcopy(element.etree_element)
+                        actions.append(('content', mycopy))
                     else:
                         actions.append(('content', None))
 
@@ -564,6 +562,7 @@ class Oven():
                     target_index = - pos - 1
                     self.state['collation']['actions'][target_index] = \
                         (action[0], (action[1][0], None, sort))
+                    break
 
 
 def append_string(node, string):
