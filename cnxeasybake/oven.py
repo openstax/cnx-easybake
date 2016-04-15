@@ -415,6 +415,14 @@ class Oven():
             elem = element.etree_element
         elif self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
+
+        #  Find if the current node already has a move, and remove it.
+        actions = self.state['collation']['actions']
+        for pos, action in enumerate(reversed(actions)):
+            if action[0] == 'move' and action[1] == elem:
+                target_index = - pos - 1
+                actions[target_index:] = actions[target_index+1:]
+
         self.state['collation']['pending'].setdefault(target, []).append(
                              ('move', elem))
 

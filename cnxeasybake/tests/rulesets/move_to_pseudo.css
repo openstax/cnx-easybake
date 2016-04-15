@@ -1,0 +1,24 @@
+div[data-type='chapter'] > div[data-type='page'] > div[data-type='title'] {
+  node-set: mytitle;
+}
+div[data-type='chapter'] > div[data-type='page'] > section[data-type='summary'] {
+  move-to: sec-summary;
+}
+div[data-type='chapter'] > div[data-type='page'] > section[data-type='summary']::after {
+  content: nodes(mytitle) pending(sec-summary);
+  move-to: eoc-summaries;
+}
+div[data-type='chapter'] > div[data-type='page'] dl.definition {
+  move-to: eoc-key-terms;
+}
+div[data-type='chapter']::after {
+  class: summaries;
+  content: pending(eoc-summaries);
+  container: div;
+}
+div[data-type='chapter']::after {
+  class: eoc-key-terms;
+  content: pending(eoc-key-terms);
+  container: section;
+  sort-by: dl > dt;
+}
