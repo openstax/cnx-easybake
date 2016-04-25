@@ -1,0 +1,25 @@
+div[data-type="page"] > div[data-type="document-title"] {
+  string-set: section-title content();
+}
+div[data-type="page"] span[data-type="term"]::after {
+  content: content();
+  container: span;
+  class: glossary-term;
+  move-to: gloss-term;
+}
+div[data-type="page"] span[data-type="term"]::after {
+  content: string(section-title);
+  container: a;
+  attr-href: "#" attr(id);
+  move-to: link;
+}
+div[data-type="page"] span[data-type="term"]::after {
+  content: pending(gloss-term) pending(link);
+  class: glossary-item;
+  move-to: eob-glossary;
+}
+body::after {
+  class: glossary;
+  content: pending(eob-glossary);
+  group-by: span, "span::first-letter";
+}

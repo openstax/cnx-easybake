@@ -1,0 +1,127 @@
+div[data-type="page"] {
+  > div[data-type="document-title"] {
+      string-set: section-title content();
+    }
+   
+  span[data-type="term"] {
+    &::after {
+      content: content();
+      container: span;
+      class: glossary-term;
+      move-to: gloss-term;
+    }
+    &::after {
+      content: string(section-title);
+      container: a;
+      attr-href: "#" attr(id);
+      move-to: link;
+    }
+    &::after {
+      content: pending(gloss-term) pending(link);
+      class: glossary-item;
+      move-to: eob-glossary;
+    }
+  }
+}
+
+body::after {
+  class: glossary;
+  content: pending(eob-glossary);
+  group-by: span, "span::first-letter";
+}
+// LOG: cnx-easybake DEBUG div string-set  section-title content()
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG span content content()
+// LOG: cnx-easybake DEBUG span container span
+// LOG: cnx-easybake DEBUG span class glossary-term
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-term
+// LOG: cnx-easybake DEBUG span move-to gloss-term
+// LOG: cnx-easybake DEBUG span content string(section-title)
+// LOG: cnx-easybake DEBUG span container a
+// LOG: cnx-easybake DEBUG span attr-href "#" attr(id)
+// LOG: cnx-easybake DEBUG span move-to link
+// LOG: cnx-easybake DEBUG span content pending(gloss-term) pending(link)
+// LOG: cnx-easybake DEBUG span class glossary-item
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary-item
+// LOG: cnx-easybake DEBUG span move-to eob-glossary
+// LOG: cnx-easybake DEBUG body class glossary
+// LOG: cnx-easybake DEBUG IdentToken as string: glossary
+// LOG: cnx-easybake DEBUG body content pending(eob-glossary)
+// LOG: cnx-easybake DEBUG body group-by  span, "span::first-letter"

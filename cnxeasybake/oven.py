@@ -6,7 +6,6 @@ import tinycss2
 from tinycss2 import serialize, parse_declaration_list, ast
 import cssselect2
 from cssselect2 import ElementWrapper
-from cssselect import HTMLTranslator
 import copy
 
 verbose = False
@@ -25,8 +24,8 @@ decls = {'collation': [(u'move-to', ''),
                        (u'counter-reset', ''),
                        (u'counter-increment', ''),
                        (u'content', u'counter'),
-                       (u'content', u'target-counter')],
-         'labelling': [(u'string-set', ''),
+                       (u'content', u'target-counter'),
+                       (u'string-set', ''),
                        (u'class', ''),
                        (u'content', u'string')],
          }
@@ -118,10 +117,11 @@ class Oven():
 
             target = None
             old_content = {}
-            sort = None
+            sort = groupby = None
+            isgroup = False
             for action, value in recipe['actions']:
                 if action == 'target':
-                    target, location, sort = value
+                    target, location, sort, isgroup, groupby = value
                     old_content = {}
                 elif action == 'clear':
                     old_content['text'] = target.text
@@ -145,37 +145,44 @@ class Oven():
                     else:
                         append_string(target, value)
                 elif action == 'move':
-                    if sort and len(target) > 0:
-                        for child in target:
-                            if sort(child) > sort(value):
-                                child.addprevious(value)
-                                break
+                    if isgroup:
+                        if groupby:
+                            for child in target:
+                                if groupby(child[0]) == groupby(value):
+                                    insert_group(value, child, sort)
+                                    break
+                                elif groupby(child[0]) > groupby(value):
+                                    group = create_group(groupby(value))
+                                    group.append(value)
+                                    child.addprevious(group)
+                                    break
+                            else:
+                                group = create_group(groupby(value))
+                                group.append(value)
+                                target.append(group)
                         else:
-                            target.append(value)
+                            insert_group(value, target, sort)
+
+                    elif sort:
+                        insert_sort(value, target, sort)
+                    elif location == 'before':
+                        value.tail = target.text
+                        target.text = None
+                        target.insert(0, value)
                     else:
-                        if location == 'before':
-                            value.tail = target.text
-                            target.text = None
-                            target.insert(0, value)
-                        else:
-                            target.append(value)
+                        target.append(value)
+
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
-                    if sort and len(target) > 0:
-                        for child in target:
-                            if sort(child) > sort(mycopy):
-                                child.addprevious(mycopy)
-                                break
-                        else:
-                            target.append(mycopy)
+                    if sort:
+                        insert_sort(mycopy, target, sort)
+                    elif location == 'before':
+                        mycopy.tail = target.text
+                        target.text = None
+                        target.insert(0, mycopy)
                     else:
-                        if location == 'before':
-                            mycopy.tail = target.text
-                            target.text = None
-                            target.insert(0, mycopy)
-                        else:
-                            target.append(mycopy)
+                        target.append(mycopy)
 
         # Do numbering
 
@@ -241,7 +248,8 @@ class Oven():
         """Create and place pending target element onto stack."""
         elem = etree.Element('div')
         self.state['collation']['pending_elems'].append(
-                                                 (elem, element, None))
+                                                 (elem, element,
+                                                  None, False, None))
 
     def pop_pending_elem(self, element):
         """Remove pending target element from stack."""
@@ -525,12 +533,13 @@ class Oven():
 
         elem = None
         if self.is_pending_element(element):
-            elem, _, sort = step['pending_elems'][-1]
+            elem, _, sort, isgroup, groupby = step['pending_elems'][-1]
 
-        actions.append(('target', (element.etree_element, pseudo, None)))
+        actions.append(('target', (element.etree_element, pseudo,
+                                   None, False, None)))
         if self.is_pending_element(element):
             actions.append(('move', elem))
-            actions.append(('target', (elem, None, sort)))
+            actions.append(('target', (elem, None, sort, isgroup, groupby)))
         else:
             actions.append(('clear', elem))
 
@@ -598,6 +607,28 @@ class Oven():
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'group-by', serialize(decl.value)))
+        group_css = label_css = None
+        if ',' in decl.value:
+            group_css = serialize(decl.value[:decl.value.index(',')])
+            label_css = serialize(decl.value[decl.value.index(',')+1:])
+        else:
+            group_css = serialize(decl.value)
+
+        groupby = css_to_func(group_css)
+        label = css_to_func(label_css)
+
+        if self.is_pending_element(element):
+            elem = self.state['collation']['pending_elems'][-1][0]
+            self.state['collation']['pending_elems'][-1] = \
+                (elem, element, groupby, True, label)
+            #  Find current target, set its sort as well
+            for pos, action in \
+                    enumerate(reversed(self.state['collation']['actions'])):
+                if action[0] == 'target' and action[1][0] == elem:
+                    target_index = - pos - 1
+                    self.state['collation']['actions'][target_index] = \
+                        (action[0], (action[1][0], None, groupby, True, label))
+                    break
 
     def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
@@ -605,20 +636,59 @@ class Oven():
                      element.local_name, 'sort-by', serialize(decl.value)))
 
         css = serialize(decl.value)
-        sort = etree.XPath(HTMLTranslator().css_to_xpath(css) + '/text()')
+        sort = css_to_func(css)
 
         if self.is_pending_element(element):
             elem = self.state['collation']['pending_elems'][-1][0]
             self.state['collation']['pending_elems'][-1] = \
-                (elem, element, sort)
+                (elem, element, sort, False, None)
             #  Find current target, set its sort as well
             for pos, action in \
                     enumerate(reversed(self.state['collation']['actions'])):
                 if action[0] == 'target' and action[1][0] == elem:
                     target_index = - pos - 1
                     self.state['collation']['actions'][target_index] = \
-                        (action[0], (action[1][0], None, sort))
+                        (action[0], (action[1][0], None, sort, False, None))
                     break
+
+
+def css_to_func(css):
+    """Convert a css selector to an xpath, supporting pseudo elements."""
+    from cssselect import parse, HTMLTranslator
+    from cssselect.parser import FunctionalPseudoElement
+    #  FIXME HACK need lessc to support functional-pseudo-selectors instead
+    #  of marking as strings and stripping " here.
+    if css is None:
+        return None
+    sel = parse(css.strip('" '))[0]
+    xpath = HTMLTranslator().selector_to_xpath(sel)
+    first_letter = False
+    if sel.pseudo_element is not None:
+        if type(sel.pseudo_element) == FunctionalPseudoElement:
+            if sel.pseudo_element.name in ('attr', 'first-letter'):
+                xpath += '/@' + sel.pseudo_element.arguments[0].value
+                if sel.pseudo_element.name == 'first-letter':
+                    first_letter = True
+        elif type(sel.pseudo_element) == unicode:
+            if sel.pseudo_element == 'first-letter':
+                xpath += '/text()'
+                first_letter = True
+    else:
+        xpath += '/text()'
+    xp = etree.XPath(xpath)
+
+    def func(elem):
+        res = xp(elem)
+        if res:
+            if first_letter:
+                if res[0]:
+                    return res[0][0]
+                else:
+                    return res[0]
+            else:
+                return res[0]
+
+    return func
 
 
 def append_string(node, string):
@@ -635,6 +705,42 @@ def append_string(node, string):
                 child.tail += string
             else:
                 child.tail = string
+
+
+def insert_sort(node, target, sort):
+    """Insert node into sorted position in target, using sort function."""
+    for child in target:
+        if sort(child) > sort(node):
+            child.addprevious(node)
+            break
+    else:
+        target.append(node)
+
+
+def insert_group(node, target, group):
+    """Insert node into in target, using group function.
+
+    This assumes the node and target share a structure of a first child
+    that determines the grouping, and a second child that will be accumulated
+    in the group.
+    """
+    for child in target:
+        if group(child) == group(node):
+            for nodechild in node[1:]:
+                child.append(nodechild)
+            break
+        elif group(child) > group(node):
+            child.addprevious(node)
+            break
+    else:
+        target.append(node)
+
+
+def create_group(value):
+    """Create the group wrapper node."""
+    node = etree.Element('div', attrib={'class': 'group-by'})
+    node.text = value
+    return node
 
 
 def prepend_string(node, string):
