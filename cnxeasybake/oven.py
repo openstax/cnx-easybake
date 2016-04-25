@@ -739,7 +739,9 @@ def insert_group(node, target, group):
 def create_group(value):
     """Create the group wrapper node."""
     node = etree.Element('div', attrib={'class': 'group-by'})
-    node.text = value
+    span = etree.Element('span', attrib={'class': 'group-label'})
+    span.text = value
+    node.append(span)
     return node
 
 
