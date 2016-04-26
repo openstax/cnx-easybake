@@ -532,6 +532,7 @@ class Oven():
         actions = step['actions']
 
         elem = None
+        wastebin = []
         if self.is_pending_element(element):
             elem, _, sort, isgroup, groupby = step['pending_elems'][-1]
 
@@ -596,6 +597,16 @@ class Oven():
                     actions.extend(step['pending'][target])
                     if term.name == u'pending':
                         del step['pending'][target]
+
+                elif term.name == u'clear':
+                    target = serialize(term.arguments)
+                    if target not in step['pending']:
+                        logger.warning("{} empty bucket".
+                                       format(target))
+                        continue
+                    wastebin.extend(step['pending'][target])
+                    del step['pending'][target]
+
                 else:
                     logger.warning("Unknown function {}".
                                    format(term.name))
@@ -608,6 +619,14 @@ class Oven():
                                (elem, None, sort, isgroup, groupby)):
                 actions.pop()
                 actions.pop()
+
+        if len(wastebin) > 0:
+            trashbucket = etree.Element('div',
+                                        attrib={'class': 'delete-me'})
+            actions.append(('target', (trashbucket, None,
+                                       None, False, None)))
+            actions.extend(wastebin)
+            wastebin = []
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""

@@ -1,0 +1,14 @@
+// Test clear
+div[data-type='chapter'] {
+  section.key-equations {
+    move-to: trash;
+  }
+}
+
+// Containers
+
+body::after {
+  content: clear(trash)
+}
+// LOG: cnx-easybake DEBUG section move-to trash
+// LOG: cnx-easybake DEBUG body content clear(trash)

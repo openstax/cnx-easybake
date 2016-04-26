@@ -1,0 +1,6 @@
+div[data-type='chapter'] section.key-equations {
+  move-to: trash;
+}
+body::after {
+  content: clear(trash);
+}
