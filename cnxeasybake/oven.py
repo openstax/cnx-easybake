@@ -603,6 +603,12 @@ class Oven():
                 logger.warning("Unknown term {}".
                                format(decl.value))
 
+        if self.is_pending_element(element):
+            if actions[-1] == ('target',
+                               (elem, None, sort, isgroup, groupby)):
+                actions.pop()
+                actions.pop()
+
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
