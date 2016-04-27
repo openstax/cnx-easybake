@@ -10,7 +10,8 @@ a content function:
     string-set: <stringname> "my string" attr(<attrname>) content()  
     node-set: <setname>
 
-    content: pending(<bucketname>)  string(<stringname>)  nodes(<setname>)
+    content: pending(<bucketname>)  string(<stringname>)  nodes(<setname>) clear(<bucketname>)
+
 
 Declarations `move-to` and `copy-to`  will "mark" the  matching node (and all
 of its descendants) for moving or copying to the place identified by the
@@ -31,27 +32,89 @@ to the node`s current content.
 As an extension, since we are targeting output of HTML, rather than another
 rendering tree (page or screen display), we will create an actual wrapper node
 for each pseudo-element area. In support of this, we are adding additional
-declarations:  
+declarations, and two new pseudo-element selectors:  
 
     container: div|span|h1|...  
     class: myclassvalue  
     data-type: mydatatypevalue
     attr-my-new-attr: mynewattibute
 
-    sort-by: dl>dt
+    sort-by: dl>dt::attr(sortby)
+    group-by: span, span::first-letter(mylabel)
 
 The class declarations will set the value of that attribute on the generated
 wrapper node. The data-*  and attr-* allows for setting any data or other
 arbitrary attributes on the wrapper. The `container` declaration will make the
 wrapper a node of whatever type you specify, defaulting to div.
 
-Note that `move-to:` and `copy-to:` may be used as part of a pseudo-element rule
-as well. In that case, the wrapping node and it's content will be moved or copied
-to the declared bucketname, as well. This would allow generation of, for example,
-a title string, in the context of one node, using local values of counters or content,
-but moving that generated node inside a different node elsewhere. The value of this over
-string-set is that it generates a _wrapped_ element, rather than only a string.
+Note that `move-to:` and `copy-to:` may be used as part of a pseudo-element
+rule as well. In that case, the wrapping node and its content will be moved or
+copied to the declared bucketname, as well. This would allow generation of, for
+example, a title string, in the context of one node, using local values of
+counters or content, but moving that generated node inside a different node
+elsewhere. The value of this over string-set is that it generates a _wrapped_
+element, rather than only a string.
 
 The `copy-to` declaration will modify any 'id' values in the nodes it copies,
 to keep them unique within the HTML document tree as a whole. FIXME add details
 of heuristic used to make them unique.
+
+The `sort-by` and `group-by` declartions  take one and two CSS selectors as
+arguments, respectively. They apply to nodes moved (or copied) into the current
+context's `content` declaration _i.e._ anything brought in via `pending()`. The
+value used as the sort or grouping is the text at the node selected by applying
+the CSS selector to the pending nodes. This includes text of child nodes. For
+example, the selector `span` applied to the node `<span
+data-type="term">velocity</span>` resolves to the string `velocity`. Applying
+the same to `<span><em>𝛾</em>-radiation</span>` resolves to `𝛾-radiation`.
+
+There are also pseudo-element selectors that can be used in this context:
+`::first-letter`, `::attr(name)`, and `::first-letter(name)`. The first of
+these is not custom to us. In this context, it will select the first character
+of the text as described above. The next extracts the textual value of the
+named attribute at the selected node, _i.e._, given `<dt
+sort-by="alpha-helix"><em>𝛼</em>-helix</dt>` the selector `dl >
+dt::attr(sort-by)` would yield `alpha-helix`, rather than `𝛼-helix`. The last
+pseudo-element, `::first-letter(name)` applies the first character logic to
+attribute names.
+
+The last new declaration is `group-by`. This is the least general of all our
+extensions, designed to meet the needs of constructing glossaries and indexes.
+This declaration takes one or two CSS selectors. The first selector works just
+like `sort-by` in terms of ordering. The difference is that if two nodes have
+the same `group-by` value, we assume that they contain the same first-child node,
+and combine the two nodes by discarding the first child of the second node, then
+appending any further children to the first node. For example, this allows us to
+build index entries by passing in index-term link pairs, like so:
+
+    <div class="index-item">  
+      <span class="term">velocity</span>
+      <a href="#idterm34">page 5</a>
+    </div>
+    <div class="index-item">
+      <span class="term">velocity</span>
+      <a href="#idterm66">page 7</a>
+    </div>
+Applying `group-by: span` yields:
+
+    <div class="index-item">
+      <span class="term">velocity</span>
+      <a href="#idterm34">page 5</a>
+      <a href="#idterm66">page 7</a>
+    </div>
+
+Note that group-by also takes a second, optional selector. This selector is
+used to create labelled subgroups. All terms that evaluate to equal when this
+selector is applied will be group under a <div> that starts with a <span> that
+contains that value. Again, an example:
+
+Applying `group-by: span, span::first-letter` results in:
+
+    <div class="group-by">
+      <span class="group-label">v</span>
+      <div class="index-item">
+        <span class="term">velocity</span>
+        <a href="#idterm34">page 5</a>
+        <a href="#idterm66">page 7</a>
+      </div>
+    </div>
