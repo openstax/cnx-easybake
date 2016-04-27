@@ -61,12 +61,14 @@ of heuristic used to make them unique.
 
 The `sort-by` and `group-by` declartions  take one and two CSS selectors as
 arguments, respectively. They apply to nodes moved (or copied) into the current
-context's `content` declaration _i.e._ anything brought in via `pending()`. The
-value used as the sort or grouping is the text at the node selected by applying
-the CSS selector to the pending nodes. This includes text of child nodes. For
-example, the selector `span` applied to the node `<span
-data-type="term">velocity</span>` resolves to the string `velocity`. Applying
-the same to `<span><em>𝛾</em>-radiation</span>` resolves to `𝛾-radiation`.
+context's `content` declaration that match the sort/group selector - _i.e._
+anything brought in via `pending()` that matches. The value used as the sort or
+grouping is the text at the node selected by applying the CSS selector to the
+pending nodes. This includes text of child nodes. For example, the selector
+`span` applied to the node `<span data-type="term">velocity</span>` resolves to
+the string `velocity`. Applying the same to `<span><em>𝛾</em>-radiation</span>`
+resolves to `𝛾-radiation`. If the selector does not match the node being
+added, the node will be appended at that point.
 
 There are also pseudo-element selectors that can be used in this context:
 `::first-letter`, `::attr(name)`, and `::first-letter(name)`. The first of
