@@ -18,8 +18,18 @@ div[data-type="page"] span[data-type="term"]::after {
   class: glossary-item;
   move-to: eob-glossary;
 }
+body::before {
+  container: h1;
+  content: "Index (well, sort of a glossary, really)";
+  move-to: glossary-title;
+}
+body::before {
+  container: h1;
+  content: "End of Index";
+  move-to: glossary-end;
+}
 body::after {
   class: glossary;
-  content: pending(eob-glossary);
+  content: pending(glossary-title) pending(eob-glossary) pending(glossary-end);
   group-by: span, "span::first-letter";
 }

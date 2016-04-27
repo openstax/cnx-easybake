@@ -18,7 +18,7 @@ div[data-type="page"] span[data-type="term"]::after {
 div[data-type="page"] span[data-type="term"]::after {
   content: pending(gloss-term) pending(link);
   class: glossary-item;
-  move-to: eob-glossary;
+  copy-to: eob-glossary;
 }
 body::after {
   class: glossary;

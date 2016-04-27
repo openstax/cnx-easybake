@@ -145,17 +145,19 @@ class Oven():
                     else:
                         append_string(target, value)
                 elif action == 'move':
-                    if isgroup:
+                    if isgroup and sort(value) != None:
                         if groupby:
-                            for child in target:  # child[0] is the label span
-                                if groupby(child[1]) == groupby(value):
-                                    insert_group(value, child, sort)
-                                    break
-                                elif groupby(child[1]) > groupby(value):
-                                    group = create_group(groupby(value))
-                                    group.append(value)
-                                    child.addprevious(group)
-                                    break
+                            for child in target:
+                                if child.get('class') == 'group-by':
+                                    # child[0] is the label span
+                                    if groupby(child[1]) == groupby(value):
+                                        insert_group(value, child, sort)
+                                        break
+                                    elif groupby(child[1]) > groupby(value):
+                                        group = create_group(groupby(value))
+                                        group.append(value)
+                                        child.addprevious(group)
+                                        break
                             else:
                                 group = create_group(groupby(value))
                                 group.append(value)
@@ -163,7 +165,7 @@ class Oven():
                         else:
                             insert_group(value, target, sort)
 
-                    elif sort:
+                    elif sort and sort(value) != None:
                         insert_sort(value, target, sort)
                     elif location == 'before':
                         value.tail = target.text
@@ -175,17 +177,18 @@ class Oven():
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
-                    if isgroup:
+                    if isgroup and sort(mycopy) != None:
                         if groupby:
                             for child in target:
-                                if groupby(child[1]) == groupby(mycopy):
-                                    insert_group(mycopy, child, sort)
-                                    break
-                                elif groupby(child[1]) > groupby(mycopy):
-                                    group = create_group(groupby(mycopy))
-                                    group.append(mycopy)
-                                    child.addprevious(group)
-                                    break
+                                if child.get('class') == 'group-by':
+                                    if groupby(child[1]) == groupby(mycopy):
+                                        insert_group(mycopy, child, sort)
+                                        break
+                                    elif groupby(child[1]) > groupby(mycopy):
+                                        group = create_group(groupby(mycopy))
+                                        group.append(mycopy)
+                                        child.addprevious(group)
+                                        break
                             else:
                                 group = create_group(groupby(mycopy))
                                 group.append(mycopy)
@@ -193,7 +196,7 @@ class Oven():
                         else:
                             insert_group(mycopy, target, sort)
 
-                    elif sort:
+                    elif sort and sort(mycopy) != None:
                         insert_sort(mycopy, target, sort)
                     elif location == 'before':
                         mycopy.tail = target.text

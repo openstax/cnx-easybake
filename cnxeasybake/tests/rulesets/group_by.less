@@ -24,11 +24,29 @@ div[data-type="page"] {
   }
 }
 
-body::after {
+body {
+  &::before {
+  container: h1;
+  content: "Index (well, sort of a glossary, really)";
+  move-to: glossary-title;
+  }
+  &::before {
+  container: h1;
+  content: "End of Index";
+  move-to: glossary-end;
+  }
+  &::after {
   class: glossary;
-  content: pending(eob-glossary);
+  content: pending(glossary-title) pending(eob-glossary) pending(glossary-end);
   group-by: span, "span::first-letter";
+  }
 }
+// LOG: cnx-easybake DEBUG body container h1
+// LOG: cnx-easybake DEBUG body content "Index (well, sort of a glossary, really)"
+// LOG: cnx-easybake DEBUG body move-to glossary-title
+// LOG: cnx-easybake DEBUG body container h1
+// LOG: cnx-easybake DEBUG body content "End of Index"
+// LOG: cnx-easybake DEBUG body move-to glossary-end
 // LOG: cnx-easybake DEBUG div string-set  section-title content()
 // LOG: cnx-easybake DEBUG span content content()
 // LOG: cnx-easybake DEBUG span container span
@@ -123,5 +141,5 @@ body::after {
 // LOG: cnx-easybake DEBUG span move-to eob-glossary
 // LOG: cnx-easybake DEBUG body class glossary
 // LOG: cnx-easybake DEBUG IdentToken as string: glossary
-// LOG: cnx-easybake DEBUG body content pending(eob-glossary)
+// LOG: cnx-easybake DEBUG body content pending(glossary-title) pending(eob-glossary) pending(glossary-end)
 // LOG: cnx-easybake DEBUG body group-by  span, "span::first-letter"
