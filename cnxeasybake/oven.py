@@ -147,11 +147,11 @@ class Oven():
                 elif action == 'move':
                     if isgroup:
                         if groupby:
-                            for child in target:
-                                if groupby(child[0]) == groupby(value):
+                            for child in target:  # child[0] is the label span
+                                if groupby(child[1]) == groupby(value):
                                     insert_group(value, child, sort)
                                     break
-                                elif groupby(child[0]) > groupby(value):
+                                elif groupby(child[1]) > groupby(value):
                                     group = create_group(groupby(value))
                                     group.append(value)
                                     child.addprevious(group)
@@ -199,9 +199,6 @@ class Oven():
         either before or after recursing into its children, depending on the
         presence of a pseudo-element and it's value.
         """
-        # FIXME Do declaration methods need to know if they are pseudo or not,
-        # and if so, which? - currently passing it, but not using it.
-
         matching_rules = {}
         for declarations, pseudo in self.matchers[step].match(element):
             matching_rules.setdefault(pseudo, []).append(declarations)
@@ -289,7 +286,7 @@ class Oven():
 
         for term in value:
             if type(term) is ast.WhitespaceToken:
-                strval += term.value
+                pass
 
             elif type(term) is ast.StringToken:
                 strval += term.value
@@ -316,7 +313,8 @@ class Oven():
                     strval += element.etree_element.get(att_name, '')
 
                 elif term.name == u'content':
-                    strval += element.etree_element.xpath('./text()')[0]
+                    strval += etree.tostring(element.etree_element,
+                                             encoding='unicode', method='text')
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
@@ -387,7 +385,9 @@ class Oven():
 
                 elif term.name == u'content':
                     if strname is not None:
-                        strval += element.etree_element.xpath('./text()')[0]
+                        strval += etree.tostring(element.etree_element,
+                                                 encoding="unicode",
+                                                 method="text")
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
@@ -696,22 +696,25 @@ def css_to_func(css):
                     first_letter = True
         elif type(sel.pseudo_element) == unicode:
             if sel.pseudo_element == 'first-letter':
-                xpath += '/text()'
                 first_letter = True
-    else:
-        xpath += '/text()'
+
     xp = etree.XPath(xpath)
 
     def func(elem):
         res = xp(elem)
         if res:
-            if first_letter:
-                if res[0]:
-                    return res[0][0]
-                else:
-                    return res[0]
+            if etree.iselement(res[0]):
+                res_str = etree.tostring(res[0], encoding='unicode',
+                                         method="text")
             else:
-                return res[0]
+                res_str = res[0]
+            if first_letter:
+                if res_str:
+                    return res_str[0]
+                else:
+                    return res_str
+            else:
+                return res_str
 
     return func
 

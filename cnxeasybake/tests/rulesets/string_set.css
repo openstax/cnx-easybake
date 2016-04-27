@@ -22,7 +22,7 @@ div[data-type='chapter'] div[data-type='page']::after {
   class: first-letter(mytitle);
 }
 div[data-type='chapter']::after {
-  class: strings, and things;
+  class: "strings, and things";
   content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
   container: h1;
 }

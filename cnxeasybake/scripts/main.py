@@ -14,7 +14,7 @@ logger = logging.getLogger('cnx-easybake')
 
 def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout):
     """Process the given HTML file stream with the css stream."""
-    html_parser = etree.HTMLParser()
+    html_parser = etree.HTMLParser(encoding="utf-8")
     html_doc = etree.HTML(html_in.read(), html_parser)
     oven = Oven(css_in)
     oven.bake(html_doc)

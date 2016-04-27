@@ -30,7 +30,7 @@ div[data-type='chapter'] {
 
 // Containers
 div[data-type='chapter']::after {
-  class: strings, and things;
+  class: "strings, and things";
   content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
   container: h1;
 }
@@ -95,11 +95,7 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake DEBUG div content first-letter(string(mytitle))
 // LOG: cnx-easybake DEBUG div class first-letter(mytitle)
 // LOG: cnx-easybake DEBUG IdentToken as string: mytitle
-// LOG: cnx-easybake DEBUG div class strings, and things
-// LOG: cnx-easybake DEBUG IdentToken as string: strings
-// LOG: cnx-easybake DEBUG LiteralToken as string: ,
-// LOG: cnx-easybake DEBUG IdentToken as string: and
-// LOG: cnx-easybake DEBUG IdentToken as string: things
+// LOG: cnx-easybake DEBUG div class "strings, and things"
 // LOG: cnx-easybake DEBUG div content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
 // LOG: cnx-easybake WARNING no-such-string blank string
 // LOG: cnx-easybake DEBUG div container h1
