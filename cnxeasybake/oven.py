@@ -175,7 +175,25 @@ class Oven():
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
-                    if sort:
+                    if isgroup:
+                        if groupby:
+                            for child in target:
+                                if groupby(child[1]) == groupby(mycopy):
+                                    insert_group(mycopy, child, sort)
+                                    break
+                                elif groupby(child[1]) > groupby(mycopy):
+                                    group = create_group(groupby(mycopy))
+                                    group.append(mycopy)
+                                    child.addprevious(group)
+                                    break
+                            else:
+                                group = create_group(groupby(mycopy))
+                                group.append(mycopy)
+                                target.append(group)
+                        else:
+                            insert_group(mycopy, target, sort)
+
+                    elif sort:
                         insert_sort(mycopy, target, sort)
                     elif location == 'before':
                         mycopy.tail = target.text
