@@ -1,0 +1,12 @@
+// Test two selectors 
+section[data-type="glossary"], section[data-type="summary"] {
+move-to: trash;
+}
+
+body::after {
+content: clear(trash);
+}
+// LOG: cnx-easybake DEBUG section move-to trash
+// LOG: cnx-easybake DEBUG section move-to trash
+// LOG: cnx-easybake DEBUG section move-to trash
+// LOG: cnx-easybake DEBUG body content clear(trash)
