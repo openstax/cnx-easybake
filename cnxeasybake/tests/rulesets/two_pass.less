@@ -1,0 +1,88 @@
+// Test two pending buckets targeting same after
+body {
+    string-set: onestring "This is a first-pass string";
+
+    &::after {
+        pass: default, second;
+        content: "Two passes, doubled!";
+    }
+    &::after {
+        pass: "second";
+        content: string(onestring);
+    }
+}
+div[data-type='chapter'] {
+    section.practice-test {
+        move-to: eoc-practice-test;
+    }
+    section.key-equations {
+          move-to: eoc-key-equations;
+    }
+
+    &::after {
+      class: eoc-practice-test;
+      data-type: composite-page;
+      container: div;
+      content: pending(eoc-practice-test);
+
+    }
+
+    &::after {
+      class: eoc-key-equations;
+      data-type: composite-page;
+      attr-my-type: study-this;
+      container: div;
+      content: pending(eoc-key-equations);
+
+    }
+}
+div[data-type="page"]::before, div[data-type="composite-page"]::before {
+    pass: second;
+    counter-increment: page;
+    container: h1;
+    content: "Chapter " counter(page)
+}
+
+// LOG: cnx-easybake DEBUG IdentToken as string: default
+// LOG: cnx-easybake DEBUG IdentToken as string: second
+// LOG: cnx-easybake DEBUG IdentToken as string: second
+// LOG: cnx-easybake DEBUG body string-set  onestring "This is a first-pass string"
+// LOG: cnx-easybake DEBUG section move-to eoc-practice-test
+// LOG: cnx-easybake DEBUG section move-to eoc-key-equations
+// LOG: cnx-easybake DEBUG section move-to eoc-practice-test
+// LOG: cnx-easybake DEBUG div class eoc-practice-test
+// LOG: cnx-easybake DEBUG IdentToken as string: eoc-practice-test
+// LOG: cnx-easybake DEBUG div data-type composite-page
+// LOG: cnx-easybake DEBUG IdentToken as string: composite-page
+// LOG: cnx-easybake DEBUG div container div
+// LOG: cnx-easybake DEBUG div content pending(eoc-practice-test)
+// LOG: cnx-easybake DEBUG div class eoc-key-equations
+// LOG: cnx-easybake DEBUG IdentToken as string: eoc-key-equations
+// LOG: cnx-easybake DEBUG div data-type composite-page
+// LOG: cnx-easybake DEBUG IdentToken as string: composite-page
+// LOG: cnx-easybake DEBUG div attr-my-type study-this
+// LOG: cnx-easybake DEBUG IdentToken as string: study-this
+// LOG: cnx-easybake DEBUG div container div
+// LOG: cnx-easybake DEBUG div content pending(eoc-key-equations)
+// LOG: cnx-easybake DEBUG body pass  default, second
+// LOG: cnx-easybake DEBUG body content "Two passes, doubled!"
+// LOG: cnx-easybake DEBUG div pass  second
+// LOG: cnx-easybake DEBUG div counter-increment page
+// LOG: cnx-easybake DEBUG div container h1
+// LOG: cnx-easybake DEBUG div content "Chapter " counter(page)
+// LOG: cnx-easybake DEBUG div pass  second
+// LOG: cnx-easybake DEBUG div counter-increment page
+// LOG: cnx-easybake DEBUG div container h1
+// LOG: cnx-easybake DEBUG div content "Chapter " counter(page)
+// LOG: cnx-easybake DEBUG div pass  second
+// LOG: cnx-easybake DEBUG div counter-increment page
+// LOG: cnx-easybake DEBUG div container h1
+// LOG: cnx-easybake DEBUG div content "Chapter " counter(page)
+// LOG: cnx-easybake DEBUG div pass  second
+// LOG: cnx-easybake DEBUG div counter-increment page
+// LOG: cnx-easybake DEBUG div container h1
+// LOG: cnx-easybake DEBUG div content "Chapter " counter(page)
+// LOG: cnx-easybake DEBUG body pass  default, second
+// LOG: cnx-easybake DEBUG body content "Two passes, doubled!"
+// LOG: cnx-easybake DEBUG body pass  "second"
+// LOG: cnx-easybake DEBUG body content string(onestring)

@@ -16,7 +16,7 @@ a content function:
 Declarations `move-to` and `copy-to`  will "mark" the  matching node (and all
 of its descendants) for moving or copying to the place identified by the
 `bucketname`. The two `-set` declarations, `string-set` and `node-set`, serve
-to make a reusable copy of their value. The node-set will copy the current node,
+to make a reusable copy of their value. The `node-set` will copy the current node,
 while `string-set` assigns a concatenation of all its arguments to the first,
 stringname.
 
@@ -27,7 +27,7 @@ copies land here. `string(<stringname>)` and `nodes(<setname>)` retrieve  values
 stored by `string-set` and `node-set`, respectively. `attr(<attrname>)` evalutes
 to the value of an attribute on the current node, while content() (in a string-set)
 expands to the textual value of the node contents. In other contexts, it expands
-to the node`s current content.
+to the node's current content.
 
 As an extension, since we are targeting output of HTML, rather than another
 rendering tree (page or screen display), we will create an actual wrapper node
@@ -41,6 +41,8 @@ declarations, and two new pseudo-element selectors:
 
     sort-by: dl>dt::attr(sortby)
     group-by: span, span::first-letter(mylabel)
+
+    pass: 2
 
 The class declarations will set the value of that attribute on the generated
 wrapper node. The data-*  and attr-* allows for setting any data or other
@@ -78,9 +80,9 @@ named attribute at the selected node, _i.e._, given `<dt
 sort-by="alpha-helix"><em>𝛼</em>-helix</dt>` the selector `dl >
 dt::attr(sort-by)` would yield `alpha-helix`, rather than `𝛼-helix`. The last
 pseudo-element, `::first-letter(name)` applies the first character logic to
-attribute names.
+the retrieved attribute value.
 
-The last new declaration is `group-by`. This is the least general of all our
+The next new declaration is `group-by`. This is the least general of all our
 extensions, designed to meet the needs of constructing glossaries and indexes.
 This declaration takes one or two CSS selectors. The first selector works just
 like `sort-by` in terms of ordering. The difference is that if two nodes have
@@ -105,8 +107,8 @@ Applying `group-by: span` yields:
       <a href="#idterm66">page 7</a>
     </div>
 
-Note that group-by also takes a second, optional selector. This selector is
-used to create labelled subgroups. All terms that evaluate to equal when this
+Note that `group-by` also takes a second, optional selector. This selector is
+used to create labeled subgroups. All terms that evaluate to equal when this
 selector is applied will be group under a <div> that starts with a <span> that
 contains that value. Again, an example:
 
@@ -120,3 +122,24 @@ Applying `group-by: span, span::first-letter` results in:
         <a href="#idterm66">page 7</a>
       </div>
     </div>
+
+## Multi-Pass
+
+The last new declaration is `pass`. All this moving and copying leads eventually to a new HTML tree. Sometimes, you want to do things on the new tree, for example number sections that where created by copying. By specifying a `pass` to operate on, any ruleset can access this modified tree. The `pass:` declaration takes a list of comma separated arguments that define the passes this ruleset will apply to. No `pass:` declaration is equivalent to the `default` pass, which always runs first. Other passes may be either string names or integer numbers. If only integer numbers are used, then the additional passes will run in numeric order, _i.e._ 1, 2, 3 ... 10. If string labels are used, they will run in lexicographical order: i.e. 'alpha', 'my-step', 'other-step'. Note that the default pass is special, and not considered in this logic, so a declaration like: `pass: default, 10, 3` will match three passes, and execute them in the order `default`, then `3`, then `10`, since all the _additional_ passnames are numeric.
+
+For example, this ruleset:
+
+    div[data-type="page"]::before,
+    div[data-type="composite-page"]::before {
+        pass: second;
+        counter-increment: page;
+        container: h1;
+        content: "Chapter " counter(page);
+    }
+
+Will generate `h1` first children for both `page` and `composite-page` divs. Presumably
+`composite-page`s are added to the tree in an earlier step. Without the `pass:` declaration, the `composite-page`s would not be numbered, since they are not in the tree to match the rule.
+
+In addition, variables that have accumulated during a CSS pass are accessible from
+successive passes. These are `string`, `counter`, and `pending`/`nodeset` buckets.
+If a ruleset references one of these names that has not been set in the current pass, the value from a previous pass will be used. This is particularly useful for summary information that should appear at the beginning of a document, like a table of contents, or list of figures. These may be built up is a bucket using `copy-to` and other commands in an early pass, then placed near the top of the document with `pending()` in a subsequent pass.

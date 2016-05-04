@@ -1,0 +1,37 @@
+body {
+  string-set: onestring "This is a first-pass string";
+}
+body::after {
+  pass: default, second;
+  content: "Two passes, doubled!";
+}
+body::after {
+  pass: "second";
+  content: string(onestring);
+}
+div[data-type='chapter'] section.practice-test {
+  move-to: eoc-practice-test;
+}
+div[data-type='chapter'] section.key-equations {
+  move-to: eoc-key-equations;
+}
+div[data-type='chapter']::after {
+  class: eoc-practice-test;
+  data-type: composite-page;
+  container: div;
+  content: pending(eoc-practice-test);
+}
+div[data-type='chapter']::after {
+  class: eoc-key-equations;
+  data-type: composite-page;
+  attr-my-type: study-this;
+  container: div;
+  content: pending(eoc-key-equations);
+}
+div[data-type="page"]::before,
+div[data-type="composite-page"]::before {
+  pass: second;
+  counter-increment: page;
+  container: h1;
+  content: "Chapter " counter(page);
+}

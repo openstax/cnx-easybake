@@ -10,27 +10,27 @@ import copy
 
 verbose = False
 
-# steps = ('collation', 'numbering', 'labelling')
-steps = ('collation',)
-decls = {'collation': [(u'move-to', ''),
-                       (u'copy-to', ''),
-                       (u'string-set', ''),
-                       (u'node-set', ''),
-                       (u'content', ''),
-                       (u'content', u'string'),
-                       (u'content', u'attr'),
-                       (u'content', u'nodes'),
-                       (u'content', u'pending'),
-                       (u'counter-reset', ''),
-                       (u'counter-increment', ''),
-                       (u'content', u'counter'),
-                       (u'content', u'target-counter'),
-                       (u'string-set', ''),
-                       (u'class', ''),
-                       (u'content', u'string')],
-         }
-
 logger = logging.getLogger('cnx-easybake')
+
+
+class Target():
+    """Represent the target for a move or copy."""
+
+    def __init__(self, tree, location, sort, isgroup, groupby):
+        """Set up target object."""
+        self.tree = tree
+        self.location = location
+        self.sort = sort
+        self.isgroup = isgroup
+        self.groupby = groupby
+
+    def __str__(self):
+        """Return string."""
+        return ("tree: {0.tree} "
+                "location: {0.location} "
+                "sort: {0.sort} "
+                "isgroup: {0.isgroup} "
+                "groupby: {0.groupby}".format(self))
 
 
 class Oven():
@@ -45,15 +45,24 @@ class Oven():
         if css_in:
             self.update_css(css_in, clear_css=True)  # clears state as well
         else:
-            self.clear_state()
             self.matchers = {}
-            for step in steps:
-                self.matchers[step] = cssselect2.Matcher()
+            self.clear_state()
 
     def clear_state(self):
         """Clear the recipe state."""
         self.state = {}
-        for step in steps:
+        steps = sorted(self.matchers.keys())
+        if len(steps) > 0:
+            steps.remove('default')
+            try:
+                steps.sort(key=int)
+            except ValueError:
+                pass
+            steps.insert(0, 'default')
+        self.state['steps'] = steps
+        self.state['current_step'] = None
+        self.state['scope'] = []
+        for step in self.matchers:
             self.state[step] = {}
             self.state[step]['pending'] = {}
             self.state[step]['actions'] = []
@@ -76,13 +85,8 @@ class Oven():
             except AttributeError:
                 css = css_in         # Treat it as a string
 
-        # always clears state, since rules have changed
-        self.clear_state()
-
         if clear_css:
             self.matchers = {}
-            for step in steps:
-                self.matchers[step] = cssselect2.Matcher()
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
@@ -94,20 +98,24 @@ class Oven():
                     logger.debug('Invalid selector: %s %s'
                                  % (serialize(rule.prelude), error))
                 else:
-                    step = rule_step(rule)
-                    if step in steps:
-                        decls = parse_declaration_list(rule.content,
-                                                       skip_whitespace=True)
-                        for sel in selectors:
-                            pseudo = sel.pseudo_element
+                    steps, decls = parse_rule_steps(rule)
+                    for sel in selectors:
+                        pseudo = sel.pseudo_element
+                        for step in steps:
+                            if step not in self.matchers:
+                                self.matchers[step] = cssselect2.Matcher()
                             self.matchers[step].add_selector(sel,
                                                              (decls, pseudo))
 
+        # always clears state, since rules have changed
+        self.clear_state()
+
     def bake(self, element):
         """Apply recipes to HTML tree. Will build recipes if needed."""
-        # loop over steps: collation, then numbering, then labelling
-        for step in steps:
+        for step in self.state['steps']:
             # Need to wrap each loop, since tree may have changed
+            self.state['current_step'] = step
+            self.state['scope'].insert(0, step)
             wrapped_html_tree = ElementWrapper.from_html_root(element)
 
             if not self.state[step]['recipe']:
@@ -117,93 +125,38 @@ class Oven():
 
             target = None
             old_content = {}
-            sort = groupby = None
-            isgroup = False
             for action, value in recipe['actions']:
                 if action == 'target':
-                    target, location, sort, isgroup, groupby = value
+                    target = value
                     old_content = {}
                 elif action == 'clear':
-                    old_content['text'] = target.text
-                    target.text = None
+                    old_content['text'] = target.tree.text
+                    target.tree.text = None
                     old_content['children'] = []
-                    for child in target:
+                    for child in target.tree:
                         old_content['children'].append(child)
-                        target.remove(child)
+                        target.tree.remove(child)
                 elif action == 'content':
                     if value is not None:
                         append_string(target, value.text)
                         for child in value:
-                            target.append(child)
+                            target.tree.append(child)
                     elif old_content:
                         append_string(target, old_content['text'])
                         for child in old_content['children']:
-                            target.append(child)
+                            target.tree.append(child)
                 elif action == 'string':
-                    if location == 'before':
+                    if target.location == 'before':
                         prepend_string(target, value)
                     else:
                         append_string(target, value)
                 elif action == 'move':
-                    if isgroup and sort(value) != None:
-                        if groupby:
-                            for child in target:
-                                if child.get('class') == 'group-by':
-                                    # child[0] is the label span
-                                    if groupby(child[1]) == groupby(value):
-                                        insert_group(value, child, sort)
-                                        break
-                                    elif groupby(child[1]) > groupby(value):
-                                        group = create_group(groupby(value))
-                                        group.append(value)
-                                        child.addprevious(group)
-                                        break
-                            else:
-                                group = create_group(groupby(value))
-                                group.append(value)
-                                target.append(group)
-                        else:
-                            insert_group(value, target, sort)
-
-                    elif sort and sort(value) != None:
-                        insert_sort(value, target, sort)
-                    elif location == 'before':
-                        value.tail = target.text
-                        target.text = None
-                        target.insert(0, value)
-                    else:
-                        target.append(value)
+                    grouped_insert(target, value)
 
                 elif action == 'copy':
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
-                    if isgroup and sort(mycopy) != None:
-                        if groupby:
-                            for child in target:
-                                if child.get('class') == 'group-by':
-                                    if groupby(child[1]) == groupby(mycopy):
-                                        insert_group(mycopy, child, sort)
-                                        break
-                                    elif groupby(child[1]) > groupby(mycopy):
-                                        group = create_group(groupby(mycopy))
-                                        group.append(mycopy)
-                                        child.addprevious(group)
-                                        break
-                            else:
-                                group = create_group(groupby(mycopy))
-                                group.append(mycopy)
-                                target.append(group)
-                        else:
-                            insert_group(mycopy, target, sort)
-
-                    elif sort and sort(mycopy) != None:
-                        insert_sort(mycopy, target, sort)
-                    elif location == 'before':
-                        mycopy.tail = target.text
-                        target.text = None
-                        target.insert(0, mycopy)
-                    else:
-                        target.append(mycopy)
+                    grouped_insert(target, mycopy)
 
         # Do numbering
 
@@ -265,19 +218,19 @@ class Oven():
     def push_pending_elem(self, element):
         """Create and place pending target element onto stack."""
         elem = etree.Element('div')
-        self.state['collation']['pending_elems'].append(
-                                                 (elem, element,
-                                                  None, False, None))
+        self.state[self.state['current_step']]['pending_elems'].\
+            append((element, Target(elem, None, None, False, None)))
 
     def pop_pending_elem(self, element):
         """Remove pending target element from stack."""
         if self.is_pending_element(element):
-            self.state['collation']['pending_elems'].pop()
+            self.state[self.state['current_step']]['pending_elems'].pop()
 
     def is_pending_element(self, element):
         """Determine if most recent pending is for this element."""
-        return len(self.state['collation']['pending_elems']) > 0 \
-            and self.state['collation']['pending_elems'][-1][1] == element
+        step = self.state[self.state['current_step']]
+        return len(step['pending_elems']) > 0 \
+            and step['pending_elems'][-1][0] == element
 
     # Declaration methods and accessor
     def find_method(self, name):
@@ -299,9 +252,26 @@ class Oven():
         else:
             return lambda x, y, z: None
 
+    def lookup(self, vtype, vname):
+        """Return value of vname from the variable store vtype.
+
+        Valid vtypes are `strings` `pending` and `counters`. If the value
+        is not found in the current steps store, ealier steps will be
+        checked. If not found None is returned
+        """
+        for step in self.state['scope']:
+            if vname in self.state[step][vtype]:
+                if vtype == 'pending':
+                    return(self.state[step][vtype][vname], step)
+                else:
+                    return self.state[step][vtype][vname]
+        if vtype == 'pending':
+            return (None, None)
+        else:
+            return None
+
     def eval_string_value(self, element, value):
         """Evaluate parsed string and return its value."""
-        step = self.state['collation']
         strval = ''
         args = serialize(value)
 
@@ -323,11 +293,12 @@ class Oven():
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
                     strname = serialize(term.arguments)
-                    if strname not in step['strings']:
+                    val = self.lookup('strings', strname)
+                    if val is None:
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
-                    strval += step['strings'][strname]
+                    strval += val
 
                 elif term.name == u'attr':
                     att_name = serialize(term.arguments)
@@ -352,7 +323,7 @@ class Oven():
         args = serialize(decl.value)
         logger.debug("{} {} {}".format(
                      element.local_name, 'string-set', args))
-        step = self.state['collation']
+        step = self.state[self.state['current_step']]
 
         strval = ''
         strname = None
@@ -383,18 +354,19 @@ class Oven():
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
                     other_strname = serialize(term.arguments)
-                    if other_strname not in step['strings']:
+                    val = self.lookup('strings', other_strname)
+                    if val is None:
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
                     if strname is not None:
-                        strval += step['strings'][other_strname]
+                        strval += val
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
                 elif term.name == 'counter':
                     countername = serialize(term.arguments)
-                    count = step['counters'].get(countername, 1)
+                    count = self.lookup('counters', countername) or 1
                     strval += str(count)
 
                 elif term.name == u'attr':
@@ -434,7 +406,8 @@ class Oven():
                 continue
 
             elif type(term) is ast.IdentToken:
-                self.state['collation']['counters'][term.value] = 0
+                step = self.state[self.state['current_step']]
+                step['counters'][term.value] = 0
             else:
                 logger.warning("Unrecognized counter-reset term {}".
                                format(type(term)))
@@ -442,6 +415,7 @@ class Oven():
     def do_counter_increment(self, element, decl, pseudo):
         """Increment specified counters."""
         target = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'counter-increment', target))
         for term in decl.value:
@@ -449,10 +423,10 @@ class Oven():
                 continue
 
             elif type(term) is ast.IdentToken:
-                if term.value in self.state['collation']['counters']:
-                    self.state['collation']['counters'][term.value] += 1
+                if term.value in step['counters']:
+                    step['counters'][term.value] += 1
                 else:
-                    self.state['collation']['counters'][term.value] = 1
+                    step['counters'][term.value] = 1
             else:
                 logger.warning("Unrecognized counter-increment term {}".
                                format(type(term)))
@@ -460,108 +434,110 @@ class Oven():
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""
         target = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'node-set', target))
         if pseudo is None:
             elem = element.etree_element
         elif self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-        self.state['collation']['pending'][target] = [('copy', elem)]
+            elem = step['pending_elems'][-1][1].tree
+        step['pending'][target] = [('copy', elem)]
 
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'copy-to', target))
         if pseudo is None:
             elem = element.etree_element
         elif self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-        self.state['collation']['pending'].setdefault(target, []).append(
-                                         ('copy', elem))
+            elem = step['pending_elems'][-1][1].tree
+        step['pending'].setdefault(target, []).append(('copy', elem))
 
     def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration."""
         target = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'move-to', target))
         if pseudo is None:
             elem = element.etree_element
         elif self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
+            elem = step['pending_elems'][-1][1].tree
 
         #  Find if the current node already has a move, and remove it.
-        actions = self.state['collation']['actions']
+        actions = step['actions']
         for pos, action in enumerate(reversed(actions)):
             if action[0] == 'move' and action[1] == elem:
                 target_index = - pos - 1
                 actions[target_index:] = actions[target_index+1:]
                 break
 
-        self.state['collation']['pending'].setdefault(target, []).append(
-                             ('move', elem))
+        step['pending'].setdefault(target, []).append(('move', elem))
 
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'container', value))
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.tag = value
+            step['pending_elems'][-1][1].tree.tag = value
 
     def do_class(self, element, decl, pseudo):
         """Implement class declaration - pre-match."""
         value = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'class', value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set('class', strval)
+            step['pending_elems'][-1][1].tree.set('class', strval)
 
     def do_attr_any(self, element, decl, pseudo):
         """Implement generic attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set(decl.name[5:], strval)
+            step['pending_elems'][-1][1].tree.set(decl.name[5:], strval)
 
     def do_data_any(self, element, decl, pseudo):
         """Implement generic data attribute setting on new wrapper element."""
         value = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            elem.set(decl.name, strval)
+            step['pending_elems'][-1][1].tree.set(decl.name, strval)
 
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
-        # FIXME rework completely to cover all cases, pseudo and non-
-        # Need: content() string(x) attr(x) link(id)
-        #
+        # FIXME Need?: link(id)
         value = serialize(decl.value).strip()
         logger.debug("{} {} {}".format(
                      element.local_name, 'content', value))
 
-        step = self.state['collation']
+        step = self.state[self.state['current_step']]
         actions = step['actions']
 
-        elem = None
+        elem = pending_target = None
         wastebin = []
         if self.is_pending_element(element):
-            elem, _, sort, isgroup, groupby = step['pending_elems'][-1]
+            pending_target = step['pending_elems'][-1][1]
+            elem = pending_target.tree
+        else:
+            elem = element.etree_element
 
-        actions.append(('target', (element.etree_element, pseudo,
-                                   None, False, None)))
-        if self.is_pending_element(element):
-            actions.append(('move', elem))
-            actions.append(('target', (elem, None, sort, isgroup, groupby)))
+        actions.append(('target', Target(element.etree_element, pseudo,
+                                         None, False, None)))
+        if pending_target:
+            actions.append(('move', pending_target.tree))
+            actions.append(('target', pending_target))
         else:
             actions.append(('clear', elem))
 
@@ -580,15 +556,16 @@ class Oven():
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
                     strname = serialize(term.arguments)
-                    if strname not in step['strings']:
+                    val = self.lookup('strings', strname)
+                    if val is None:
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
-                    actions.append(('string', step['strings'][strname]))
+                    actions.append(('string', val))
 
                 elif term.name == 'counter':
                     countername = serialize(term.arguments)
-                    count = step['counters'].get(countername, 1)
+                    count = self.lookup('counters', countername) or 1
                     actions.append(('string', str(count)))
 
                 elif term.name == u'attr':
@@ -611,22 +588,24 @@ class Oven():
 
                 elif term.name in ('nodes', 'pending'):
                     target = serialize(term.arguments)
-                    if target not in step['pending']:
+                    val, val_step = self.lookup('pending', target)
+                    if val is None:
                         logger.warning("{} empty bucket".
                                        format(target))
                         continue
-                    actions.extend(step['pending'][target])
+                    actions.extend(val)
                     if term.name == u'pending':
-                        del step['pending'][target]
+                        del self.state[val_step]['pending'][target]
 
                 elif term.name == u'clear':
                     target = serialize(term.arguments)
-                    if target not in step['pending']:
+                    val, val_step = self.lookup('pending', target)
+                    if val is None:
                         logger.warning("{} empty bucket".
                                        format(target))
                         continue
-                    wastebin.extend(step['pending'][target])
-                    del step['pending'][target]
+                    wastebin.extend(val)
+                    del self.state[val_step]['pending'][target]
 
                 else:
                     logger.warning("Unknown function {}".
@@ -636,16 +615,16 @@ class Oven():
                                format(decl.value))
 
         if self.is_pending_element(element):
-            if actions[-1] == ('target',
-                               (elem, None, sort, isgroup, groupby)):
+            if actions[-1][0] == ('target') \
+                    and actions[-1][1].tree == elem:
                 actions.pop()
                 actions.pop()
 
         if len(wastebin) > 0:
             trashbucket = etree.Element('div',
                                         attrib={'class': 'delete-me'})
-            actions.append(('target', (trashbucket, None,
-                                       None, False, None)))
+            actions.append(('target', Target(trashbucket, None,
+                                             None, False, None)))
             actions.extend(wastebin)
             wastebin = []
 
@@ -653,49 +632,61 @@ class Oven():
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
                      element.local_name, 'group-by', serialize(decl.value)))
-        group_css = label_css = None
+        sort_css = groupby_css = None
         if ',' in decl.value:
-            group_css = serialize(decl.value[:decl.value.index(',')])
-            label_css = serialize(decl.value[decl.value.index(',')+1:])
+            sort_css = serialize(decl.value[:decl.value.index(',')])
+            groupby_css = serialize(decl.value[decl.value.index(',')+1:])
         else:
-            group_css = serialize(decl.value)
+            sort_css = serialize(decl.value)
 
-        groupby = css_to_func(group_css)
-        label = css_to_func(label_css)
+        sort = css_to_func(sort_css)
+        groupby = css_to_func(groupby_css)
+        step = self.state[self.state['current_step']]
 
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            self.state['collation']['pending_elems'][-1] = \
-                (elem, element, groupby, True, label)
-            #  Find current target, set its sort as well
+            target = step['pending_elems'][-1][1]
+            target.sort = sort
+            target.isgroup = True
+            target.groupby = groupby
+            #  Find current target, set its sort/grouping as well
             for pos, action in \
-                    enumerate(reversed(self.state['collation']['actions'])):
-                if action[0] == 'target' and action[1][0] == elem:
-                    target_index = - pos - 1
-                    self.state['collation']['actions'][target_index] = \
-                        (action[0], (action[1][0], None, groupby, True, label))
+                    enumerate(reversed(step['actions'])):
+                if action[0] == 'target' and \
+                        action[1].tree == element.etree_element:
+                    action[1].sort = sort
+                    action[1].isgroup = True
+                    action[1].groupby = groupby
                     break
 
     def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
         logger.debug("{} {} {}".format(
-                     element.local_name, 'sort-by', serialize(decl.value)))
+            element.local_name, 'sort-by', serialize(decl.value)))
 
         css = serialize(decl.value)
         sort = css_to_func(css)
+        step = self.state[self.state['current_step']]
 
         if self.is_pending_element(element):
-            elem = self.state['collation']['pending_elems'][-1][0]
-            self.state['collation']['pending_elems'][-1] = \
-                (elem, element, sort, False, None)
+            target = step['pending_elems'][-1][1]
+            target.sort = sort
+            target.isgroup = False
+            target.groupby = None
             #  Find current target, set its sort as well
             for pos, action in \
-                    enumerate(reversed(self.state['collation']['actions'])):
-                if action[0] == 'target' and action[1][0] == elem:
-                    target_index = - pos - 1
-                    self.state['collation']['actions'][target_index] = \
-                        (action[0], (action[1][0], None, sort, False, None))
+                    enumerate(reversed(step['actions'])):
+                if action[0] == 'target' and \
+                        action[1].tree == element.etree_element:
+                    action[1].sort = sort
+                    action[1].isgroup = False
+                    action[1].groupby = None
                     break
+
+    def do_pass(self, element, decl, pseudo):
+        """Set processing pass for this ruleset."""
+        logger.debug("{} {} {}".format(
+            element.local_name, 'pass', serialize(decl.value)))
+        pass  # Handled in parse_rule_steps
 
 
 def css_to_func(css):
@@ -740,8 +731,9 @@ def css_to_func(css):
     return func
 
 
-def append_string(node, string):
+def append_string(t, string):
     """Append a string to a node, as text or tail of last child."""
+    node = t.tree
     if string:
         if len(node) == 0:
             if node.text is not None:
@@ -754,6 +746,47 @@ def append_string(node, string):
                 child.tail += string
             else:
                 child.tail = string
+
+
+def prepend_string(t, string):
+    """Prepend a string to a target node as text."""
+    node = t.tree
+    if node.text is not None:
+        node.text += string
+    else:
+        node.text = string
+
+
+def grouped_insert(t, value):
+    """Insert value into the target tree 't' with correct grouping."""
+    if t.isgroup and t.sort(value) != None:
+        if t.groupby:
+            for child in t.tree:
+                if child.get('class') == 'group-by':
+                    # child[0] is the label span
+                    if t.groupby(child[1]) == t.groupby(value):
+                        insert_group(value, child, t.sort)
+                        break
+                    elif t.groupby(child[1]) > t.groupby(value):
+                        group = create_group(t.groupby(value))
+                        group.append(value)
+                        child.addprevious(group)
+                        break
+            else:
+                group = create_group(t.groupby(value))
+                group.append(value)
+                t.tree.append(group)
+        else:
+            insert_group(value, t.tree, t.sort)
+
+    elif t.sort and t.sort(value) != None:
+        insert_sort(value, t.tree, t.sort)
+    elif t.location == 'before':
+        value.tail = t.tree.text
+        t.tree.text = None
+        t.tree.insert(0, value)
+    else:
+        t.tree.append(value)
 
 
 def insert_sort(node, target, sort):
@@ -794,20 +827,36 @@ def create_group(value):
     return node
 
 
-def prepend_string(node, string):
-    """Prepend a string to a node as text."""
-    if node.text is not None:
-        node.text += string
-    else:
-        node.text = string
-
-
-def rule_step(rule):
-    """A collation rule contains a declaration needed to complete collation."""
+def parse_rule_steps(rule):
+    """Return rule steps and declartions."""
     declarations = parse_declaration_list(rule.content, skip_whitespace=True)
-    for step in steps:
-        if any([d.name == dn and dv in serialize(d.value)
-                for dn, dv in decls[step]
-                for d in declarations]):
-            return step
-    return 'unknown'
+    steps = []
+    for decl in declarations:
+        if decl.name == 'pass':
+            strval = ''
+            value = decl.value
+            args = serialize(value)
+            for term in value:
+                if type(term) is ast.WhitespaceToken:
+                    pass
+
+                elif type(term) is ast.StringToken:
+                    strval += term.value
+
+                elif type(term) is ast.IdentToken:
+                    logger.debug("IdentToken as string: {}".format(term.value))
+                    strval += term.value
+
+                elif type(term) is ast.LiteralToken:
+                    steps.append(strval)
+                    strval = ''
+
+                elif type(term) is ast.FunctionBlock:
+                        logger.warning("Bad pass name: functions not allowed."
+                                       "{}".format(args))
+            if strval != '':
+                steps.append(strval)
+    if len(steps) == 0:
+        steps.append('default')
+
+    return (steps, declarations)
