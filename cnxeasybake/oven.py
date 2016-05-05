@@ -171,7 +171,7 @@ class Oven():
         decaration value. State is maintained on the collator instance.  Since
         matching occurs when entering a node, declaration methods are ran
         either before or after recursing into its children, depending on the
-        presence of a pseudo-element and it's value.
+        presence of a pseudo-element and its value.
         """
         matching_rules = {}
         for declarations, pseudo in self.matchers[step].match(element):
@@ -842,6 +842,9 @@ def parse_rule_steps(rule):
 
                 elif type(term) is ast.StringToken:
                     strval += term.value
+
+                elif type(term) is ast.NumberToken:
+                    strval += str(int(term.value))
 
                 elif type(term) is ast.IdentToken:
                     logger.debug("IdentToken as string: {}".format(term.value))
