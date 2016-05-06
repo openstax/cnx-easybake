@@ -1,0 +1,36 @@
+div[data-type="page"] > div[data-type="document-title"] {
+  string-set: section-title content();
+}
+div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) {
+  attr-group-by: first-letter(content());
+}
+div[data-type="page"] span[data-type="term"]:match(^[^a-zA-Z]) {
+  attr-group-by: "Symbol";
+}
+div[data-type="page"] span[data-type="term"]::after {
+  pass: 2;
+  content: content();
+  attr-group-by: attr(group-by);
+  container: span;
+  class: glossary-term;
+  move-to: gloss-term;
+}
+div[data-type="page"] span[data-type="term"]::after {
+  pass: 2;
+  content: string(section-title);
+  container: a;
+  attr-href: "#" attr(id);
+  move-to: link;
+}
+div[data-type="page"] span[data-type="term"]::after {
+  pass: 2;
+  content: pending(gloss-term) pending(link);
+  class: glossary-item;
+  move-to: eob-glossary;
+}
+body::after {
+  class: glossary;
+  pass: 2;
+  content: pending(eob-glossary);
+  group-by: span, "span::attr(group-by)";
+}

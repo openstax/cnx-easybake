@@ -145,6 +145,8 @@ class Oven():
                         append_string(target, old_content['text'])
                         for child in old_content['children']:
                             target.tree.append(child)
+                elif action == 'attrib':
+                    target.tree.set(*value)
                 elif action == 'string':
                     if target.location == 'before':
                         prepend_string(target, value)
@@ -157,6 +159,8 @@ class Oven():
                     mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
+                else:
+                    logger.warning('Missing action {}'.format(action))
 
         # Do numbering
 
@@ -191,9 +195,11 @@ class Oven():
         # Do non-pseudo
         if None in matching_rules:
             for declarations in matching_rules.get(None):
+                self.push_target_elem(element)
                 for decl in declarations:
                     method = self.find_method(decl.name)
                     method(element, decl, None)
+                self.pop_target_elem(element)
 
         # Recurse
         for el in element.iter_children():
@@ -213,6 +219,20 @@ class Oven():
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
+
+    # Need target incase any declarations impact it
+    def push_target_elem(self, element):
+        """Place target element onto action stack."""
+        self.state[self.state['current_step']]['actions'].\
+            append(('target', Target(element.etree_element,
+                                     None, None, False, None)))
+
+    def pop_target_elem(self, element):
+        """Remove target element from stacki if not used."""
+        actions = self.state[self.state['current_step']]['actions']
+        if actions[-1][0] == 'target' and \
+           actions[-1][1].tree == element.etree_element:
+            actions.pop()
 
     # Maintain stack of pending wrapper elements
     def push_pending_elem(self, element):
@@ -306,7 +326,8 @@ class Oven():
 
                 elif term.name == u'content':
                     strval += etree.tostring(element.etree_element,
-                                             encoding='unicode', method='text')
+                                             encoding='unicode',
+                                             method='text')
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
@@ -379,8 +400,8 @@ class Oven():
                 elif term.name == u'content':
                     if strname is not None:
                         strval += etree.tostring(element.etree_element,
-                                                 encoding="unicode",
-                                                 method="text")
+                                                 encoding='unicode',
+                                                 method='text')
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
@@ -489,31 +510,40 @@ class Oven():
         """Implement class declaration - pre-match."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
+        actions = step['actions']
         logger.debug("{} {} {}".format(
                      element.local_name, 'class', value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             step['pending_elems'][-1][1].tree.set('class', strval)
+        else:
+            actions.append(('attrib', ('class', strval)))
 
     def do_attr_any(self, element, decl, pseudo):
-        """Implement generic attribute setting on new wrapper element."""
+        """Implement generic attribute setting."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
+        actions = step['actions']
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             step['pending_elems'][-1][1].tree.set(decl.name[5:], strval)
+        else:
+            actions.append(('attrib', (decl.name[5:], strval)))
 
     def do_data_any(self, element, decl, pseudo):
-        """Implement generic data attribute setting on new wrapper element."""
+        """Implement generic data attribute setting."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
+        actions = step['actions']
         logger.debug("{} {} {}".format(
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
             step['pending_elems'][-1][1].tree.set(decl.name, strval)
+        else:
+            actions.append(('attrib', (decl.name, strval)))
 
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
@@ -759,7 +789,7 @@ def prepend_string(t, string):
 
 def grouped_insert(t, value):
     """Insert value into the target tree 't' with correct grouping."""
-    if t.isgroup and t.sort(value) != None:
+    if t.isgroup and t.sort(value) is not None:
         if t.groupby:
             for child in t.tree:
                 if child.get('class') == 'group-by':
@@ -779,7 +809,7 @@ def grouped_insert(t, value):
         else:
             insert_group(value, t.tree, t.sort)
 
-    elif t.sort and t.sort(value) != None:
+    elif t.sort and t.sort(value) is not None:
         insert_sort(value, t.tree, t.sort)
     elif t.location == 'before':
         value.tail = t.tree.text

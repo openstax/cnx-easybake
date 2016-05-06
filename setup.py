@@ -38,5 +38,5 @@ setup(
             ],
         },
     dependency_links=[
-        'git+https://github.com/SimonSapin/cssselect2.git#egg=cssselect2']
+        'git+https://github.com/Connexions/cssselect2.git#egg=cssselect2']
     )
