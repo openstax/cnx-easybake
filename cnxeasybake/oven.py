@@ -789,7 +789,7 @@ def prepend_string(t, string):
 
 def grouped_insert(t, value):
     """Insert value into the target tree 't' with correct grouping."""
-    if t.isgroup and t.sort(value) != None:
+    if t.isgroup and t.sort(value) is not None:
         if t.groupby:
             for child in t.tree:
                 if child.get('class') == 'group-by':
@@ -809,7 +809,7 @@ def grouped_insert(t, value):
         else:
             insert_group(value, t.tree, t.sort)
 
-    elif t.sort and t.sort(value) != None:
+    elif t.sort and t.sort(value) is not None:
         insert_sort(value, t.tree, t.sort)
     elif t.location == 'before':
         value.tail = t.tree.text
