@@ -7,12 +7,11 @@ before_install:
   # Install the coverage utility and coveralls reporting utility
   - pip install coverage
   - pip install coveralls
-install:
-  - python setup.py install
-before_script:
   - pip install pep8
   - pep8 --exclude=tests *.py cnxeasybake/
   - pep8 --max-line-length=1000 cnxeasybake/tests
+install:
+  - python setup.py install
 script:
   - coverage run --source=cnxeasybake setup.py test
 after_success:
