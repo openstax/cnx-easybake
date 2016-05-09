@@ -636,7 +636,7 @@ class Oven():
 
                 elif term.name == 'counter':
                     countername = serialize(term.arguments)
-                    count = self.lookup('counters', countername) or 1
+                    count = self.lookup('counters', countername) or 0
                     actions.append(('string', str(count)))
 
                 elif term.name == u'attr':
