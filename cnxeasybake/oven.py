@@ -342,7 +342,7 @@ class Oven():
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
         args = serialize(decl.value)
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'string-set', args))
         step = self.state[self.state['current_step']]
 
@@ -421,7 +421,7 @@ class Oven():
         """Clear specified counters."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'counter-reset', target))
         counter_name = ''
         for term in decl.value:
@@ -453,7 +453,7 @@ class Oven():
         """Increment specified counters."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'counter-increment', target))
         counter_name = ''
         for term in decl.value:
@@ -497,7 +497,7 @@ class Oven():
         """Implement node-set declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'node-set', target))
         if pseudo is None:
             elem = element.etree_element
@@ -509,7 +509,7 @@ class Oven():
         """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'copy-to', target))
         if pseudo is None:
             elem = element.etree_element
@@ -521,7 +521,7 @@ class Oven():
         """Implement move-to declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'move-to', target))
         if pseudo is None:
             elem = element.etree_element
@@ -542,7 +542,7 @@ class Oven():
         """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'container', value))
         if self.is_pending_element(element):
             step['pending_elems'][-1][1].tree.tag = value
@@ -552,7 +552,7 @@ class Oven():
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'class', value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
@@ -565,7 +565,7 @@ class Oven():
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
@@ -578,7 +578,7 @@ class Oven():
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         if self.is_pending_element(element):
@@ -590,7 +590,7 @@ class Oven():
         """Implement content declaration."""
         # FIXME Need?: link(id)
         value = serialize(decl.value).strip()
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'content', value))
 
         step = self.state[self.state['current_step']]
@@ -701,7 +701,7 @@ class Oven():
 
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
-        logger.debug("{} {} {}".format(
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'group-by', serialize(decl.value)))
         sort_css = groupby_css = None
         if ',' in decl.value:
@@ -731,8 +731,8 @@ class Oven():
 
     def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
-        logger.debug("{} {} {}".format(
-            element.local_name, 'sort-by', serialize(decl.value)))
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
+                     element.local_name, 'sort-by', serialize(decl.value)))
 
         css = serialize(decl.value)
         sort = css_to_func(css)
@@ -755,8 +755,8 @@ class Oven():
 
     def do_pass(self, element, decl, pseudo):
         """Set processing pass for this ruleset."""
-        logger.debug("{} {} {}".format(
-            element.local_name, 'pass', serialize(decl.value)))
+        logger.debug("{} {} {} {}".format(self.state['current_step'],
+                     element.local_name, 'pass', serialize(decl.value)))
         pass  # Handled in parse_rule_steps
 
 
