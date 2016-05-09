@@ -420,18 +420,34 @@ class Oven():
     def do_counter_reset(self, element, decl, pseudo):
         """Clear specified counters."""
         target = serialize(decl.value).strip()
+        step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'counter-reset', target))
+        counter_name = ''
         for term in decl.value:
             if type(term) is ast.WhitespaceToken:
                 continue
 
             elif type(term) is ast.IdentToken:
-                step = self.state[self.state['current_step']]
-                step['counters'][term.value] = 0
+                if counter_name:
+                    step['counters'][counter_name] = 0
+                counter_name = term.value
+
+            elif type(term) is ast.LiteralToken:
+                if counter_name:
+                    step['counters'][counter_name] = 0
+                    counter_name = ''
+
+            elif type(term) is ast.NumberToken:
+                if counter_name:
+                    step['counters'][counter_name] = int(term.value)
+                    counter_name = ''
+
             else:
                 logger.warning("Unrecognized counter-reset term {}".
                                format(type(term)))
+        if counter_name:
+            step['counters'][counter_name] = 0
 
     def do_counter_increment(self, element, decl, pseudo):
         """Increment specified counters."""
@@ -439,18 +455,43 @@ class Oven():
         step = self.state[self.state['current_step']]
         logger.debug("{} {} {}".format(
                      element.local_name, 'counter-increment', target))
+        counter_name = ''
         for term in decl.value:
             if type(term) is ast.WhitespaceToken:
                 continue
 
             elif type(term) is ast.IdentToken:
-                if term.value in step['counters']:
-                    step['counters'][term.value] += 1
-                else:
-                    step['counters'][term.value] = 1
+                if counter_name:
+                    if counter_name in step['counters']:
+                        step['counters'][counter_name] += 1
+                    else:
+                        step['counters'][counter_name] = 1
+                counter_name = term.value
+
+            elif type(term) is ast.LiteralToken:
+                if counter_name:
+                    if counter_name in step['counters']:
+                        step['counters'][counter_name] += 1
+                    else:
+                        step['counters'][counter_name] = 1
+                    counter_name = ''
+
+            elif type(term) is ast.NumberToken:
+                if counter_name:
+                    if counter_name in step['counters']:
+                        step['counters'][counter_name] += int(term.value)
+                    else:
+                        step['counters'][counter_name] = int(term.value)
+                    counter_name = ''
+
             else:
                 logger.warning("Unrecognized counter-increment term {}".
                                format(type(term)))
+        if counter_name:
+            if counter_name in step['counters']:
+                step['counters'][counter_name] += 1
+            else:
+                step['counters'][counter_name] = 1
 
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""

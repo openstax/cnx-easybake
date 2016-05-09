@@ -1,18 +1,47 @@
 // Test counters
 ul {
-  counter-reset: lights;
+  counter-reset: lights, cardassian-lights, my-lights -1;
+  counter-reset: my-food 0;
   }
 
 li[data-type='light'] {
     counter-increment: lights;
+    counter-increment: my-lights;
+    &:not(:first-of-type) {
+        counter-increment: cardassian-lights;
+    }
+}
+li[data-type='food'] {
+    counter-increment: my-food 500;
 }
 
 body::after {
+    content: "There are " counter(cardassian-lights) " lights!"
+    }
+body::after {
     content: "There are " counter(lights) " lights!"
     }
-// LOG: cnx-easybake DEBUG ul counter-reset lights
+body::after {
+    content: "There are " counter(my-lights) " lights!"
+    }
+body::after {
+    content: "There are " counter(my-food) " calories!"
+    }
+// LOG: cnx-easybake DEBUG ul counter-reset lights, cardassian-lights, my-lights -1
+// LOG: cnx-easybake DEBUG ul counter-reset my-food 0
 // LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment my-lights
 // LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment my-lights
+// LOG: cnx-easybake DEBUG li counter-increment cardassian-lights
 // LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment my-lights
+// LOG: cnx-easybake DEBUG li counter-increment cardassian-lights
+// LOG: cnx-easybake DEBUG li counter-increment my-food 500
 // LOG: cnx-easybake DEBUG li counter-increment lights
+// LOG: cnx-easybake DEBUG li counter-increment my-lights
+// LOG: cnx-easybake DEBUG li counter-increment cardassian-lights
+// LOG: cnx-easybake DEBUG body content "There are " counter(cardassian-lights) " lights!"
 // LOG: cnx-easybake DEBUG body content "There are " counter(lights) " lights!"
+// LOG: cnx-easybake DEBUG body content "There are " counter(my-lights) " lights!"
+// LOG: cnx-easybake DEBUG body content "There are " counter(my-food) " calories!"
