@@ -673,8 +673,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning("{} empty bucket".
-                                       format(target))
+                        logger.warning("{} empty bucket".format(target))
                         continue
                     actions.extend(val)
                     if term.name == u'pending':
@@ -684,15 +683,13 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning("{} empty bucket".
-                                       format(target))
+                        logger.warning("{} empty bucket".format(target))
                         continue
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
 
                 else:
-                    logger.warning("Unknown function {}".
-                                   format(term.name))
+                    logger.warning("Unknown function {}".format(term.name))
             else:
                 logger.warning("Unknown term {}".
                                format(decl.value))
