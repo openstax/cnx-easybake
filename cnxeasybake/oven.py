@@ -113,9 +113,9 @@ class Oven():
     def bake(self, element):
         """Apply recipes to HTML tree. Will build recipes if needed."""
         for step in self.state['steps']:
-            # Need to wrap each loop, since tree may have changed
             self.state['current_step'] = step
             self.state['scope'].insert(0, step)
+            # Need to wrap each loop, since tree may have changed
             wrapped_html_tree = ElementWrapper.from_html_root(element)
 
             if not self.state[step]['recipe']:
@@ -712,15 +712,20 @@ class Oven():
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'group-by', serialize(decl.value)))
-        sort_css = groupby_css = None
+        sort_css = groupby_css = flags = None
         if ',' in decl.value:
-            sort_css = serialize(decl.value[:decl.value.index(',')])
-            groupby_css = serialize(decl.value[decl.value.index(',')+1:])
+            if decl.value.count(',') == 2:
+                sort_css, groupby_css, flags = split(decl.value, ',')
+            else:
+                sort_css, groupby_css = split(decl.value, ',')
         else:
-            sort_css = serialize(decl.value)
-
-        sort = css_to_func(sort_css)
-        groupby = css_to_func(groupby_css)
+            sort_css = decl.value
+        if groupby_css == 'nocase':
+            flags = groupby_css
+            groupby_css = None
+        sort = css_to_func(serialize(sort_css or ''), serialize(flags or ''))
+        groupby = css_to_func(serialize(groupby_css or ''),
+                              serialize(flags or ''))
         step = self.state[self.state['current_step']]
 
         if self.is_pending_element(element):
@@ -743,8 +748,12 @@ class Oven():
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'sort-by', serialize(decl.value)))
 
-        css = serialize(decl.value)
-        sort = css_to_func(css)
+        if ',' in decl.value:
+            css, flags = split(decl.value, ',')
+        else:
+            css = decl.value
+            flags = None
+        sort = css_to_func(serialize(css), serialize(flags or ''))
         step = self.state[self.state['current_step']]
 
         if self.is_pending_element(element):
@@ -769,13 +778,29 @@ class Oven():
         pass  # Handled in parse_rule_steps
 
 
-def css_to_func(css):
+def _itersplit(li, splitters):
+    current = []
+    for item in li:
+        if item in splitters:
+            yield current
+            current = []
+        else:
+            current.append(item)
+    yield current
+
+
+def split(li, *splitters):
+    """Split a list."""
+    return [subl for subl in _itersplit(li, splitters) if subl]
+
+
+def css_to_func(css, flags=None):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
     #  FIXME HACK need lessc to support functional-pseudo-selectors instead
     #  of marking as strings and stripping " here.
-    if css is None:
+    if not (css):
         return None
     sel = parse(css.strip('" '))[0]
     xpath = HTMLTranslator().selector_to_xpath(sel)
@@ -802,11 +827,17 @@ def css_to_func(css):
                 res_str = res[0]
             if first_letter:
                 if res_str:
-                    return res_str[0]
+                    if flags and 'nocase' in flags:
+                        return res_str[0].upper()
+                    else:
+                        return res_str[0]
                 else:
                     return res_str
             else:
-                return res_str
+                if flags and 'nocase' in flags:
+                    return res_str.upper()
+                else:
+                    return res_str
 
     return func
 

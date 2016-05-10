@@ -2,6 +2,10 @@ div {
    string-set: content();
    my-bad-directive: here it is;
    }
+div:nonsuch {
+   content: ha;
+   }
+// LOG: cnx-easybake DEBUG Invalid selector: div:nonsuch  (u'Unknown pseudo-class', u'nonsuch')
 // LOG: cnx-easybake DEBUG default div string-set  content()
 // LOG: cnx-easybake WARNING Bad string-set:  content()
 // LOG: cnx-easybake WARNING Missing method my_bad_directive

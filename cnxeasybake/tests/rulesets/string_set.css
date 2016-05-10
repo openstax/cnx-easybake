@@ -1,5 +1,6 @@
 div[data-type='chapter'] div[data-type='page'] {
   string-set: section "My Section String", section2 "My Second Section String", mytype attr(data-type);
+  counter-reset: mycounter;
 }
 div[data-type='chapter'] div[data-type='page'] div[data-type='title'] {
   string-set: myid attr(id) " " string(section) string(no-such-string);
@@ -13,6 +14,7 @@ div[data-type='chapter'] div[data-type='page'] dl.definition {
   string-set: badname badname;
   string-set: , badname;
   string-set: mystring pending(eoc-key-terms);
+  string-set: name counter(mycounter);
 }
 div[data-type='chapter'] div[data-type='page']::after {
   content: string(mytitle);

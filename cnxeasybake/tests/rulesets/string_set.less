@@ -2,6 +2,7 @@
 div[data-type='chapter'] {
   div[data-type='page'] {
   string-set: section "My Section String", section2 "My Second Section String", mytype attr(data-type);
+  counter-reset: mycounter;
   
     div[data-type='title'] {
       string-set: myid attr(id) " " string(section) string(no-such-string);
@@ -16,6 +17,7 @@ div[data-type='chapter'] {
       string-set: badname badname;
       string-set: , badname;
       string-set: mystring pending(eoc-key-terms);
+      string-set: name counter(mycounter);
     }
 
     &::after {
@@ -41,6 +43,7 @@ div[data-type='chapter']::after {
   sort-by: dl > dt;
 }
 // LOG: cnx-easybake DEBUG default div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+// LOG: cnx-easybake DEBUG default div counter-reset mycounter
 // LOG: cnx-easybake DEBUG default div string-set  myid attr(id) " " string(section) string(no-such-string)
 // LOG: cnx-easybake WARNING myid blank string
 // LOG: cnx-easybake DEBUG default div string-set  mytitle first-letter(content()) ": " content()
@@ -57,6 +60,7 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake WARNING Bad string-set:  , badname
 // LOG: cnx-easybake DEBUG default dl string-set  mystring pending(eoc-key-terms)
 // LOG: cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc-key-terms)
+// LOG: cnx-easybake DEBUG default dl string-set  name counter(mycounter)
 // LOG: cnx-easybake DEBUG default dl move-to eoc-key-terms
 // LOG: cnx-easybake DEBUG default dl string-set  "bad bad"
 // LOG: cnx-easybake WARNING Bad string-set:  "bad bad"
@@ -70,6 +74,7 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake WARNING Bad string-set:  , badname
 // LOG: cnx-easybake DEBUG default dl string-set  mystring pending(eoc-key-terms)
 // LOG: cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc-key-terms)
+// LOG: cnx-easybake DEBUG default dl string-set  name counter(mycounter)
 // LOG: cnx-easybake DEBUG default dl move-to eoc-key-terms
 // LOG: cnx-easybake DEBUG default dl string-set  "bad bad"
 // LOG: cnx-easybake WARNING Bad string-set:  "bad bad"
@@ -83,11 +88,13 @@ div[data-type='chapter']::after {
 // LOG: cnx-easybake WARNING Bad string-set:  , badname
 // LOG: cnx-easybake DEBUG default dl string-set  mystring pending(eoc-key-terms)
 // LOG: cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc-key-terms)
+// LOG: cnx-easybake DEBUG default dl string-set  name counter(mycounter)
 // LOG: cnx-easybake DEBUG default div content string(mytitle)
 // LOG: cnx-easybake DEBUG default div content first-letter(string(mytitle))
 // LOG: cnx-easybake DEBUG default div class first-letter(mytitle)
 // LOG: cnx-easybake DEBUG IdentToken as string: mytitle
 // LOG: cnx-easybake DEBUG default div string-set  section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+// LOG: cnx-easybake DEBUG default div counter-reset mycounter
 // LOG: cnx-easybake DEBUG default div string-set  myid attr(id) " " string(section) string(no-such-string)
 // LOG: cnx-easybake WARNING myid blank string
 // LOG: cnx-easybake DEBUG default div string-set  mytitle first-letter(content()) ": " content()
