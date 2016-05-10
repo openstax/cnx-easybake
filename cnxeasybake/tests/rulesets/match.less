@@ -8,7 +8,7 @@ div[data-type="page"] {
       attr-group-by: first-letter(content());
     }
     &:match(^[^a-zA-Z]) {
-      attr-group-by: "Symbol";
+      attr-group-by: "";
     }
     &::after {
       pass: 2;
@@ -38,7 +38,11 @@ body::after {
   class: glossary;
   pass: 2;
   content: pending(eob-glossary);
-  group-by: span, "span::attr(group-by)";
+  group-by: span, "span::attr(group-by)", nocase;
+}
+body > div.glossary > div.group-by:first-of-type > span.group-label {
+  pass: 3;
+  content: "Symbol";
 }
 // LOG: cnx-easybake DEBUG default div string-set  section-title content()
 // LOG: cnx-easybake DEBUG default span attr-group-by first-letter(content())
@@ -47,7 +51,7 @@ body::after {
 // LOG: cnx-easybake DEBUG default span attr-group-by first-letter(content())
 // LOG: cnx-easybake DEBUG default span attr-group-by first-letter(content())
 // LOG: cnx-easybake DEBUG default span attr-group-by first-letter(content())
-// LOG: cnx-easybake DEBUG default span attr-group-by "Symbol"
+// LOG: cnx-easybake DEBUG default span attr-group-by ""
 // LOG: cnx-easybake DEBUG default span attr-group-by first-letter(content())
 // LOG: cnx-easybake DEBUG 2 span pass  2
 // LOG: cnx-easybake DEBUG 2 span content content()
@@ -189,4 +193,6 @@ body::after {
 // LOG: cnx-easybake DEBUG IdentToken as string: glossary
 // LOG: cnx-easybake DEBUG 2 body pass  2
 // LOG: cnx-easybake DEBUG 2 body content pending(eob-glossary)
-// LOG: cnx-easybake DEBUG 2 body group-by  span, "span::attr(group-by)"
+// LOG: cnx-easybake DEBUG 2 body group-by  span, "span::attr(group-by)", nocase
+// LOG: cnx-easybake DEBUG 3 span pass  3
+// LOG: cnx-easybake DEBUG 3 span content "Symbol"

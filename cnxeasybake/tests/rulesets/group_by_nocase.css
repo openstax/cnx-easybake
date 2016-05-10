@@ -1,40 +1,35 @@
 div[data-type="page"] > div[data-type="document-title"] {
   string-set: section-title content();
 }
-div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) {
-  attr-group-by: first-letter(content());
-}
-div[data-type="page"] span[data-type="term"]:match(^[^a-zA-Z]) {
-  attr-group-by: "";
-}
 div[data-type="page"] span[data-type="term"]::after {
-  pass: 2;
   content: content();
-  attr-group-by: attr(group-by);
   container: span;
   class: glossary-term;
   move-to: gloss-term;
 }
 div[data-type="page"] span[data-type="term"]::after {
-  pass: 2;
   content: string(section-title);
   container: a;
   attr-href: "#" attr(id);
   move-to: link;
 }
 div[data-type="page"] span[data-type="term"]::after {
-  pass: 2;
   content: pending(gloss-term) pending(link);
   class: glossary-item;
   move-to: eob-glossary;
 }
+body::before {
+  container: h1;
+  content: "Index (well, sort of a glossary, really)";
+  move-to: glossary-title;
+}
+body::before {
+  container: h1;
+  content: "End of Index";
+  move-to: glossary-end;
+}
 body::after {
   class: glossary;
-  pass: 2;
-  content: pending(eob-glossary);
-  group-by: span, "span::attr(group-by)", nocase;
-}
-body > div.glossary > div.group-by:first-of-type > span.group-label {
-  pass: 3;
-  content: "Symbol";
+  content: pending(glossary-title) pending(eob-glossary) pending(glossary-end);
+  group-by: span, "span::first-letter", nocase;
 }
