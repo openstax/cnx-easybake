@@ -503,7 +503,11 @@ class Oven():
             elem = element.etree_element
         elif self.is_pending_element(element):
             elem = step['pending_elems'][-1][1].tree
-        step['pending'][target] = [('copy', elem)]
+        _, valstep = self.lookup('pending', target)
+        if not valstep:
+            step['pending'][target] = [('copy', elem)]
+        else:
+            self.state[valstep]['pending'][target] = [('copy', elem)]
 
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
@@ -515,7 +519,11 @@ class Oven():
             elem = element.etree_element
         elif self.is_pending_element(element):
             elem = step['pending_elems'][-1][1].tree
-        step['pending'].setdefault(target, []).append(('copy', elem))
+        _, valstep = self.lookup('pending', target)
+        if not valstep:
+            step['pending'][target] = [('copy', elem)]
+        else:
+            self.state[valstep]['pending'][target].append(('copy', elem))
 
     def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration."""
@@ -536,7 +544,11 @@ class Oven():
                 actions[target_index:] = actions[target_index+1:]
                 break
 
-        step['pending'].setdefault(target, []).append(('move', elem))
+        _, valstep = self.lookup('pending', target)
+        if not valstep:
+            step['pending'][target] = [('move', elem)]
+        else:
+            self.state[valstep]['pending'][target].append(('move', elem))
 
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
