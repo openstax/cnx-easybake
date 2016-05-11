@@ -669,15 +669,26 @@ class Oven():
                     else:
                         actions.append(('content', None))
 
-                elif term.name in ('nodes', 'pending'):
+                elif term.name == 'pending':
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
                         logger.warning("{} empty bucket".format(target))
                         continue
                     actions.extend(val)
-                    if term.name == u'pending':
-                        del self.state[val_step]['pending'][target]
+                    del self.state[val_step]['pending'][target]
+
+                elif term.name == 'nodes':
+                    target = serialize(term.arguments)
+                    val, val_step = self.lookup('pending', target)
+                    if val is None:
+                        logger.warning("{} empty bucket".format(target))
+                        continue
+                    for action in val:
+                            if action[0] == 'move':
+                                actions.append(('copy', action[1]))
+                            else:
+                                actions.append(action)
 
                 elif term.name == u'clear':
                     target = serialize(term.arguments)
@@ -712,20 +723,20 @@ class Oven():
         """Implement group-by declaration - pre-match."""
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'group-by', serialize(decl.value)))
-        sort_css = groupby_css = flags = None
+        sort_css = groupby_css = flags = ''
         if ',' in decl.value:
             if decl.value.count(',') == 2:
-                sort_css, groupby_css, flags = split(decl.value, ',')
+                sort_css, groupby_css, flags = \
+                        map(serialize, split(decl.value, ','))
             else:
-                sort_css, groupby_css = split(decl.value, ',')
+                sort_css, groupby_css = map(serialize, split(decl.value, ','))
         else:
-            sort_css = decl.value
-        if groupby_css == 'nocase':
+            sort_css = serialize(decl.value)
+        if groupby_css.strip() == 'nocase':
             flags = groupby_css
-            groupby_css = None
-        sort = css_to_func(serialize(sort_css or ''), serialize(flags or ''))
-        groupby = css_to_func(serialize(groupby_css or ''),
-                              serialize(flags or ''))
+            groupby_css = ''
+        sort = css_to_func(sort_css, flags)
+        groupby = css_to_func(groupby_css, flags)
         step = self.state[self.state['current_step']]
 
         if self.is_pending_element(element):
