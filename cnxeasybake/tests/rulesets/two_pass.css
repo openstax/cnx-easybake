@@ -9,6 +9,10 @@ body::after {
   pass: "second";
   content: string(onestring);
 }
+body::after {
+  pass: counter(mine);
+  content: string(onestring);
+}
 div[data-type='chapter'] section.practice-test {
   move-to: eoc-practice-test;
 }

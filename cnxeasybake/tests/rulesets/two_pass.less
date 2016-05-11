@@ -10,6 +10,10 @@ body {
         pass: "second";
         content: string(onestring);
     }
+    &::after {
+        pass: counter(mine);
+        content: string(onestring);
+    }
 }
 div[data-type='chapter'] {
     section.practice-test {
@@ -45,6 +49,7 @@ div[data-type="page"]::before, div[data-type="composite-page"]::before {
 
 // LOG: cnx-easybake DEBUG IdentToken as string: default
 // LOG: cnx-easybake DEBUG IdentToken as string: second
+// LOG: cnx-easybake WARNING Bad pass name: functions not allowed. counter(mine)
 // LOG: cnx-easybake DEBUG IdentToken as string: second
 // LOG: cnx-easybake DEBUG default body string-set  onestring "This is a first-pass string"
 // LOG: cnx-easybake DEBUG default section move-to eoc-practice-test
@@ -66,6 +71,8 @@ div[data-type="page"]::before, div[data-type="composite-page"]::before {
 // LOG: cnx-easybake DEBUG default div content pending(eoc-key-equations)
 // LOG: cnx-easybake DEBUG default body pass  default, second
 // LOG: cnx-easybake DEBUG default body content "Two passes, doubled!"
+// LOG: cnx-easybake DEBUG default body pass  counter(mine)
+// LOG: cnx-easybake DEBUG default body content string(onestring)
 // LOG: cnx-easybake DEBUG second div pass  second
 // LOG: cnx-easybake DEBUG second div counter-increment page
 // LOG: cnx-easybake DEBUG second div container h1
