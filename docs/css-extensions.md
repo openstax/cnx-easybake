@@ -1,3 +1,8 @@
+### Easybake: Structured Text Manipulation via CSS Extensions
+
+
+
+
 ###  CSS3 Syntax for Collation and Numbering - OpenStax easybake ###
 
 ## Moving and copying:
@@ -39,8 +44,8 @@ declarations, and two new pseudo-element selectors:
     data-type: mydatatypevalue
     attr-my-new-attr: mynewattibute
 
-    sort-by: dl>dt::attr(sortby)
-    group-by: span, span::first-letter(mylabel)
+    sort-by: dl>dt::attr(sortby), nocase
+    group-by: span, span::first-letter(mylabel), nocase
 
     pass: 2
 
@@ -61,35 +66,23 @@ The `copy-to` declaration will modify any 'id' values in the nodes it copies,
 to keep them unique within the HTML document tree as a whole. FIXME add details
 of heuristic used to make them unique.
 
-The `sort-by` and `group-by` declartions  take one and two CSS selectors as
-arguments, respectively. They apply to nodes moved (or copied) into the current
-context's `content` declaration that match the sort/group selector - _i.e._
-anything brought in via `pending()` that matches. The value used as the sort or
-grouping is the text at the node selected by applying the CSS selector to the
-pending nodes. This includes text of child nodes. For example, the selector
-`span` applied to the node `<span data-type="term">velocity</span>` resolves to
-the string `velocity`. Applying the same to `<span><em>𝛾</em>-radiation</span>`
-resolves to `𝛾-radiation`. If the selector does not match the node being
-added, the node will be appended at that point.
+The `sort-by` and `group-by` declarations take comma separated arguments. The `sort-by` declaration takes one CSS selector and an optional flag argument, while
+'group-by' takes two selectors, and the optional flags. These directives apply to nodes moved (or copied) into the current context's `content` declaration that match the sort/group selector - _i.e._ anything brought in via `pending()` or `nodes()` that matches the selector. The value used in the sort or grouping comparisons is the text at the node selected by applying the CSS selector to the pending nodes. This includes text of child nodes. For example, the selector `span` applied to the node `<span data-type="term">velocity</span>` resolves to the string `velocity`.
+Applying the same to `<span><em>𝛾</em>-radiation</span>` resolves to `𝛾-radiation`. If the flag `nocase` is provided, these comparisons are case-insensitive. If the selector does not match the node being added, the node will be appended at that point.
 
 There are also pseudo-element selectors that can be used in this context:
-`::first-letter`, `::attr(name)`, and `::first-letter(name)`. The first of
-these is not custom to us. In this context, it will select the first character
-of the text as described above. The next extracts the textual value of the
+`::first-letter`, `::attr(name)`, and `::first-letter(name)`. The first two of
+these are not custom to us. The first will select the first character
+of the text as described above. The next returns the value of the
 named attribute at the selected node, _i.e._, given `<dt
 sort-by="alpha-helix"><em>𝛼</em>-helix</dt>` the selector `dl >
 dt::attr(sort-by)` would yield `alpha-helix`, rather than `𝛼-helix`. The last
 pseudo-element, `::first-letter(name)` applies the first character logic to
 the retrieved attribute value.
 
-The next new declaration is `group-by`. This is the least general of all our
-extensions, designed to meet the needs of constructing glossaries and indexes.
-This declaration takes one or two CSS selectors. The first selector works just
-like `sort-by` in terms of ordering. The difference is that if two nodes have
-the same `group-by` value, we assume that they contain the same first-child node,
-and combine the two nodes by discarding the first child of the second node, then
-appending any further children to the first node. For example, this allows us to
-build index entries by passing in index-term link pairs, like so:
+The `group-by` declaration is the most complex as well as the least general of all our extensions, designed to
+meet the needs of constructing glossaries and indexes. This declaration takes one
+or two CSS selectors. The first selector works just like `sort-by` in terms of ordering. The difference is that if two nodes have the same `group-by` value, we assume that they contain the same first-child node, and combine the two nodes by discarding the first child of the second node, then appending any further children to the first node. For example, this allows us to build index entries by passing in index-term link pairs, like so:
 
     <div class="index-item">  
       <span class="term">velocity</span>
@@ -122,6 +115,9 @@ Applying `group-by: span, span::first-letter` results in:
         <a href="#idterm66">page 7</a>
       </div>
     </div>
+
+Note that the `nocase` flag can be used with group-by as well, and affects both
+sorting/grouping behavior and subgrouping. An current side effect of the current implementation of `nocase` for subgroups is that the generated labels will be up-cased.
 
 ## Multi-Pass
 
