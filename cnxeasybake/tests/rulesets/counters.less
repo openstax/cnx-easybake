@@ -4,6 +4,10 @@ ul {
   counter-reset: my-food 0;
   }
 
+li {
+   counter-increment: items;
+   }
+
 li[data-type='light'] {
     counter-increment: lights;
     counter-increment: my-lights;
@@ -15,6 +19,9 @@ li[data-type='food'] {
     counter-increment: my-food 500;
 }
 
+body::before {
+    content: "Hint, the food is at item #" target-counter("burger", items)  " And maybe at #" target-counter("fries", items);
+    }
 body::after {
     content: "There are " counter(cardassian-lights) " lights!"
     }
@@ -27,17 +34,23 @@ body::after {
 body::after {
     content: "There are " counter(my-food) " calories!"
     }
+// LOG: cnx-easybake DEBUG default body content "Hint, the food is at item #" target-counter("burger", items) " And maybe at #" target-counter("fries", items)
 // LOG: cnx-easybake DEBUG default ul counter-reset lights, cardassian-lights, my-lights -1
 // LOG: cnx-easybake DEBUG default ul counter-reset my-food 0
+// LOG: cnx-easybake DEBUG default li counter-increment items
 // LOG: cnx-easybake DEBUG default li counter-increment lights
 // LOG: cnx-easybake DEBUG default li counter-increment my-lights
-// LOG: cnx-easybake DEBUG default li counter-increment lights
-// LOG: cnx-easybake DEBUG default li counter-increment my-lights
-// LOG: cnx-easybake DEBUG default li counter-increment cardassian-lights
-// LOG: cnx-easybake DEBUG default li counter-increment lights
-// LOG: cnx-easybake DEBUG default li counter-increment my-lights
-// LOG: cnx-easybake DEBUG default li counter-increment cardassian-lights
+// LOG: cnx-easybake DEBUG default li counter-increment items
 // LOG: cnx-easybake DEBUG default li counter-increment my-food 500
+// LOG: cnx-easybake DEBUG default li counter-increment items
+// LOG: cnx-easybake DEBUG default li counter-increment lights
+// LOG: cnx-easybake DEBUG default li counter-increment my-lights
+// LOG: cnx-easybake DEBUG default li counter-increment cardassian-lights
+// LOG: cnx-easybake DEBUG default li counter-increment items
+// LOG: cnx-easybake DEBUG default li counter-increment lights
+// LOG: cnx-easybake DEBUG default li counter-increment my-lights
+// LOG: cnx-easybake DEBUG default li counter-increment cardassian-lights
+// LOG: cnx-easybake DEBUG default li counter-increment items
 // LOG: cnx-easybake DEBUG default li counter-increment lights
 // LOG: cnx-easybake DEBUG default li counter-increment my-lights
 // LOG: cnx-easybake DEBUG default li counter-increment cardassian-lights
@@ -45,3 +58,4 @@ body::after {
 // LOG: cnx-easybake DEBUG default body content "There are " counter(lights) " lights!"
 // LOG: cnx-easybake DEBUG default body content "There are " counter(my-lights) " lights!"
 // LOG: cnx-easybake DEBUG default body content "There are " counter(my-food) " calories!"
+// LOG: cnx-easybake WARNING Bad ID target lookup fries

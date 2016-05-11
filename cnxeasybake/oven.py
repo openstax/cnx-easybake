@@ -6,7 +6,7 @@ import tinycss2
 from tinycss2 import serialize, parse_declaration_list, ast
 import cssselect2
 from cssselect2 import ElementWrapper
-import copy
+from copy import deepcopy
 
 verbose = False
 
@@ -62,6 +62,7 @@ class Oven():
         self.state['steps'] = steps
         self.state['current_step'] = None
         self.state['scope'] = []
+        self.state['counters'] = {}
         for step in self.matchers:
             self.state[step] = {}
             self.state[step]['pending'] = {}
@@ -152,11 +153,18 @@ class Oven():
                         prepend_string(target, value)
                     else:
                         append_string(target, value)
+                elif action == 'target-counter':
+                    el_id, cname = value
+                    strval = str(self.lookup('counters', cname, el_id) or 0)
+                    if target.location == 'before':
+                        prepend_string(target, strval)
+                    else:
+                        append_string(target, strval)
                 elif action == 'move':
                     grouped_insert(target, value)
 
                 elif action == 'copy':
-                    mycopy = copy.deepcopy(value)  # FIXME deal w/ ID values
+                    mycopy = deepcopy(value)  # FIXME deal w/ ID values
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 else:
@@ -216,6 +224,13 @@ class Oven():
                 # deal w/ pending_elements, per rule
                 self.pop_pending_elem(element)
 
+        element_id = element.etree_element.get('id')
+        if element_id:
+            self.state['counters'][element_id] = {}
+            for step in self.state['scope']:
+                self.state['counters'][element_id][step] = \
+                        {'counters': deepcopy(self.state[step]['counters'])}
+
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
@@ -272,19 +287,31 @@ class Oven():
         else:
             return lambda x, y, z: None
 
-    def lookup(self, vtype, vname):
+    def lookup(self, vtype, vname, target_id=None):
         """Return value of vname from the variable store vtype.
 
         Valid vtypes are `strings` `pending` and `counters`. If the value
         is not found in the current steps store, ealier steps will be
         checked. If not found None is returned
         """
-        for step in self.state['scope']:
-            if vname in self.state[step][vtype]:
+        if target_id is not None:
+            try:
+                state = self.state[vtype][target_id]
+                steps = self.state[vtype][target_id].keys()
+            except KeyError:
+                logger.warning('Bad ID target lookup {}'.format(target_id))
+                return None
+
+        else:
+            state = self.state
+            steps = self.state['scope']
+
+        for step in steps:
+            if vname in state[step][vtype]:
                 if vtype == 'pending':
-                    return(self.state[step][vtype][vname], step)
+                    return(state[step][vtype][vname], step)
                 else:
-                    return self.state[step][vtype][vname]
+                    return state[step][vtype][vname]
         if vtype == 'pending':
             return (None, None)
         else:
@@ -651,6 +678,11 @@ class Oven():
                     count = self.lookup('counters', countername) or 0
                     actions.append(('string', str(count)))
 
+                elif term.name == 'target-counter':
+                    args = [serialize(a).strip('" \'')
+                            for a in split(term.arguments, ',')]
+                    actions.append(('target-counter', args))
+
                 elif term.name == u'attr':
                     att_name = serialize(term.arguments)
                     actions.append(('string',
@@ -664,7 +696,7 @@ class Oven():
                 elif term.name == u'content':
                     if pseudo:
                         # FIXME deal w/ IDs
-                        mycopy = copy.deepcopy(element.etree_element)
+                        mycopy = deepcopy(element.etree_element)
                         actions.append(('content', mycopy))
                     else:
                         actions.append(('content', None))
