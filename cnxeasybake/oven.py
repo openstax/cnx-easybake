@@ -181,6 +181,15 @@ class Oven():
         for declarations, pseudo in self.matchers[step].match(element):
             matching_rules.setdefault(pseudo, []).append(declarations)
 
+        # Do non-pseudo
+        if None in matching_rules:
+            for declarations in matching_rules.get(None):
+                self.push_target_elem(element)
+                for decl in declarations:
+                    method = self.find_method(decl.name)
+                    method(element, decl, None)
+                self.pop_target_elem(element)
+
         # Do before
         if 'before' in matching_rules:
             for declarations in matching_rules.get('before'):
@@ -191,15 +200,6 @@ class Oven():
                     method(element, decl, 'before')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_elem(element)
-
-        # Do non-pseudo
-        if None in matching_rules:
-            for declarations in matching_rules.get(None):
-                self.push_target_elem(element)
-                for decl in declarations:
-                    method = self.find_method(decl.name)
-                    method(element, decl, None)
-                self.pop_target_elem(element)
 
         # Recurse
         for el in element.iter_children():
