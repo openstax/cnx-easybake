@@ -7,7 +7,7 @@ import logging
 import sys
 from lxml import etree
 
-from cnxeasybake import Oven
+from cnxeasybake import Oven, __version__
 
 logger = logging.getLogger('cnx-easybake')
 
@@ -28,6 +28,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Process raw HTML to cooked"
                                                  " (embedded numbering and"
                                                  " collation)")
+    parser.add_argument('-v', '--version', action="version",
+                        version=__version__, help='Report the library version')
     parser.add_argument("css_rules", help="CSS3 ruleset stylesheet recipe")
     parser.add_argument("html_in", nargs="?",
                         type=argparse.FileType('r'),
@@ -37,7 +39,7 @@ def main(argv=None):
                         type=argparse.FileType('w'),
                         help="cooked HTML file output (default stdout)",
                         default=sys.stdout)
-    parser.add_argument('-v', '--verbose', action='store_true',
+    parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
     args = parser.parse_args(argv)
 
@@ -46,7 +48,7 @@ def main(argv=None):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    if args.verbose:
+    if args.debug:
         logger.setLevel(logging.DEBUG)
 
     easybake(args.css_rules, args.html_in, args.html_out)
