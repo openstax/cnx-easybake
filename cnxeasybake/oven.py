@@ -145,6 +145,8 @@ class Oven():
             else:
                 recipe = self.state[step]
 
+            logger.debug('Recipe {} length: {}'.format(
+                step, len(recipe['actions'])))
             target = None
             old_content = {}
             for action, value in recipe['actions']:
@@ -257,11 +259,14 @@ class Oven():
         return self.state[step]
 
     # Need target incase any declarations impact it
+
     def push_target_elem(self, element, pseudo=None):
         """Place target element onto action stack."""
-        self.state[self.state['current_step']]['actions'].\
-            append(('target', Target(element.etree_element,
-                                     pseudo, None, False, None)))
+        actions = self.state[self.state['current_step']]['actions']
+        if len(actions) > 0 and actions[-1][0] == 'target':
+            actions.pop()
+        actions.append(('target', Target(element.etree_element,
+                                         pseudo, None, False, None)))
 
     def push_pending_elem(self, element, pseudo):
         """Create and place pending target element onto stack."""
@@ -774,6 +779,8 @@ class Oven():
         if len(wastebin) > 0:
             trashbucket = etree.Element('div',
                                         attrib={'class': 'delete-me'})
+            if actions[-1][0] == 'target':
+                actions.pop()
             actions.append(('target', Target(trashbucket, None,
                                              None, False, None)))
             actions.extend(wastebin)
