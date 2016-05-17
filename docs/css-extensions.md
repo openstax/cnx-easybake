@@ -5,10 +5,10 @@
 
 ###  CSS3 Syntax for Collation and Numbering - OpenStax easybake ###
 
-## Moving and copying:
+## Moving and copying nodes:
 
-Implement parts of the CSS-generated-content spec. Two declarations and
-a content function:  
+Implement parts of the CSS-generated-content spec. Four declarations and
+two content functions:  
 
     move-to: <bucketname>  
     copy-to: <bucketname>  
@@ -29,38 +29,38 @@ The CSS function `pending()` is valid as the value of a `content:` declaration,
 esp. inside a pseudo-element (`::after` or `::before`). When this node is
 reached when walking the HTML tree in recursive descent, the pending moves and
 copies land here. `string(<stringname>)` and `nodes(<setname>)` retrieve  values
-stored by `string-set` and `node-set`, respectively. `attr(<attrname>)` evalutes
+stored by `string-set` and `node-set`, respectively. `attr(<attrname>)` evaluates
 to the value of an attribute on the current node, while content() (in a string-set)
 expands to the textual value of the node contents. In other contexts, it expands
 to the node's current content.
 
 As an extension, since we are targeting output of HTML, rather than another
 rendering tree (page or screen display), we will create an actual wrapper node
-for each pseudo-element area. In support of this, we are adding additional
+for each pseudo-element area. This wrapper node is created whenever an included
+`content` declaration resolves to non-empty content, or if the ruleset contains no `content` declaration at all. In support of this, we are adding additional
 declarations, and two new pseudo-element selectors:  
 
     container: div|span|h1|...  
     class: myclassvalue  
     data-type: mydatatypevalue
-    attr-my-new-attr: mynewattibute
+    attr-my-new-attr: mynewattibutevalue
 
     sort-by: dl>dt::attr(sortby), nocase
     group-by: span, span::first-letter(mylabel), nocase
 
     pass: 2
 
-The class declarations will set the value of that attribute on the generated
+The class declaration will set the value of that attribute on the generated
 wrapper node. The data-*  and attr-* allows for setting any data or other
-arbitrary attributes on the wrapper. The `container` declaration will make the
-wrapper a node of whatever type you specify, defaulting to div.
+arbitrary attributes on the wrapper. Note that the `attr-*` declaration strips
+ the `attr-` prefix, so that the example above would create an attibute named `my-new-attr`. The `container` declaration will make the wrapper a node of whatever type you specify, rather than the default of `div`.
 
 Note that `move-to:` and `copy-to:` may be used as part of a pseudo-element
 rule as well. In that case, the wrapping node and its content will be moved or
 copied to the declared bucketname, as well. This would allow generation of, for
 example, a title string, in the context of one node, using local values of
 counters or content, but moving that generated node inside a different node
-elsewhere. The value of this over string-set is that it generates a _wrapped_
-element, rather than only a string.
+elsewhere. The value of this over string-set is that it generates a structured node set, rather than being constrained to a string.
 
 The `copy-to` declaration will modify any 'id' values in the nodes it copies,
 to keep them unique within the HTML document tree as a whole. FIXME add details

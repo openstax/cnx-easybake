@@ -36,12 +36,13 @@ class Target():
 class TargetVal():
     """Delayed lookup string/counter variable."""
 
-    def __init__(self, collator, el_id, vname, vtype):
+    def __init__(self, collator, el_id, vname, vtype, vstyle=None):
         """Set up string lookup object."""
         self.collator = collator
         self.el_id = el_id
         self.vname = vname
         self.vtype = vtype
+        self.vstyle = vstyle
 
     def __str__(self):
         """String value."""
@@ -49,9 +50,14 @@ class TargetVal():
 
     def __unicode__(self):
         """Unicode value."""
-        return unicode(self.collator.lookup(self.vtype,
-                                            self.vname,
-                                            self.el_id))
+        if self.vtype == 'counters':
+            return unicode(self.collator.lookup(self.vtype,
+                                                (self.vname, self.vstyle),
+                                                self.el_id))
+        else:
+            return unicode(self.collator.lookup(self.vtype,
+                                                self.vname,
+                                                self.el_id))
 
 
 class Oven():
@@ -321,6 +327,13 @@ class Oven():
         """
         nullvals = {'strings': '', 'counters': 0, 'pending': (None, None)}
         nullval = nullvals[vtype]
+        vstyle = None
+
+        if vtype == 'counters':
+            if len(vname) > 1:
+                vname, vstyle = vname
+            else:
+                vname = vname[0]
 
         if target_id is not None:
             try:
@@ -339,9 +352,45 @@ class Oven():
                 if vtype == 'pending':
                     return(state[step][vtype][vname], step)
                 else:
-                    return state[step][vtype][vname]
+                    val = state[step][vtype][vname]
+                    if vstyle is not None:
+                        return self.counter_style(val, vstyle)
+                    return val
         else:
             return nullval
+
+    def counter_style(self, val, style):
+        """Return counter value in given style."""
+        if style == 'decimal-leading-zero':
+            if val < 10:
+                valstr = "0#{num}"
+            else:
+                valstr = str(val)
+        elif style == 'lower-roman':
+            valstr = _to_roman(val).lower()
+        elif style == 'upper-roman':
+            valstr = _to_roman(val)
+        elif style == 'lower-latin' or style == 'lower-ahpha':
+            if 1 <= val <= 26:
+                valstr = chr(val + 96)
+            else:
+                logger.warning('Counter out of range'
+                               ' for latin (must be 1...26)')
+                valstr = str(val)
+        elif style == 'upper-latin' or style == 'upper-alpha':
+            if 1 <= val <= 26:
+                valstr = chr(val + 64)
+            else:
+                logger.warning('Counter out of range'
+                               ' for latin (must be 1...26)')
+                valstr = str(val)
+        elif style == 'decimal':
+            valstr = str(val)
+        else:
+            logger.warning("ERROR: Counter numbering not supported for"
+                           " list type {}. Using decimal.".format(style))
+            valstr = str(val)
+        return valstr
 
     def eval_string_value(self, element, value):
         """Evaluate parsed string.
@@ -463,8 +512,9 @@ class Oven():
                         logger.warning("Bad string-set: {}".format(args))
 
                 elif term.name == 'counter':
-                    countername = serialize(term.arguments)
-                    count = self.lookup('counters', countername) or 1
+                    counterargs = [serialize(t).strip(" \'")
+                                   for t in split(term.arguments, ',')]
+                    count = self.lookup('counters', counterargs)
                     strval += str(count)
 
                 elif term.name == u'attr':
@@ -706,9 +756,10 @@ class Oven():
                     actions.append(('string', val))
 
                 elif term.name == 'counter':
-                    countername = serialize(term.arguments)
-                    count = self.lookup('counters', countername) or 0
-                    actions.append(('string', str(count)))
+                    counterargs = [serialize(t).strip(" \'")
+                                   for t in split(term.arguments, ',')]
+                    count = self.lookup('counters', counterargs)
+                    actions.append(('string', (count,)))
 
                 elif term.name.startswith('target-'):
                     delayed = [serialize(a).strip('" \'')
@@ -1050,3 +1101,33 @@ def parse_rule_steps(rule):
         steps.append('default')
 
     return (steps, declarations)
+
+
+# convert integer to Roman numeral.
+# From http://www.diveintopython.net/unit_testing/romantest.html
+def _to_roman(num):
+    """Convert integer to roman numerals."""
+    roman_numeral_map = (
+        ('M',  1000),
+        ('CM', 900),
+        ('D',  500),
+        ('CD', 400),
+        ('C',  100),
+        ('XC', 90),
+        ('L',  50),
+        ('XL', 40),
+        ('X',  10),
+        ('IX', 9),
+        ('V',  5),
+        ('IV', 4),
+        ('I',  1)
+    )
+    if not (0 < num < 5000):
+        logger.warning('Number out of range for roman (must be 1..4999)')
+        return num
+    result = ''
+    for numeral, integer in roman_numeral_map:
+        while num >= integer:
+            result += numeral
+            num -= integer
+    return result
