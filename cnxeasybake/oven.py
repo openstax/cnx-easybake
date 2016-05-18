@@ -33,6 +33,27 @@ class Target():
                 "groupby: {0.groupby}".format(self))
 
 
+class TargetVal():
+    """Delayed lookup string/counter variable."""
+
+    def __init__(self, collator, el_id, vname, vtype):
+        """Set up string lookup object."""
+        self.collator = collator
+        self.el_id = el_id
+        self.vname = vname
+        self.vtype = vtype
+
+    def __str__(self):
+        """String value."""
+        return self.__unicode__.encode('utf-8')
+
+    def __unicode__(self):
+        """Unicode value."""
+        return unicode(self.collator.lookup(self.vtype,
+                                            self.vname,
+                                            self.el_id))
+
+
 class Oven():
     """Collate and number HTML with CSS3.
 
@@ -63,11 +84,11 @@ class Oven():
         self.state['current_step'] = None
         self.state['scope'] = []
         self.state['counters'] = {}
+        self.state['strings'] = {}
         for step in self.matchers:
             self.state[step] = {}
             self.state[step]['pending'] = {}
             self.state[step]['actions'] = []
-            self.state[step]['pending_elems'] = []
             self.state[step]['counters'] = {}
             self.state[step]['strings'] = {}
             # FIXME rather than boolean should ref HTML tree
@@ -124,12 +145,16 @@ class Oven():
             else:
                 recipe = self.state[step]
 
+            logger.debug('Recipe {} length: {}'.format(
+                step, len(recipe['actions'])))
             target = None
             old_content = {}
             for action, value in recipe['actions']:
                 if action == 'target':
                     target = value
                     old_content = {}
+                elif action == 'tag':
+                    target.tree.tag = value
                 elif action == 'clear':
                     old_content['text'] = target.tree.text
                     target.tree.text = None
@@ -147,15 +172,11 @@ class Oven():
                         for child in old_content['children']:
                             target.tree.append(child)
                 elif action == 'attrib':
-                    target.tree.set(*value)
+                    attname, vals = value
+                    strval = u''.join([unicode(s) for s in vals])
+                    target.tree.set(attname, strval)
                 elif action == 'string':
-                    if target.location == 'before':
-                        prepend_string(target, value)
-                    else:
-                        append_string(target, value)
-                elif action == 'target-counter':
-                    el_id, cname = value
-                    strval = str(self.lookup('counters', cname, el_id) or 0)
+                    strval = u''.join([unicode(s) for s in value])
                     if target.location == 'before':
                         prepend_string(target, strval)
                     else:
@@ -196,18 +217,17 @@ class Oven():
                 for decl in declarations:
                     method = self.find_method(decl.name)
                     method(element, decl, None)
-                self.pop_target_elem(element)
 
         # Do before
         if 'before' in matching_rules:
             for declarations in matching_rules.get('before'):
                 # pseudo element, create wrapper
-                self.push_pending_elem(element)
+                self.push_pending_elem(element, 'before')
                 for decl in declarations:
                     method = self.find_method(decl.name)
                     method(element, decl, 'before')
                 # deal w/ pending_elements, per rule
-                self.pop_pending_elem(element)
+                self.pop_pending_if_empty(element)
 
         # Recurse
         for el in element.iter_children():
@@ -217,55 +237,60 @@ class Oven():
         if 'after' in matching_rules:
             for declarations in matching_rules.get('after'):
                 # pseudo element, create wrapper
-                self.push_pending_elem(element)
+                self.push_pending_elem(element, 'after')
                 for decl in declarations:
                     method = self.find_method(decl.name)
                     method(element, decl, 'after')
                 # deal w/ pending_elements, per rule
-                self.pop_pending_elem(element)
+                self.pop_pending_if_empty(element)
 
         element_id = element.etree_element.get('id')
         if element_id:
             self.state['counters'][element_id] = {}
+            self.state['strings'][element_id] = {}
             for step in self.state['scope']:
-                self.state['counters'][element_id][step] = \
-                        {'counters': deepcopy(self.state[step]['counters'])}
+                self.state['counters'][element_id][step] = {
+                        'counters': deepcopy(self.state[step]['counters'])}
+                self.state['strings'][element_id][step] = {
+                        'strings': deepcopy(self.state[step]['strings'])}
 
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
 
     # Need target incase any declarations impact it
-    def push_target_elem(self, element):
-        """Place target element onto action stack."""
-        self.state[self.state['current_step']]['actions'].\
-            append(('target', Target(element.etree_element,
-                                     None, None, False, None)))
 
-    def pop_target_elem(self, element):
-        """Remove target element from stacki if not used."""
+    def push_target_elem(self, element, pseudo=None):
+        """Place target element onto action stack."""
         actions = self.state[self.state['current_step']]['actions']
-        if actions[-1][0] == 'target' and \
-           actions[-1][1].tree == element.etree_element:
+        if len(actions) > 0 and actions[-1][0] == 'target':
+            actions.pop()
+        actions.append(('target', Target(element.etree_element,
+                                         pseudo, None, False, None)))
+
+    def push_pending_elem(self, element, pseudo):
+        """Create and place pending target element onto stack."""
+        self.push_target_elem(element, pseudo)
+        elem = etree.Element('div')
+        actions = self.state[self.state['current_step']]['actions']
+        actions.append(('move', elem))
+        actions.append(('target', Target(elem, None, None, False, None)))
+
+    def pop_pending_if_empty(self, element):
+        """Remove empty wrapper element."""
+        actions = self.state[self.state['current_step']]['actions']
+        elem = self.current_target().tree
+        if actions[-1][0] == ('target') and actions[-1][1].tree == elem:
+            actions.pop()
+            actions.pop()
             actions.pop()
 
-    # Maintain stack of pending wrapper elements
-    def push_pending_elem(self, element):
-        """Create and place pending target element onto stack."""
-        elem = etree.Element('div')
-        self.state[self.state['current_step']]['pending_elems'].\
-            append((element, Target(elem, None, None, False, None)))
-
-    def pop_pending_elem(self, element):
-        """Remove pending target element from stack."""
-        if self.is_pending_element(element):
-            self.state[self.state['current_step']]['pending_elems'].pop()
-
-    def is_pending_element(self, element):
-        """Determine if most recent pending is for this element."""
-        step = self.state[self.state['current_step']]
-        return len(step['pending_elems']) > 0 \
-            and step['pending_elems'][-1][0] == element
+    def current_target(self):
+        """Return current target."""
+        actions = self.state[self.state['current_step']]['actions']
+        for action, value in reversed(actions):
+            if action == 'target':
+                return value
 
     # Declaration methods and accessor
     def find_method(self, name):
@@ -290,17 +315,20 @@ class Oven():
     def lookup(self, vtype, vname, target_id=None):
         """Return value of vname from the variable store vtype.
 
-        Valid vtypes are `strings` `pending` and `counters`. If the value
-        is not found in the current steps store, ealier steps will be
-        checked. If not found None is returned
+        Valid vtypes are `strings` 'counters', and `pending`. If the value
+        is not found in the current steps store, earlier steps will be
+        checked. If not found, '', 0, or (None, None) is returned.
         """
+        nullvals = {'strings': '', 'counters': 0, 'pending': (None, None)}
+        nullval = nullvals[vtype]
+
         if target_id is not None:
             try:
                 state = self.state[vtype][target_id]
                 steps = self.state[vtype][target_id].keys()
             except KeyError:
                 logger.warning('Bad ID target lookup {}'.format(target_id))
-                return None
+                return nullval
 
         else:
             state = self.state
@@ -312,15 +340,16 @@ class Oven():
                     return(state[step][vtype][vname], step)
                 else:
                     return state[step][vtype][vname]
-        if vtype == 'pending':
-            return (None, None)
         else:
-            return None
+            return nullval
 
     def eval_string_value(self, element, value):
-        """Evaluate parsed string and return its value."""
+        """Evaluate parsed string.
+
+        Returns a list of current and delayed values.
+        """
         strval = ''
-        args = serialize(value)
+        vals = []
 
         for term in value:
             if type(term) is ast.WhitespaceToken:
@@ -341,7 +370,7 @@ class Oven():
                 if term.name == 'string':
                     strname = serialize(term.arguments)
                     val = self.lookup('strings', strname)
-                    if val is None:
+                    if val == '':
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
@@ -354,17 +383,38 @@ class Oven():
                 elif term.name == u'content':
                     strval += etree.tostring(element.etree_element,
                                              encoding='unicode',
-                                             method='text')
+                                             method='text',
+                                             with_tail=False)
+
+                elif term.name.startswith('target-'):
+                    if strval:
+                        vals.append(strval)
+                        strval = ''
+                    delayed = [serialize(a).strip('" \'')
+                               for a in split(term.arguments, ',')]
+                    vtype = term.name[7:]+'s'
+                    delayed.insert(0, self)
+                    delayed.append(vtype)
+                    vals.append(TargetVal(*delayed))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
                     if tmpstr:
-                        strval += tmpstr[0]
+                        if isinstance(tmpstr[0], basestring):
+                            strval += tmpstr[0][0]
+                        else:
+                            logger.warning("Bad string value:"
+                                           " nested target-* not allowed. "
+                                           "{}".format(serialize(value)))
+
+                    # FIXME can we do delayed first-letter
 
                 elif term.name == u'pending':
-                    logger.warning("Bad string value: pending() not allowed."
-                                   "{}".format(args))
-        return strval.strip()
+                    logger.warning("Bad string value: pending() not allowed. "
+                                   "{}".format(serialize(value)))
+        if strval:
+            vals.append(strval)
+        return vals
 
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
@@ -403,7 +453,7 @@ class Oven():
                 if term.name == 'string':
                     other_strname = serialize(term.arguments)
                     val = self.lookup('strings', other_strname)
-                    if val is None:
+                    if val == '':
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
@@ -428,14 +478,20 @@ class Oven():
                     if strname is not None:
                         strval += etree.tostring(element.etree_element,
                                                  encoding='unicode',
-                                                 method='text')
+                                                 method='text',
+                                                 with_tail=False)
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
                     if tmpstr:
-                        strval += tmpstr[0]
+                        if isinstance(tmpstr[0], basestring):
+                            strval += tmpstr[0][0]
+                        else:
+                            logger.warning("Bad string value:"
+                                           " nested target-* not allowed. "
+                                           "{}".format(serialize(args)))
 
                 elif term.name == u'pending':
                     logger.warning("Bad string-set:pending() not allowed. {}".
@@ -526,10 +582,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'node-set', target))
-        if pseudo is None:
-            elem = element.etree_element
-        elif self.is_pending_element(element):
-            elem = step['pending_elems'][-1][1].tree
+        elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
             step['pending'][target] = [('copy', elem)]
@@ -542,10 +595,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'copy-to', target))
-        if pseudo is None:
-            elem = element.etree_element
-        elif self.is_pending_element(element):
-            elem = step['pending_elems'][-1][1].tree
+        elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
             step['pending'][target] = [('copy', elem)]
@@ -558,10 +608,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, 'move-to', target))
-        if pseudo is None:
-            elem = element.etree_element
-        elif self.is_pending_element(element):
-            elem = step['pending_elems'][-1][1].tree
+        elem = self.current_target().tree
 
         #  Find if the current node already has a move, and remove it.
         actions = step['actions']
@@ -581,10 +628,11 @@ class Oven():
         """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
+        actions = step['actions']
         logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'container', value))
-        if self.is_pending_element(element):
-            step['pending_elems'][-1][1].tree.tag = value
+                                          element.local_name,
+                                          'container', value))
+        actions.append(('tag', value))
 
     def do_class(self, element, decl, pseudo):
         """Implement class declaration - pre-match."""
@@ -592,12 +640,10 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
         logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'class', value))
+                                          element.local_name,
+                                          'class', value))
         strval = self.eval_string_value(element, decl.value)
-        if self.is_pending_element(element):
-            step['pending_elems'][-1][1].tree.set('class', strval)
-        else:
-            actions.append(('attrib', ('class', strval)))
+        actions.append(('attrib', ('class', strval)))
 
     def do_attr_any(self, element, decl, pseudo):
         """Implement generic attribute setting."""
@@ -605,12 +651,10 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
         logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, decl.name, value))
+                                          element.local_name,
+                                          decl.name, value))
         strval = self.eval_string_value(element, decl.value)
-        if self.is_pending_element(element):
-            step['pending_elems'][-1][1].tree.set(decl.name[5:], strval)
-        else:
-            actions.append(('attrib', (decl.name[5:], strval)))
+        actions.append(('attrib', (decl.name[5:], strval)))
 
     def do_data_any(self, element, decl, pseudo):
         """Implement generic data attribute setting."""
@@ -620,10 +664,7 @@ class Oven():
         logger.debug("{} {} {} {}".format(self.state['current_step'],
                      element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
-        if self.is_pending_element(element):
-            step['pending_elems'][-1][1].tree.set(decl.name, strval)
-        else:
-            actions.append(('attrib', (decl.name, strval)))
+        actions.append(('attrib', (decl.name, strval)))
 
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
@@ -635,22 +676,13 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
 
-        elem = pending_target = None
         wastebin = []
-        if self.is_pending_element(element):
-            pending_target = step['pending_elems'][-1][1]
-            elem = pending_target.tree
-        else:
-            elem = element.etree_element
-
-        actions.append(('target', Target(element.etree_element, pseudo,
-                                         None, False, None)))
-        if pending_target:
-            actions.append(('move', pending_target.tree))
-            actions.append(('target', pending_target))
-        else:
+        elem = self.current_target().tree
+        if elem == element.etree_element:
             actions.append(('clear', elem))
 
+        if pseudo:
+            current_actions = len(actions)
         # decl.value is parsed representation: loop over it
         # if a string, to pending elem - either text, or tail of last child
         # if a string(x) retrieve value from state and attach as tail
@@ -667,7 +699,7 @@ class Oven():
                 if term.name == 'string':
                     strname = serialize(term.arguments)
                     val = self.lookup('strings', strname)
-                    if val is None:
+                    if val == '':
                         logger.warning("{} blank string".
                                        format(strname))
                         continue
@@ -678,10 +710,13 @@ class Oven():
                     count = self.lookup('counters', countername) or 0
                     actions.append(('string', str(count)))
 
-                elif term.name == 'target-counter':
-                    args = [serialize(a).strip('" \'')
-                            for a in split(term.arguments, ',')]
-                    actions.append(('target-counter', args))
+                elif term.name.startswith('target-'):
+                    delayed = [serialize(a).strip('" \'')
+                               for a in split(term.arguments, ',')]
+                    vtype = term.name[7:]+'s'
+                    delayed.insert(0, self)
+                    delayed.append(vtype)
+                    actions.append(('string', [TargetVal(*delayed)]))
 
                 elif term.name == u'attr':
                     att_name = serialize(term.arguments)
@@ -737,15 +772,15 @@ class Oven():
                 logger.warning("Unknown term {}".
                                format(decl.value))
 
-        if self.is_pending_element(element):
-            if actions[-1][0] == ('target') \
-                    and actions[-1][1].tree == elem:
-                actions.pop()
-                actions.pop()
+        if pseudo:
+            if len(actions) == current_actions:
+                wastebin.append(('move', elem))
 
         if len(wastebin) > 0:
             trashbucket = etree.Element('div',
                                         attrib={'class': 'delete-me'})
+            if actions[-1][0] == 'target':
+                actions.pop()
             actions.append(('target', Target(trashbucket, None,
                                              None, False, None)))
             actions.extend(wastebin)
@@ -771,20 +806,19 @@ class Oven():
         groupby = css_to_func(groupby_css, flags)
         step = self.state[self.state['current_step']]
 
-        if self.is_pending_element(element):
-            target = step['pending_elems'][-1][1]
-            target.sort = sort
-            target.isgroup = True
-            target.groupby = groupby
-            #  Find current target, set its sort/grouping as well
-            for pos, action in \
-                    enumerate(reversed(step['actions'])):
-                if action[0] == 'target' and \
-                        action[1].tree == element.etree_element:
-                    action[1].sort = sort
-                    action[1].isgroup = True
-                    action[1].groupby = groupby
-                    break
+        target = self.current_target()
+        target.sort = sort
+        target.isgroup = True
+        target.groupby = groupby
+        #  Find current target, set its sort/grouping as well
+        for pos, action in \
+                enumerate(reversed(step['actions'])):
+            if action[0] == 'target' and \
+                    action[1].tree == element.etree_element:
+                action[1].sort = sort
+                action[1].isgroup = True
+                action[1].groupby = groupby
+                break
 
     def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
@@ -799,20 +833,19 @@ class Oven():
         sort = css_to_func(serialize(css), serialize(flags or ''))
         step = self.state[self.state['current_step']]
 
-        if self.is_pending_element(element):
-            target = step['pending_elems'][-1][1]
-            target.sort = sort
-            target.isgroup = False
-            target.groupby = None
-            #  Find current target, set its sort as well
-            for pos, action in \
-                    enumerate(reversed(step['actions'])):
-                if action[0] == 'target' and \
-                        action[1].tree == element.etree_element:
-                    action[1].sort = sort
-                    action[1].isgroup = False
-                    action[1].groupby = None
-                    break
+        target = self.current_target()
+        target.sort = sort
+        target.isgroup = False
+        target.groupby = None
+        #  Find current target, set its sort as well
+        for pos, action in \
+                enumerate(reversed(step['actions'])):
+            if action[0] == 'target' and \
+                    action[1].tree == element.etree_element:
+                action[1].sort = sort
+                action[1].isgroup = False
+                action[1].groupby = None
+                break
 
     def do_pass(self, element, decl, pseudo):
         """Set processing pass for this ruleset."""
