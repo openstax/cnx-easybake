@@ -1,0 +1,66 @@
+cnx-easybake DEBUG default body content "Hint, the food is at item #" target-counter("burger", items)
+cnx-easybake DEBUG default body container p
+cnx-easybake DEBUG default body move-to b1
+cnx-easybake DEBUG default body content "And maybe at #" target-counter("fries", items)
+cnx-easybake DEBUG default body container p
+cnx-easybake DEBUG default body move-to b2
+cnx-easybake DEBUG default body content "And has a title:" target-string(mylist, lname)
+cnx-easybake DEBUG default body container p
+cnx-easybake DEBUG default body move-to b3
+cnx-easybake DEBUG default ul counter-reset lights, cardassian-lights, my-lights -1, my-food 0, toobig 6000
+cnx-easybake DEBUG default ul string-set  lname "This is the food and light list"
+cnx-easybake DEBUG default li counter-increment items
+cnx-easybake DEBUG default li counter-increment lights
+cnx-easybake DEBUG default li counter-increment my-lights
+cnx-easybake DEBUG default li container span
+cnx-easybake DEBUG default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG default li counter-increment items
+cnx-easybake DEBUG default li counter-increment my-food 500
+cnx-easybake DEBUG default li class "food-" target-counter(burger, items)
+cnx-easybake DEBUG default li container span
+cnx-easybake DEBUG default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG default li counter-increment items
+cnx-easybake DEBUG default li counter-increment lights
+cnx-easybake DEBUG default li counter-increment my-lights
+cnx-easybake DEBUG default li counter-increment cardassian-lights
+cnx-easybake DEBUG default li container span
+cnx-easybake DEBUG default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG default li counter-increment items
+cnx-easybake DEBUG default li counter-increment lights
+cnx-easybake DEBUG default li counter-increment my-lights
+cnx-easybake DEBUG default li counter-increment cardassian-lights
+cnx-easybake DEBUG default li container span
+cnx-easybake DEBUG default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG default li counter-increment items
+cnx-easybake DEBUG default li counter-increment lights
+cnx-easybake DEBUG default li counter-increment my-lights
+cnx-easybake DEBUG default li counter-increment cardassian-lights
+cnx-easybake DEBUG default li container span
+cnx-easybake DEBUG default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG default body content "There are " counter(cardassian-lights) " lights!"
+cnx-easybake DEBUG default body content "There are " counter(lights) " lights!"
+cnx-easybake DEBUG default body content "There are " counter(my-lights) " lights!"
+cnx-easybake DEBUG default body content "There are " counter(my-food) " calories!"
+cnx-easybake DEBUG default body content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
+cnx-easybake DEBUG default body content counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha), "|" counter(toobig, upper-alpha), "|" counter(toobig, decimal-leading-zero)
+cnx-easybake WARNING Number out of range for roman (must be 1..4999)
+cnx-easybake WARNING Number out of range for roman (must be 1..4999)
+cnx-easybake WARNING Counter out of range for latin (must be 1...26)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake WARNING Counter out of range for latin (must be 1...26)
+cnx-easybake WARNING Unknown term [<WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>, <LiteralToken ,>, <WhitespaceToken>, <StringToken "|">, <WhitespaceToken>, <FunctionBlock counter( … )>]
+cnx-easybake DEBUG Recipe default length: 139
+cnx-easybake WARNING Bad ID target lookup fries
+cnx-easybake DEBUG 2 body content pending(b1) pending(b2) pending(b3) content()
+cnx-easybake DEBUG 2 body pass  2
+cnx-easybake DEBUG Recipe 2 length: 6
