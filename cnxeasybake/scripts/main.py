@@ -39,7 +39,7 @@ def main(argv=None):
                         type=argparse.FileType('w'),
                         help="cooked HTML file output (default stdout)",
                         default=sys.stdout)
-    parser.add_argument('-s', '--stop-at', action='store',
+    parser.add_argument('-s', '--stop-at', action='store', metavar='<pass>',
                         help='Stop baking just before given pass name')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
