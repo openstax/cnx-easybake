@@ -253,6 +253,7 @@ class Oven():
         # Do before
         if 'before' in matching_rules:
             for rule, declarations in matching_rules.get('before'):
+                logger.debug('Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'before')
                 for decl in declarations:
@@ -268,6 +269,7 @@ class Oven():
         # Do after
         if 'after' in matching_rules:
             for rule, declarations in matching_rules.get('after'):
+                logger.debug('Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'after')
                 for decl in declarations:

@@ -1,18 +1,22 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): body 
 cnx-easybake DEBUG     default body string-set astring "Here's a string"
+cnx-easybake DEBUG Rule (4): div::before 
 cnx-easybake DEBUG     default div string-set mystring "My Cool String"
 cnx-easybake DEBUG     default div content string(astring)
 cnx-easybake DEBUG     default div class content() pending(astring) string(nostring)
 cnx-easybake WARNING Bad string value: pending() not allowed.  content() pending(astring) string(nostring)
 cnx-easybake WARNING nostring blank string
+cnx-easybake DEBUG Rule (9): div::after 
 cnx-easybake DEBUG     default div content string(mystring)
 cnx-easybake DEBUG     default div class string(astring)
+cnx-easybake DEBUG Rule (4): div::before 
 cnx-easybake DEBUG     default div string-set mystring "My Cool String"
 cnx-easybake DEBUG     default div content string(astring)
 cnx-easybake DEBUG     default div class content() pending(astring) string(nostring)
 cnx-easybake WARNING Bad string value: pending() not allowed.  content() pending(astring) string(nostring)
 cnx-easybake WARNING nostring blank string
+cnx-easybake DEBUG Rule (9): div::after 
 cnx-easybake DEBUG     default div content string(mystring)
 cnx-easybake DEBUG     default div class string(astring)
 cnx-easybake DEBUG Recipe default length: 20

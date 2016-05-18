@@ -1,10 +1,13 @@
 cnx-easybake DEBUG Passes: ['default', '2']
+cnx-easybake DEBUG Rule (23): body::before 
 cnx-easybake DEBUG     default body content "Hint, the food is at item #" target-counter("burger", items)
 cnx-easybake DEBUG     default body container p
 cnx-easybake DEBUG     default body move-to b1
+cnx-easybake DEBUG Rule (28): body::before 
 cnx-easybake DEBUG     default body content "And maybe at #" target-counter("fries", items)
 cnx-easybake DEBUG     default body container p
 cnx-easybake DEBUG     default body move-to b2
+cnx-easybake DEBUG Rule (33): body::before 
 cnx-easybake DEBUG     default body content "And has a title:" target-string(mylist, lname)
 cnx-easybake DEBUG     default body container p
 cnx-easybake DEBUG     default body move-to b3
@@ -16,6 +19,7 @@ cnx-easybake DEBUG     default li counter-increment items
 cnx-easybake DEBUG Rule (12): li[data-type="light"] 
 cnx-easybake DEBUG     default li counter-increment lights
 cnx-easybake DEBUG     default li counter-increment my-lights
+cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     default li container span
 cnx-easybake DEBUG     default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
 cnx-easybake DEBUG Rule (5): li 
@@ -23,6 +27,7 @@ cnx-easybake DEBUG     default li counter-increment items
 cnx-easybake DEBUG Rule (19): li[data-type="food"] 
 cnx-easybake DEBUG     default li counter-increment my-food 500
 cnx-easybake DEBUG     default li class "food-" target-counter(burger, items)
+cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     default li container span
 cnx-easybake DEBUG     default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
 cnx-easybake DEBUG Rule (5): li 
@@ -32,6 +37,7 @@ cnx-easybake DEBUG     default li counter-increment lights
 cnx-easybake DEBUG     default li counter-increment my-lights
 cnx-easybake DEBUG Rule (16): li[data-type="light"]:not(:first-of-type) 
 cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     default li container span
 cnx-easybake DEBUG     default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
 cnx-easybake DEBUG Rule (5): li 
@@ -41,6 +47,7 @@ cnx-easybake DEBUG     default li counter-increment lights
 cnx-easybake DEBUG     default li counter-increment my-lights
 cnx-easybake DEBUG Rule (16): li[data-type="light"]:not(:first-of-type) 
 cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     default li container span
 cnx-easybake DEBUG     default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
 cnx-easybake DEBUG Rule (5): li 
@@ -50,13 +57,20 @@ cnx-easybake DEBUG     default li counter-increment lights
 cnx-easybake DEBUG     default li counter-increment my-lights
 cnx-easybake DEBUG Rule (16): li[data-type="light"]:not(:first-of-type) 
 cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     default li container span
 cnx-easybake DEBUG     default li content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
+cnx-easybake DEBUG Rule (42): body::after 
 cnx-easybake DEBUG     default body content "There are " counter(cardassian-lights) " lights!"
+cnx-easybake DEBUG Rule (45): body::after 
 cnx-easybake DEBUG     default body content "There are " counter(lights) " lights!"
+cnx-easybake DEBUG Rule (48): body::after 
 cnx-easybake DEBUG     default body content "There are " counter(my-lights) " lights!"
+cnx-easybake DEBUG Rule (51): body::after 
 cnx-easybake DEBUG     default body content "There are " counter(my-food) " calories!"
+cnx-easybake DEBUG Rule (54): body::after 
 cnx-easybake DEBUG     default body content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
+cnx-easybake DEBUG Rule (57): body::after 
 cnx-easybake DEBUG     default body content counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha) "|" counter(toobig, upper-alpha) "|" counter(toobig, decimal-leading-zero)
 cnx-easybake WARNING Number out of range for roman (must be 1..4999)
 cnx-easybake WARNING Number out of range for roman (must be 1..4999)

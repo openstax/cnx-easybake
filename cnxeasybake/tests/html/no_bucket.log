@@ -1,4 +1,5 @@
 cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (10): div[data-type="chapter"]::before 
 cnx-easybake DEBUG     default div content pending(nope)
 cnx-easybake WARNING nope empty bucket
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.practice-test 
@@ -7,6 +8,7 @@ cnx-easybake DEBUG Rule (4): div[data-type="chapter"] section.key-equations
 cnx-easybake DEBUG     default section move-to eoc-key-equations
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.practice-test 
 cnx-easybake DEBUG     default section move-to eoc-practice-test
+cnx-easybake DEBUG Rule (13): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default div class eoc-practice-test
 cnx-easybake DEBUG IdentToken as string: eoc-practice-test
 cnx-easybake DEBUG     default div data-type composite-page
@@ -14,6 +16,7 @@ cnx-easybake DEBUG IdentToken as string: composite-page
 cnx-easybake DEBUG     default div container div
 cnx-easybake DEBUG     default div content pending(bogus-no-such-bucket)
 cnx-easybake WARNING bogus-no-such-bucket empty bucket
+cnx-easybake DEBUG Rule (19): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default div class eoc-key-equations
 cnx-easybake DEBUG IdentToken as string: eoc-key-equations
 cnx-easybake DEBUG     default div data-type composite-page

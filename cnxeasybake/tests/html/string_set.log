@@ -51,7 +51,9 @@ cnx-easybake WARNING Bad string-set:  , badname
 cnx-easybake DEBUG     default dl string-set mystring pending(eoc-key-terms)
 cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc-key-terms)
 cnx-easybake DEBUG     default dl string-set name counter(mycounter)
+cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default div content string(mytitle)
+cnx-easybake DEBUG Rule (22): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default div content first-letter(string(mytitle))
 cnx-easybake DEBUG     default div class first-letter(mytitle)
 cnx-easybake DEBUG IdentToken as string: mytitle
@@ -62,14 +64,18 @@ cnx-easybake DEBUG Rule (5): div[data-type="chapter"] div[data-type="page"] div[
 cnx-easybake DEBUG     default div string-set myid attr(id) " " string(section) string(no-such-string)
 cnx-easybake WARNING myid blank string
 cnx-easybake DEBUG     default div string-set mytitle first-letter(content()) ": " content()
+cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default div content string(mytitle)
+cnx-easybake DEBUG Rule (22): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default div content first-letter(string(mytitle))
 cnx-easybake DEBUG     default div class first-letter(mytitle)
 cnx-easybake DEBUG IdentToken as string: mytitle
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default div class "strings, and things"
 cnx-easybake DEBUG     default div content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
 cnx-easybake WARNING no-such-string blank string
 cnx-easybake DEBUG     default div container h1
+cnx-easybake DEBUG Rule (31): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default div class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default div content pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type)
