@@ -1,0 +1,59 @@
+ul {
+  counter-reset: lights, cardassian-lights, my-lights -1, my-food 0, toobig 6000;
+  string-set: lname "This is the food and light list";
+}
+li {
+  counter-increment: items;
+}
+li::before {
+  container: span;
+  content: counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero);
+}
+li[data-type='light'] {
+  counter-increment: lights;
+  counter-increment: my-lights;
+}
+li[data-type='light']:not(:first-of-type) {
+  counter-increment: cardassian-lights;
+}
+li[data-type='food'] {
+  counter-increment: my-food 500;
+  class: "food-" target-counter(burger, items);
+}
+body::before {
+  content: "Hint, the food is at item #" target-counter("burger", items);
+  container: p;
+  move-to: b1;
+}
+body::before {
+  content: "And maybe at #" target-counter("fries", items);
+  container: p;
+  move-to: b2;
+}
+body::before {
+  content: "And has a title:" target-string(mylist, lname);
+  container: p;
+  move-to: b3;
+}
+body {
+  content: pending(b1) pending(b2) pending(b3) content();
+  pass: 2;
+}
+body::after {
+  content: "There are " counter(cardassian-lights) " lights!";
+}
+body::after {
+  content: "There are " counter(lights) " lights!";
+}
+body::after {
+  content: "There are " counter(my-lights) " lights!";
+}
+body::after {
+  content: "There are " counter(my-food) " calories!";
+}
+body::after {
+  content: "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin);
+}
+body::after {
+  content: counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha), "|" counter(toobig, upper-alpha), "|" counter(toobig, decimal-leading-zero);
+}

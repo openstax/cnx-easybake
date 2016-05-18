@@ -363,14 +363,14 @@ class Oven():
         """Return counter value in given style."""
         if style == 'decimal-leading-zero':
             if val < 10:
-                valstr = "0#{num}"
+                valstr = "0{}".format(val)
             else:
                 valstr = str(val)
         elif style == 'lower-roman':
             valstr = _to_roman(val).lower()
         elif style == 'upper-roman':
             valstr = _to_roman(val)
-        elif style == 'lower-latin' or style == 'lower-ahpha':
+        elif style == 'lower-latin' or style == 'lower-alpha':
             if 1 <= val <= 26:
                 valstr = chr(val + 96)
             else:
@@ -1124,7 +1124,7 @@ def _to_roman(num):
     )
     if not (0 < num < 5000):
         logger.warning('Number out of range for roman (must be 1..4999)')
-        return num
+        return str(num)
     result = ''
     for numeral, integer in roman_numeral_map:
         while num >= integer:
