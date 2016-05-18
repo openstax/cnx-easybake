@@ -1,19 +1,26 @@
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
-cnx-easybake DEBUG default li content attr(data-type) ": " content()
-cnx-easybake DEBUG default li content nosuch()
+cnx-easybake DEBUG Rule (1): li 
+cnx-easybake DEBUG     default li content attr(data-type) ": " content()
+cnx-easybake DEBUG     default li content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Recipe default length: 54

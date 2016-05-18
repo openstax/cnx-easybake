@@ -80,7 +80,7 @@ class RulesetTestCase(unittest.TestCase):
             test_name = os.path.basename(filename_no_ext)
             log_fname = '{}.log'.format(test_name)
             with open(os.path.join(TEST_HTML_DIR, log_fname), 'rb') as f_log:
-                logs = (tuple(line[:-1].split(None, 2)) for line in f_log)
+                logs = (tuple(line[:-1].split(' ', 2)) for line in f_log)
                 logs = tuple(logs)
 
             with open(os.path.join(TEST_HTML_DIR,

@@ -10,7 +10,7 @@ li {
 
 li::before {
   container: span;
-  content: counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha), "|" counter(items, upper-alpha), "|" counter(items, decimal-leading-zero);
+  content: counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero);
 
 }
 li[data-type='light'] {
@@ -60,5 +60,5 @@ body::after {
     content: "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin)", " counter(cardassian-lights, lower-latin)
     }
     body::after {
-  content: counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha), "|" counter(toobig, upper-alpha), "|" counter(toobig, decimal-leading-zero);
+  content: counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha) "|" counter(toobig, upper-alpha) "|" counter(toobig, decimal-leading-zero);
     }

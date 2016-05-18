@@ -1,29 +1,44 @@
-cnx-easybake DEBUG default body content "Hint, the food is at item #" target-counter("burger", items) " And maybe at #" target-counter("fries", items) "And has a title:" target-string(mylist, lname)
-cnx-easybake DEBUG default ul counter-reset lights, cardassian-lights, my-lights -1
-cnx-easybake DEBUG default ul counter-reset my-food 0
-cnx-easybake DEBUG default ul string-set  lname "This is the food and light list"
-cnx-easybake DEBUG default li counter-increment items
-cnx-easybake DEBUG default li counter-increment lights
-cnx-easybake DEBUG default li counter-increment my-lights
-cnx-easybake DEBUG default li counter-increment items
-cnx-easybake DEBUG default li counter-increment my-food 500
-cnx-easybake DEBUG default li class "food-" target-counter(burger, items)
-cnx-easybake DEBUG default li counter-increment items
-cnx-easybake DEBUG default li counter-increment lights
-cnx-easybake DEBUG default li counter-increment my-lights
-cnx-easybake DEBUG default li counter-increment cardassian-lights
-cnx-easybake DEBUG default li counter-increment items
-cnx-easybake DEBUG default li counter-increment lights
-cnx-easybake DEBUG default li counter-increment my-lights
-cnx-easybake DEBUG default li counter-increment cardassian-lights
-cnx-easybake DEBUG default li counter-increment items
-cnx-easybake DEBUG default li counter-increment lights
-cnx-easybake DEBUG default li counter-increment my-lights
-cnx-easybake DEBUG default li counter-increment cardassian-lights
-cnx-easybake DEBUG default body content "There are " counter(cardassian-lights) " lights!"
-cnx-easybake DEBUG default body content "There are " counter(lights) " lights!"
-cnx-easybake DEBUG default body content "There are " counter(my-lights) " lights!"
-cnx-easybake DEBUG default body content "There are " counter(my-food) " calories!"
-cnx-easybake DEBUG default body content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG     default body content "Hint, the food is at item #" target-counter("burger", items) " And maybe at #" target-counter("fries", items) "And has a title:" target-string(mylist, lname)
+cnx-easybake DEBUG Rule (1): ul 
+cnx-easybake DEBUG     default ul counter-reset lights, cardassian-lights, my-lights -1
+cnx-easybake DEBUG     default ul counter-reset my-food 0
+cnx-easybake DEBUG     default ul string-set lname "This is the food and light list"
+cnx-easybake DEBUG Rule (6): li 
+cnx-easybake DEBUG     default li counter-increment items
+cnx-easybake DEBUG Rule (9): li[data-type="light"] 
+cnx-easybake DEBUG     default li counter-increment lights
+cnx-easybake DEBUG     default li counter-increment my-lights
+cnx-easybake DEBUG Rule (6): li 
+cnx-easybake DEBUG     default li counter-increment items
+cnx-easybake DEBUG Rule (16): li[data-type="food"] 
+cnx-easybake DEBUG     default li counter-increment my-food 500
+cnx-easybake DEBUG     default li class "food-" target-counter(burger, items)
+cnx-easybake DEBUG Rule (6): li 
+cnx-easybake DEBUG     default li counter-increment items
+cnx-easybake DEBUG Rule (9): li[data-type="light"] 
+cnx-easybake DEBUG     default li counter-increment lights
+cnx-easybake DEBUG     default li counter-increment my-lights
+cnx-easybake DEBUG Rule (13): li[data-type="light"]:not(:first-of-type) 
+cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG Rule (6): li 
+cnx-easybake DEBUG     default li counter-increment items
+cnx-easybake DEBUG Rule (9): li[data-type="light"] 
+cnx-easybake DEBUG     default li counter-increment lights
+cnx-easybake DEBUG     default li counter-increment my-lights
+cnx-easybake DEBUG Rule (13): li[data-type="light"]:not(:first-of-type) 
+cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG Rule (6): li 
+cnx-easybake DEBUG     default li counter-increment items
+cnx-easybake DEBUG Rule (9): li[data-type="light"] 
+cnx-easybake DEBUG     default li counter-increment lights
+cnx-easybake DEBUG     default li counter-increment my-lights
+cnx-easybake DEBUG Rule (13): li[data-type="light"]:not(:first-of-type) 
+cnx-easybake DEBUG     default li counter-increment cardassian-lights
+cnx-easybake DEBUG     default body content "There are " counter(cardassian-lights) " lights!"
+cnx-easybake DEBUG     default body content "There are " counter(lights) " lights!"
+cnx-easybake DEBUG     default body content "There are " counter(my-lights) " lights!"
+cnx-easybake DEBUG     default body content "There are " counter(my-food) " calories!"
+cnx-easybake DEBUG     default body content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
 cnx-easybake DEBUG Recipe default length: 44
 cnx-easybake WARNING Bad ID target lookup fries
