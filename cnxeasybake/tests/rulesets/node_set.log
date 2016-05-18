@@ -1,0 +1,21 @@
+cnx-easybake DEBUG default div node-set mytitle
+cnx-easybake DEBUG default section move-to sec-summary
+cnx-easybake DEBUG default dl move-to eoc-key-terms
+cnx-easybake DEBUG default dl move-to eoc-key-terms
+cnx-easybake DEBUG default dl move-to eoc-key-terms
+cnx-easybake DEBUG default div content nodes(mytitle) pending(sec-summary)
+cnx-easybake DEBUG default div move-to eoc-summaries
+cnx-easybake DEBUG default div node-set mytitle
+cnx-easybake DEBUG default section move-to sec-summary
+cnx-easybake DEBUG default div content nodes(mytitle) pending(sec-summary)
+cnx-easybake DEBUG default div move-to eoc-summaries
+cnx-easybake DEBUG default div class summaries
+cnx-easybake DEBUG IdentToken as string: summaries
+cnx-easybake DEBUG default div content pending(eoc-summaries)
+cnx-easybake DEBUG default div container div
+cnx-easybake DEBUG default div class eoc-key-terms
+cnx-easybake DEBUG IdentToken as string: eoc-key-terms
+cnx-easybake DEBUG default div content pending(eoc-key-terms)
+cnx-easybake DEBUG default div container section
+cnx-easybake DEBUG default div sort-by  dl > dt
+cnx-easybake DEBUG Recipe default length: 23

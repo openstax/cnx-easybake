@@ -63,8 +63,11 @@ class RulesetTestCase(unittest.TestCase):
                 for line in f_less:
                     if line.startswith('// '):
                         header.append(line[3:])
+                    elif line.startswith('/'):
+                        header.append(line[1:])
                 f_less.seek(0)
                 css_fname = '{}.css'.format(filename_no_ext)
+                log_fname = '{}.log'.format(filename_no_ext)
                 fnum = f_less.fileno()
 
                 if not os.path.isfile(css_fname) or \
@@ -74,10 +77,8 @@ class RulesetTestCase(unittest.TestCase):
 
             if len(header) > 0:
                 desc = header[0]
-            for hline in header:
-                if hline.startswith('LOG: '):
-                    logs.append(tuple(hline[:-1].split(None, 3)[1:]))
-            if len(logs) > 0:
+            with open(log_fname, 'rb') as f_log:
+                logs = (tuple(line[:-1].split(None, 2)) for line in f_log)
                 logs = tuple(logs)
 
             test_name = os.path.basename(filename_no_ext)

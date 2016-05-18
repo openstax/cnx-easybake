@@ -1,0 +1,111 @@
+cnx-easybake DEBUG default div string-set  section-title content()
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default span content content()
+cnx-easybake DEBUG default span container span
+cnx-easybake DEBUG default span class glossary-term
+cnx-easybake DEBUG IdentToken as string: glossary-term
+cnx-easybake DEBUG default span attr-sortkey attr(sortkey)
+cnx-easybake DEBUG default span attr-id attr(id)
+cnx-easybake DEBUG default span move-to gloss-term
+cnx-easybake DEBUG default span content string(section-title)
+cnx-easybake DEBUG default span container a
+cnx-easybake DEBUG default span attr-href "#" attr(id)
+cnx-easybake DEBUG default span move-to link
+cnx-easybake DEBUG default span content pending(gloss-term) pending(link)
+cnx-easybake DEBUG default span class glossary-item
+cnx-easybake DEBUG IdentToken as string: glossary-item
+cnx-easybake DEBUG default span copy-to eob-glossary
+cnx-easybake DEBUG default body class glossary
+cnx-easybake DEBUG IdentToken as string: glossary
+cnx-easybake DEBUG default body content pending(eob-glossary)
+cnx-easybake DEBUG default body group-by  "span::attr(sortkey)", "span::first-letter(sortkey)"
+cnx-easybake DEBUG Recipe default length: 137

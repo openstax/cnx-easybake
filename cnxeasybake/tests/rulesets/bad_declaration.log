@@ -1,0 +1,5 @@
+cnx-easybake DEBUG Invalid selector: div:nonsuch  (u'Unknown pseudo-class', u'nonsuch')
+cnx-easybake DEBUG default div string-set  content()
+cnx-easybake WARNING Bad string-set:  content()
+cnx-easybake WARNING Missing method my_bad_directive
+cnx-easybake DEBUG Recipe default length: 1
