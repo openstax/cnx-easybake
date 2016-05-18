@@ -32,3 +32,6 @@ body::after {
 body::after {
   content: "There are " counter(my-food) " calories!";
 }
+body::after {
+  content: "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin);
+}

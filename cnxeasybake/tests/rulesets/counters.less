@@ -36,6 +36,9 @@ body::after {
 body::after {
     content: "There are " counter(my-food) " calories!"
     }
+body::after {
+    content: "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin)", " counter(cardassian-lights, lower-latin)
+    }
 // LOG: cnx-easybake DEBUG default body content "Hint, the food is at item #" target-counter("burger", items) " And maybe at #" target-counter("fries", items) "And has a title:" target-string(mylist, lname)
 // LOG: cnx-easybake DEBUG default ul counter-reset lights, cardassian-lights, my-lights -1
 // LOG: cnx-easybake DEBUG default ul counter-reset my-food 0
@@ -62,5 +65,6 @@ body::after {
 // LOG: cnx-easybake DEBUG default body content "There are " counter(lights) " lights!"
 // LOG: cnx-easybake DEBUG default body content "There are " counter(my-lights) " lights!"
 // LOG: cnx-easybake DEBUG default body content "There are " counter(my-food) " calories!"
-// LOG: cnx-easybake DEBUG Recipe default length: 35
+// LOG: cnx-easybake DEBUG default body content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
+// LOG: cnx-easybake DEBUG Recipe default length: 44
 // LOG: cnx-easybake WARNING Bad ID target lookup fries
