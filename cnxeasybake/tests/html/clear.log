@@ -1,4 +1,7 @@
-cnx-easybake DEBUG default section move-to trash
-cnx-easybake DEBUG default body content clear(trash) clear(notrash)
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.key-equations 
+cnx-easybake DEBUG     default section move-to trash
+cnx-easybake DEBUG Rule (4): body::after 
+cnx-easybake DEBUG     default body content clear(trash) clear(notrash)
 cnx-easybake WARNING notrash empty bucket
 cnx-easybake DEBUG Recipe default length: 5

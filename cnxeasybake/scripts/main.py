@@ -12,12 +12,12 @@ from cnxeasybake import Oven, __version__
 logger = logging.getLogger('cnx-easybake')
 
 
-def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout):
+def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None):
     """Process the given HTML file stream with the css stream."""
     html_parser = etree.HTMLParser(encoding="utf-8")
     html_doc = etree.HTML(html_in.read(), html_parser)
     oven = Oven(css_in)
-    oven.bake(html_doc)
+    oven.bake(html_doc, last_step)
 
     # serialize out HTML
     print (etree.tostring(html_doc, method="html"), file=html_out)
@@ -39,6 +39,8 @@ def main(argv=None):
                         type=argparse.FileType('w'),
                         help="cooked HTML file output (default stdout)",
                         default=sys.stdout)
+    parser.add_argument('-s', '--stop-at', action='store',
+                        help='Stop baking just before given pass name')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
     args = parser.parse_args(argv)
@@ -51,7 +53,7 @@ def main(argv=None):
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    easybake(args.css_rules, args.html_in, args.html_out)
+    easybake(args.css_rules, args.html_in, args.html_out, args.stop_at)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

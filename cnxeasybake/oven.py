@@ -13,6 +13,22 @@ verbose = False
 logger = logging.getLogger('cnx-easybake')
 
 
+def log_decl_method(func):
+    """Decorate do_declartion methods for debug logging."""
+    from functools import wraps
+
+    @wraps(func)
+    def with_logging(*args, **kwargs):
+        self = args[0]
+        element = args[1]
+        decl = args[2]
+        logger.debug("    {} {} {} {}".format(self.state['current_step'],
+                     element.local_name, decl.name,
+                     serialize(decl.value).strip()))
+        return func(*args, **kwargs)
+    return with_logging
+
+
 class Target():
     """Represent the target for a move or copy."""
 
@@ -86,6 +102,7 @@ class Oven():
             except ValueError:
                 pass
             steps.insert(0, 'default')
+        logger.debug('Passes: %s' % steps)
         self.state['steps'] = steps
         self.state['current_step'] = None
         self.state['scope'] = []
@@ -132,14 +149,22 @@ class Oven():
                         for step in steps:
                             if step not in self.matchers:
                                 self.matchers[step] = cssselect2.Matcher()
-                            self.matchers[step].add_selector(sel,
-                                                             (decls, pseudo))
+                            self.matchers[step].add_selector(
+                                 sel,
+                                 ((rule.source_line,
+                                   serialize(rule.prelude).replace('\n', ' ')),
+                                  decls, pseudo))
 
         # always clears state, since rules have changed
         self.clear_state()
 
-    def bake(self, element):
+    def bake(self, element, last_step=None):
         """Apply recipes to HTML tree. Will build recipes if needed."""
+        if last_step in self.state['steps']:
+            stepidx = self.state['steps'].index(last_step)
+            self.state['steps'] = self.state['steps'][:stepidx]
+        elif last_step is not None:
+            logger.warning('Bad pass name: {}'.format(last_step))
         for step in self.state['steps']:
             self.state['current_step'] = step
             self.state['scope'].insert(0, step)
@@ -213,12 +238,13 @@ class Oven():
         presence of a pseudo-element and its value.
         """
         matching_rules = {}
-        for declarations, pseudo in self.matchers[step].match(element):
-            matching_rules.setdefault(pseudo, []).append(declarations)
+        for rule, declarations, pseudo in self.matchers[step].match(element):
+            matching_rules.setdefault(pseudo, []).append((rule, declarations))
 
         # Do non-pseudo
         if None in matching_rules:
-            for declarations in matching_rules.get(None):
+            for rule, declarations in matching_rules.get(None):
+                logger.debug('Rule ({}): {}'.format(*rule))
                 self.push_target_elem(element)
                 for decl in declarations:
                     method = self.find_method(decl.name)
@@ -226,7 +252,8 @@ class Oven():
 
         # Do before
         if 'before' in matching_rules:
-            for declarations in matching_rules.get('before'):
+            for rule, declarations in matching_rules.get('before'):
+                logger.debug('Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'before')
                 for decl in declarations:
@@ -241,7 +268,8 @@ class Oven():
 
         # Do after
         if 'after' in matching_rules:
-            for declarations in matching_rules.get('after'):
+            for rule, declarations in matching_rules.get('after'):
+                logger.debug('Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'after')
                 for decl in declarations:
@@ -465,11 +493,10 @@ class Oven():
             vals.append(strval)
         return vals
 
+    @log_decl_method
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
         args = serialize(decl.value)
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'string-set', args))
         step = self.state[self.state['current_step']]
 
         strval = ''
@@ -550,12 +577,10 @@ class Oven():
         if strname is not None:
             step['strings'][strname] = strval
 
+    @log_decl_method
     def do_counter_reset(self, element, decl, pseudo):
         """Clear specified counters."""
-        target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'counter-reset', target))
         counter_name = ''
         for term in decl.value:
             if type(term) is ast.WhitespaceToken:
@@ -582,12 +607,10 @@ class Oven():
         if counter_name:
             step['counters'][counter_name] = 0
 
+    @log_decl_method
     def do_counter_increment(self, element, decl, pseudo):
         """Increment specified counters."""
-        target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'counter-increment', target))
         counter_name = ''
         for term in decl.value:
             if type(term) is ast.WhitespaceToken:
@@ -626,12 +649,11 @@ class Oven():
             else:
                 step['counters'][counter_name] = 1
 
+    @log_decl_method
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'node-set', target))
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
@@ -639,12 +661,11 @@ class Oven():
         else:
             self.state[valstep]['pending'][target] = [('copy', elem)]
 
+    @log_decl_method
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'copy-to', target))
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
@@ -652,12 +673,11 @@ class Oven():
         else:
             self.state[valstep]['pending'][target].append(('copy', elem))
 
+    @log_decl_method
     def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration."""
         target = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'move-to', target))
         elem = self.current_target().tree
 
         #  Find if the current node already has a move, and remove it.
@@ -674,55 +694,42 @@ class Oven():
         else:
             self.state[valstep]['pending'][target].append(('move', elem))
 
+    @log_decl_method
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                                          element.local_name,
-                                          'container', value))
         actions.append(('tag', value))
 
+    @log_decl_method
     def do_class(self, element, decl, pseudo):
         """Implement class declaration - pre-match."""
-        value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                                          element.local_name,
-                                          'class', value))
         strval = self.eval_string_value(element, decl.value)
         actions.append(('attrib', ('class', strval)))
 
+    @log_decl_method
     def do_attr_any(self, element, decl, pseudo):
         """Implement generic attribute setting."""
-        value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                                          element.local_name,
-                                          decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         actions.append(('attrib', (decl.name[5:], strval)))
 
+    @log_decl_method
     def do_data_any(self, element, decl, pseudo):
         """Implement generic data attribute setting."""
-        value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, decl.name, value))
         strval = self.eval_string_value(element, decl.value)
         actions.append(('attrib', (decl.name, strval)))
 
+    @log_decl_method
     def do_content(self, element, decl, pseudo):
         """Implement content declaration."""
         # FIXME Need?: link(id)
-        value = serialize(decl.value).strip()
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'content', value))
-
         step = self.state[self.state['current_step']]
         actions = step['actions']
 
@@ -743,6 +750,9 @@ class Oven():
                 continue
 
             elif type(term) is ast.StringToken:
+                actions.append(('string', term.value))
+
+            elif type(term) is ast.LiteralToken:
                 actions.append(('string', term.value))
 
             elif type(term) is ast.FunctionBlock:
@@ -821,7 +831,7 @@ class Oven():
                     logger.warning("Unknown function {}".format(term.name))
             else:
                 logger.warning("Unknown term {}".
-                               format(decl.value))
+                               format(term))
 
         if pseudo:
             if len(actions) == current_actions:
@@ -837,10 +847,9 @@ class Oven():
             actions.extend(wastebin)
             wastebin = []
 
+    @log_decl_method
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'group-by', serialize(decl.value)))
         sort_css = groupby_css = flags = ''
         if ',' in decl.value:
             if decl.value.count(',') == 2:
@@ -871,11 +880,9 @@ class Oven():
                 action[1].groupby = groupby
                 break
 
+    @log_decl_method
     def do_sort_by(self, element, decl, pseudo):
         """Implement sort-by declaration - pre-match."""
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'sort-by', serialize(decl.value)))
-
         if ',' in decl.value:
             css, flags = split(decl.value, ',')
         else:
@@ -898,10 +905,9 @@ class Oven():
                 action[1].groupby = None
                 break
 
+    @log_decl_method
     def do_pass(self, element, decl, pseudo):
         """Set processing pass for this ruleset."""
-        logger.debug("{} {} {} {}".format(self.state['current_step'],
-                     element.local_name, 'pass', serialize(decl.value)))
         pass  # Handled in parse_rule_steps
 
 

@@ -1,9 +1,14 @@
-cnx-easybake DEBUG default dl copy-to eoc-key-terms
-cnx-easybake DEBUG default dl copy-to eoc-key-terms
-cnx-easybake DEBUG default dl copy-to eoc-key-terms
-cnx-easybake DEBUG default div class eoc-key-terms
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG     default dl copy-to eoc-key-terms
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG     default dl copy-to eoc-key-terms
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG     default dl copy-to eoc-key-terms
+cnx-easybake DEBUG Rule (4): div[data-type="chapter"]::after 
+cnx-easybake DEBUG     default div class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
-cnx-easybake DEBUG default div content pending(eoc-key-terms)
-cnx-easybake DEBUG default div container section
-cnx-easybake DEBUG default div sort-by  dl > dt
+cnx-easybake DEBUG     default div content pending(eoc-key-terms)
+cnx-easybake DEBUG     default div container section
+cnx-easybake DEBUG     default div sort-by dl > dt
 cnx-easybake DEBUG Recipe default length: 8
