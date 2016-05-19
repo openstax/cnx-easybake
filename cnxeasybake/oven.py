@@ -20,11 +20,9 @@ def log_decl_method(func):
     @wraps(func)
     def with_logging(*args, **kwargs):
         self = args[0]
-        element = args[1]
         decl = args[2]
-        logger.debug("    {} {} {} {}".format(self.state['current_step'],
-                     element.local_name, decl.name,
-                     serialize(decl.value).strip()))
+        logger.debug("    {}: {} {}".format(self.state['current_step'],
+                     decl.name, serialize(decl.value).strip()))
         return func(*args, **kwargs)
     return with_logging
 
