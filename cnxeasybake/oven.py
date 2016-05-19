@@ -204,10 +204,10 @@ class Oven():
                             target.tree.append(child)
                 elif action == 'attrib':
                     attname, vals = value
-                    strval = u''.join([unicode(s) for s in vals])
+                    strval = u''.join([u'{}'.format(s) for s in vals])
                     target.tree.set(attname, strval)
                 elif action == 'string':
-                    strval = u''.join([unicode(s) for s in value])
+                    strval = u''.join([u'{}'.format(s) for s in value])
                     if target.location == 'before':
                         prepend_string(target, strval)
                     else:
