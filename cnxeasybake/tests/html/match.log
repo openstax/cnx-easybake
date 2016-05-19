@@ -1,23 +1,23 @@
-cnx-easybake DEBUG Passes: ['default', '2', '3']
+cnx-easybake DEBUG Passes: ['0', '2', '3']
 cnx-easybake DEBUG Rule (1): div[data-type="page"] > div[data-type="document-title"] 
-cnx-easybake DEBUG     default div string-set section-title content()
+cnx-easybake DEBUG     0 div string-set section-title content()
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (7): div[data-type="page"] span[data-type="term"]:match(^[^a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by ""
+cnx-easybake DEBUG     0 span attr-group-by ""
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     default span attr-group-by first-letter(content())
-cnx-easybake DEBUG Recipe default length: 16
+cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG Recipe 0 length: 16
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     2 span pass 2
 cnx-easybake DEBUG     2 span content content()

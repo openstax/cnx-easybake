@@ -94,16 +94,7 @@ class Oven():
     def clear_state(self):
         """Clear the recipe state."""
         self.state = {}
-        steps = sorted(self.matchers.keys())
-        if len(steps) > 0:
-            steps.remove('default')
-            try:
-                steps.sort(key=int)
-            except ValueError:
-                pass
-            steps.insert(0, 'default')
-        logger.debug('Passes: %s' % steps)
-        self.state['steps'] = steps
+        self.state['steps'] = []
         self.state['current_step'] = None
         self.state['scope'] = []
         self.state['counters'] = {}
@@ -119,6 +110,12 @@ class Oven():
 
     def update_css(self, css_in=None, clear_css=False):
         """Add additional CSS rules, optionally replacing all."""
+        if clear_css:
+            self.matchers = {}
+
+        # CSS is changing, so clear processing state
+        self.clear_state()
+
         if css_in is None:
             return
         try:
@@ -129,9 +126,6 @@ class Oven():
                 css = css_in.read()  # Perhaps a file obj?
             except AttributeError:
                 css = css_in         # Treat it as a string
-
-        if clear_css:
-            self.matchers = {}
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
@@ -155,8 +149,18 @@ class Oven():
                                    serialize(rule.prelude).replace('\n', ' ')),
                                   decls, pseudo))
 
-        # always clears state, since rules have changed
+        steps = sorted(self.matchers.keys())
+        if len(steps) > 1:
+            steps.remove('default')
+            try:
+                steps.sort(key=int)
+                steps.insert(0, '0')
+                self.matchers['0'] = self.matchers.pop('default')
+            except ValueError:
+                steps.insert(0, 'default')
         self.clear_state()
+        self.state['steps'] = steps
+        logger.debug('Passes: %s' % steps)
 
     def bake(self, element, last_step=None):
         """Apply recipes to HTML tree. Will build recipes if needed."""
