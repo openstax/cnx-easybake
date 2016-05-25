@@ -1,10 +1,10 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): section[data-type="glossary"], section[data-type="summary"] 
-cnx-easybake DEBUG     default section move-to trash
+cnx-easybake DEBUG     default: move-to trash
 cnx-easybake DEBUG Rule (1): section[data-type="glossary"], section[data-type="summary"] 
-cnx-easybake DEBUG     default section move-to trash
+cnx-easybake DEBUG     default: move-to trash
 cnx-easybake DEBUG Rule (1): section[data-type="glossary"], section[data-type="summary"] 
-cnx-easybake DEBUG     default section move-to trash
+cnx-easybake DEBUG     default: move-to trash
 cnx-easybake DEBUG Rule (5): body::after 
-cnx-easybake DEBUG     default body content clear(trash)
+cnx-easybake DEBUG     default: content clear(trash)
 cnx-easybake DEBUG Recipe default length: 7

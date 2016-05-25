@@ -1,191 +1,191 @@
 cnx-easybake DEBUG Passes: ['0', '2', '3']
 cnx-easybake DEBUG Rule (1): div[data-type="page"] > div[data-type="document-title"] 
-cnx-easybake DEBUG     0 div string-set section-title content()
+cnx-easybake DEBUG     0: string-set section-title content()
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Rule (7): div[data-type="page"] span[data-type="term"]:match(^[^a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by ""
+cnx-easybake DEBUG     0: attr-group-by ""
 cnx-easybake DEBUG Rule (4): div[data-type="page"] span[data-type="term"]:match(^[a-zA-Z]) 
-cnx-easybake DEBUG     0 span attr-group-by first-letter(content())
+cnx-easybake DEBUG     0: attr-group-by first-letter(content())
 cnx-easybake DEBUG Recipe 0 length: 16
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content content()
-cnx-easybake DEBUG     2 span attr-group-by attr(group-by)
-cnx-easybake DEBUG     2 span container span
-cnx-easybake DEBUG     2 span class glossary-term
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content content()
+cnx-easybake DEBUG     2: attr-group-by attr(group-by)
+cnx-easybake DEBUG     2: container span
+cnx-easybake DEBUG     2: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
-cnx-easybake DEBUG     2 span move-to gloss-term
+cnx-easybake DEBUG     2: move-to gloss-term
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content string(section-title)
-cnx-easybake DEBUG     2 span container a
-cnx-easybake DEBUG     2 span attr-href "#" attr(id)
-cnx-easybake DEBUG     2 span move-to link
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content string(section-title)
+cnx-easybake DEBUG     2: container a
+cnx-easybake DEBUG     2: attr-href "#" attr(id)
+cnx-easybake DEBUG     2: move-to link
 cnx-easybake DEBUG Rule (25): div[data-type="page"] span[data-type="term"]::after 
-cnx-easybake DEBUG     2 span pass 2
-cnx-easybake DEBUG     2 span content pending(gloss-term) pending(link)
-cnx-easybake DEBUG     2 span class glossary-item
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(gloss-term) pending(link)
+cnx-easybake DEBUG     2: class glossary-item
 cnx-easybake DEBUG IdentToken as string: glossary-item
-cnx-easybake DEBUG     2 span move-to eob-glossary
+cnx-easybake DEBUG     2: move-to eob-glossary
 cnx-easybake DEBUG Rule (31): body::after 
-cnx-easybake DEBUG     2 body class glossary
+cnx-easybake DEBUG     2: class glossary
 cnx-easybake DEBUG IdentToken as string: glossary
-cnx-easybake DEBUG     2 body pass 2
-cnx-easybake DEBUG     2 body content pending(eob-glossary)
-cnx-easybake DEBUG     2 body group-by span, "span::attr(group-by)", nocase
+cnx-easybake DEBUG     2: pass 2
+cnx-easybake DEBUG     2: content pending(eob-glossary)
+cnx-easybake DEBUG     2: group-by span, "span::attr(group-by)", nocase
 cnx-easybake DEBUG Recipe 2 length: 140
 cnx-easybake DEBUG Rule (37): body > div.glossary > div.group-by:first-of-type > span.group-label 
-cnx-easybake DEBUG     3 span pass 3
-cnx-easybake DEBUG     3 span content "Symbol"
+cnx-easybake DEBUG     3: pass 3
+cnx-easybake DEBUG     3: content "Symbol"
 cnx-easybake DEBUG Recipe 3 length: 3

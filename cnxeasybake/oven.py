@@ -127,13 +127,19 @@ class Oven():
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
-            # Ignore all at-rules FIXME probably need @counters
+            # HACK! - convert custom pseudo-class to pseudo-element
+            if ':deferred' in serialize(rule.prelude):
+                idx = [rule.prelude.index(r) for r in rule.prelude
+                       if r.type == 'ident' and
+                       r.value == 'deferred'][0] - 1
+                rule.prelude.insert(idx, rule.prelude[idx])
+            # Ignore all at-rules
             if rule.type == 'qualified-rule':
                 try:
                     selectors = cssselect2.compile_selector_list(rule.prelude)
                 except cssselect2.SelectorError as error:
-                    logger.debug('Invalid selector: %s %s'
-                                 % (serialize(rule.prelude), error))
+                    logger.warning('Invalid selector: %s %s'
+                                   % (serialize(rule.prelude), error))
                 else:
                     steps, decls = parse_rule_steps(rule)
                     for sel in selectors:
@@ -267,6 +273,15 @@ class Oven():
         # Recurse
         for el in element.iter_children():
             _state = self.build_recipe(el, step, depth=depth+1)  # noqa
+
+        # Do deferred
+        if 'deferred' in matching_rules:
+            for rule, declarations in matching_rules.get('deferred'):
+                logger.debug('Rule ({}): {}'.format(*rule))
+                self.push_target_elem(element)
+                for decl in declarations:
+                    method = self.find_method(decl.name)
+                    method(element, decl, None)
 
         # Do after
         if 'after' in matching_rules:
