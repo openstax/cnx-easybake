@@ -1,33 +1,33 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
-cnx-easybake DEBUG     default div node-set mytitle
+cnx-easybake DEBUG     default: node-set mytitle
 cnx-easybake DEBUG Rule (4): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
-cnx-easybake DEBUG     default section move-to sec-summary
+cnx-easybake DEBUG     default: move-to sec-summary
 cnx-easybake DEBUG Rule (7): div[data-type="chapter"] > div[data-type="page"] dl.definition 
-cnx-easybake DEBUG     default dl move-to eoc-key-terms
+cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG Rule (7): div[data-type="chapter"] > div[data-type="page"] dl.definition 
-cnx-easybake DEBUG     default dl move-to eoc-key-terms
+cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG Rule (7): div[data-type="chapter"] > div[data-type="page"] dl.definition 
-cnx-easybake DEBUG     default dl move-to eoc-key-terms
+cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG Rule (10): div[data-type="chapter"] > div[data-type="page"]::after 
-cnx-easybake DEBUG     default div content nodes(mytitle) pending(sec-summary)
-cnx-easybake DEBUG     default div move-to eoc-summaries
+cnx-easybake DEBUG     default: content nodes(mytitle) pending(sec-summary)
+cnx-easybake DEBUG     default: move-to eoc-summaries
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
-cnx-easybake DEBUG     default div node-set mytitle
+cnx-easybake DEBUG     default: node-set mytitle
 cnx-easybake DEBUG Rule (4): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
-cnx-easybake DEBUG     default section move-to sec-summary
+cnx-easybake DEBUG     default: move-to sec-summary
 cnx-easybake DEBUG Rule (10): div[data-type="chapter"] > div[data-type="page"]::after 
-cnx-easybake DEBUG     default div content nodes(mytitle) pending(sec-summary)
-cnx-easybake DEBUG     default div move-to eoc-summaries
+cnx-easybake DEBUG     default: content nodes(mytitle) pending(sec-summary)
+cnx-easybake DEBUG     default: move-to eoc-summaries
 cnx-easybake DEBUG Rule (14): div[data-type="chapter"]::after 
-cnx-easybake DEBUG     default div class summaries
+cnx-easybake DEBUG     default: class summaries
 cnx-easybake DEBUG IdentToken as string: summaries
-cnx-easybake DEBUG     default div content pending(eoc-summaries)
-cnx-easybake DEBUG     default div container div
+cnx-easybake DEBUG     default: content pending(eoc-summaries)
+cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG Rule (19): div[data-type="chapter"]::after 
-cnx-easybake DEBUG     default div class eoc-key-terms
+cnx-easybake DEBUG     default: class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
-cnx-easybake DEBUG     default div content pending(eoc-key-terms)
-cnx-easybake DEBUG     default div container section
-cnx-easybake DEBUG     default div sort-by dl > dt
+cnx-easybake DEBUG     default: content pending(eoc-key-terms)
+cnx-easybake DEBUG     default: container section
+cnx-easybake DEBUG     default: sort-by dl > dt
 cnx-easybake DEBUG Recipe default length: 23
