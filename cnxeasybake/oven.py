@@ -127,14 +127,14 @@ class Oven():
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
-            # HACK! - convert custom pseudo-class to pseudo-element
-            if ':deferred' in serialize(rule.prelude):
-                idx = [rule.prelude.index(r) for r in rule.prelude
-                       if r.type == 'ident' and
-                       r.value == 'deferred'][0] - 1
-                rule.prelude.insert(idx, rule.prelude[idx])
             # Ignore all at-rules
             if rule.type == 'qualified-rule':
+                # HACK! - convert custom pseudo-class to pseudo-element
+                if ':deferred' in serialize(rule.prelude):
+                    idx = [rule.prelude.index(r) for r in rule.prelude
+                           if r.type == 'ident' and
+                           r.value == 'deferred'][0] - 1
+                    rule.prelude.insert(idx, rule.prelude[idx])
                 try:
                     selectors = cssselect2.compile_selector_list(rule.prelude)
                 except cssselect2.SelectorError as error:
