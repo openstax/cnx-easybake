@@ -1,5 +1,24 @@
 // Test wrapping a div around an element
-div[data-type='chapter']  table::outside {
-    class: wrapper;
-    container: div;
+div[data-type='chapter']  table {
+
+    &::after {
+        content: "This is a table title";
+        container: span;
+        class: table-title;
+        move-to: table-title;
+    }
+
+    &::after {
+        content: "This is a table caption";
+        container: span;
+        class: table-caption;
+        move-to: table-caption;
+    }
+
+    
+    &::outside {
+        class: table-wrapper;
+        container: div;
+        content: pending(table-title) content() pending(table-caption);
+    }
 }

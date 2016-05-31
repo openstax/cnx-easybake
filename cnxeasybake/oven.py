@@ -295,7 +295,7 @@ class Oven():
                 self.push_pending_elem(element, 'outside')
                 for decl in declarations:
                     method = self.find_method(decl.name)
-                    method(element, decl, None)
+                    method(element, decl, 'outside')
 
         # Do deferred
         if 'deferred' in matching_rules:
@@ -819,10 +819,12 @@ class Oven():
                         actions.append(('string', tmpstr[0]))
 
                 elif term.name == u'content':
-                    if pseudo:
+                    if pseudo in ('before', 'after'):
                         # FIXME deal w/ IDs
                         mycopy = deepcopy(element.etree_element)
                         actions.append(('content', mycopy))
+                    elif pseudo == 'outside':
+                        actions.append(('move', element.etree_element))
                     else:
                         actions.append(('content', None))
 
