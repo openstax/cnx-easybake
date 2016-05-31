@@ -1,0 +1,17 @@
+div[data-type='chapter'] table::after {
+  content: "This is a table title";
+  container: span;
+  class: table-title;
+  move-to: table-title;
+}
+div[data-type='chapter'] table::after {
+  content: "This is a table caption";
+  container: span;
+  class: table-caption;
+  move-to: table-caption;
+}
+div[data-type='chapter'] table::outside {
+  class: table-wrapper;
+  container: div;
+  content: pending(table-title) content() pending(table-caption);
+}

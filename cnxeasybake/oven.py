@@ -30,10 +30,12 @@ def log_decl_method(func):
 class Target():
     """Represent the target for a move or copy."""
 
-    def __init__(self, tree, location, sort, isgroup, groupby):
+    def __init__(self, tree, location=None, parent=None,
+                 sort=None, isgroup=False, groupby=None):
         """Set up target object."""
         self.tree = tree
         self.location = location
+        self.parent = parent
         self.sort = sort
         self.isgroup = isgroup
         self.groupby = groupby
@@ -274,15 +276,6 @@ class Oven():
         for el in element.iter_children():
             _state = self.build_recipe(el, step, depth=depth+1)  # noqa
 
-        # Do deferred
-        if 'deferred' in matching_rules:
-            for rule, declarations in matching_rules.get('deferred'):
-                logger.debug('Rule ({}): {}'.format(*rule))
-                self.push_target_elem(element)
-                for decl in declarations:
-                    method = self.find_method(decl.name)
-                    method(element, decl, None)
-
         # Do after
         if 'after' in matching_rules:
             for rule, declarations in matching_rules.get('after'):
@@ -294,6 +287,24 @@ class Oven():
                     method(element, decl, 'after')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_if_empty(element)
+
+        # Do outside
+        if 'outside' in matching_rules:
+            for rule, declarations in matching_rules.get('outside'):
+                logger.debug('Rule ({}): {}'.format(*rule))
+                self.push_pending_elem(element, 'outside')
+                for decl in declarations:
+                    method = self.find_method(decl.name)
+                    method(element, decl, 'outside')
+
+        # Do deferred
+        if 'deferred' in matching_rules:
+            for rule, declarations in matching_rules.get('deferred'):
+                logger.debug('Rule ({}): {}'.format(*rule))
+                self.push_target_elem(element)
+                for decl in declarations:
+                    method = self.find_method(decl.name)
+                    method(element, decl, None)
 
         element_id = element.etree_element.get('id')
         if element_id:
@@ -317,7 +328,8 @@ class Oven():
         if len(actions) > 0 and actions[-1][0] == 'target':
             actions.pop()
         actions.append(('target', Target(element.etree_element,
-                                         pseudo, None, False, None)))
+                                         pseudo, element.parent.etree_element
+                                         )))
 
     def push_pending_elem(self, element, pseudo):
         """Create and place pending target element onto stack."""
@@ -325,7 +337,7 @@ class Oven():
         elem = etree.Element('div')
         actions = self.state[self.state['current_step']]['actions']
         actions.append(('move', elem))
-        actions.append(('target', Target(elem, None, None, False, None)))
+        actions.append(('target', Target(elem)))
 
     def pop_pending_if_empty(self, element):
         """Remove empty wrapper element."""
@@ -807,10 +819,12 @@ class Oven():
                         actions.append(('string', tmpstr[0]))
 
                 elif term.name == u'content':
-                    if pseudo:
+                    if pseudo in ('before', 'after'):
                         # FIXME deal w/ IDs
                         mycopy = deepcopy(element.etree_element)
                         actions.append(('content', mycopy))
+                    elif pseudo == 'outside':
+                        actions.append(('move', element.etree_element))
                     else:
                         actions.append(('content', None))
 
@@ -859,8 +873,7 @@ class Oven():
                                         attrib={'class': 'delete-me'})
             if actions[-1][0] == 'target':
                 actions.pop()
-            actions.append(('target', Target(trashbucket, None,
-                                             None, False, None)))
+            actions.append(('target', Target(trashbucket)))
             actions.extend(wastebin)
             wastebin = []
 
@@ -1042,6 +1055,12 @@ def grouped_insert(t, value):
 
     elif t.sort and t.sort(value) is not None:
         insert_sort(value, t.tree, t.sort)
+
+    elif t.location == 'outside':
+        value.tail = t.tree.tail
+        t.parent.insert(t.parent.index(t.tree), value)
+        value.append(t.tree)
+
     elif t.location == 'before':
         value.tail = t.tree.text
         t.tree.text = None
