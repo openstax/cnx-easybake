@@ -1,6 +1,19 @@
 cnx-easybake DEBUG Passes: ['default']
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] table::outside 
-cnx-easybake DEBUG     default: class wrapper
-cnx-easybake DEBUG IdentToken as string: wrapper
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] table::after 
+cnx-easybake DEBUG     default: content "This is a table title"
+cnx-easybake DEBUG     default: container span
+cnx-easybake DEBUG     default: class table-title
+cnx-easybake DEBUG IdentToken as string: table-title
+cnx-easybake DEBUG     default: move-to table-title
+cnx-easybake DEBUG Rule (7): div[data-type="chapter"] table::after 
+cnx-easybake DEBUG     default: content "This is a table caption"
+cnx-easybake DEBUG     default: container span
+cnx-easybake DEBUG     default: class table-caption
+cnx-easybake DEBUG IdentToken as string: table-caption
+cnx-easybake DEBUG     default: move-to table-caption
+cnx-easybake DEBUG Rule (13): div[data-type="chapter"] table::outside 
+cnx-easybake DEBUG     default: class table-wrapper
+cnx-easybake DEBUG IdentToken as string: table-wrapper
 cnx-easybake DEBUG     default: container div
-cnx-easybake DEBUG Recipe default length: 5
+cnx-easybake DEBUG     default: content pending(table-title) content() pending(table-caption)
+cnx-easybake DEBUG Recipe default length: 18
