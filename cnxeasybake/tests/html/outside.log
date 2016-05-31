@@ -1,0 +1,6 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): div[data-type="chapter"] table::outside 
+cnx-easybake DEBUG     default: class wrapper
+cnx-easybake DEBUG IdentToken as string: wrapper
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG Recipe default length: 5
