@@ -5,7 +5,8 @@ import os
 import subprocess
 import unittest
 import logging
-from testfixtures import log_capture
+import mock
+from testfixtures import LogCapture
 
 from lxml import etree
 
@@ -40,6 +41,19 @@ def lessc(input_):
     output, _ = proc.communicate(input_)
     return output
 
+TEST_UUIDS = ["a321ce14-3b04-44ee-8fc2-7ec2e9e17906",
+              "8e3fda66-929b-4688-98c3-5d37895bfded",
+              "0e69e521-0a65-4a21-b685-1ae94cc2645e",
+              "ee64a235-4f03-4eb2-885c-cbbd1dc5c666",
+              "7b88db70-9f2e-4122-ac8d-d986698d8b98",
+              "f67e4b94-ec19-46d4-927c-a809b03b39a1",
+              "438e5b3b-5018-493b-80c1-5ce820d84e4e",
+              "819c2122-aca7-43f6-af43-c5ee81febc80"
+              ]
+
+
+uuids = iter(TEST_UUIDS)
+
 
 class RulesetTestCase(unittest.TestCase):
     """Ruleset test cases.
@@ -49,6 +63,14 @@ class RulesetTestCase(unittest.TestCase):
     """
 
     maxDiff = None
+
+    def setUp(cls):
+        """Setup logcap."""
+        cls.logcap = LogCapture()
+
+    def tearDown(cls):
+        """Teardown logcap."""
+        cls.logcap.uninstall()
 
     @classmethod
     def generate_tests(cls):
@@ -100,8 +122,8 @@ class RulesetTestCase(unittest.TestCase):
     @classmethod
     def create_test(cls, css, html, cooked_html, desc, logs):
         """Create a specific ruleset test."""
-        @log_capture()
-        def run_test(self, logcap):
+        @mock.patch('cnxeasybake.oven.uuid4', uuids.next)
+        def run_test(self):
             element = etree.HTML(html)
             oven = Oven(css)
             oven.bake(element)
@@ -109,9 +131,9 @@ class RulesetTestCase(unittest.TestCase):
             # https://bugs.python.org/issue10164
             self.assertEqual(output.split(b'\n'), cooked_html.split(b'\n'))
             if len(logs) == 0:
-                logcap.check()
+                self.logcap.check()
             else:
-                logcap.check(*logs)
+                self.logcap.check(*logs)
 
         if desc:
             run_test.__doc__ = desc

@@ -7,6 +7,7 @@ from tinycss2 import serialize, parse_declaration_list, ast
 import cssselect2
 from cssselect2 import ElementWrapper
 from copy import deepcopy
+from uuid import uuid4
 
 verbose = False
 
@@ -486,6 +487,9 @@ class Oven():
                     att_name = serialize(term.arguments)
                     strval += element.etree_element.get(att_name, '')
 
+                elif term.name == u'uuid':
+                    strval += str(uuid4())
+
                 elif term.name == u'content':
                     strval += etree.tostring(element.etree_element,
                                              encoding='unicode',
@@ -812,6 +816,9 @@ class Oven():
                     att_name = serialize(term.arguments)
                     actions.append(('string',
                                     element.etree_element.get(att_name, '')))
+
+                elif term.name == u'uuid':
+                    actions.append(('string', str(uuid4())))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
