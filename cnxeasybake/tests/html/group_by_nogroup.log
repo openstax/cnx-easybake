@@ -17,6 +17,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -33,6 +34,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -49,6 +51,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -65,6 +68,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -81,6 +85,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -97,6 +102,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
@@ -113,6 +119,7 @@ cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (10): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
+cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
 cnx-easybake DEBUG     default: move-to link
