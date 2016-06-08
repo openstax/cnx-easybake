@@ -496,7 +496,7 @@ class Oven():
                     att_def = ''
                     if len(att_args) > 1:
                         att_def = self.eval_string_value(element,
-                                                         att_args[1][0])
+                                                         att_args[1])[0]
                     strval += element.etree_element.get(att_name, att_def)
 
                 elif term.name == u'uuid':
@@ -606,7 +606,7 @@ class Oven():
                         att_def = ''
                         if len(att_args) > 1:
                             att_def = self.eval_string_value(element,
-                                                             att_args[1][0])
+                                                             att_args[1])[0]
                         strval += element.etree_element.get(att_name, att_def)
                     else:
                         logger.warning("Bad string-set: {}".format(args))
@@ -856,7 +856,7 @@ class Oven():
                     att_def = ''
                     if len(att_args) > 1:
                         att_def = self.eval_string_value(element,
-                                                         att_args[1][0])
+                                                         att_args[1])[0]
                     att_val = element.etree_element.get(att_name, att_def)
                     actions.append(('string', att_val))
 
