@@ -11,3 +11,6 @@ li::after {
 li::after {
   content: "The other here: " string(itemother, 'None!');
 }
+li::after {
+  content: attr(string(itemtype));
+}

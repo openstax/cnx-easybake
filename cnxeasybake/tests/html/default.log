@@ -14,6 +14,9 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: string-set itemtype attr(data-type, "item")
 cnx-easybake DEBUG IdentToken as string: data-type
@@ -29,6 +32,9 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: string-set itemtype attr(data-type, "item")
 cnx-easybake DEBUG IdentToken as string: data-type
@@ -44,6 +50,9 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: string-set itemtype attr(data-type, "item")
 cnx-easybake DEBUG IdentToken as string: data-type
@@ -59,6 +68,9 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: string-set itemtype attr(data-type, "item")
 cnx-easybake DEBUG IdentToken as string: data-type
@@ -74,6 +86,9 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: string-set itemtype attr(data-type, "item")
 cnx-easybake DEBUG IdentToken as string: data-type
@@ -89,4 +104,7 @@ cnx-easybake DEBUG Rule (11): li::after
 cnx-easybake DEBUG     default: content "The other here: " string(itemother, "None!")
 cnx-easybake DEBUG IdentToken as string: itemother
 cnx-easybake WARNING itemother blank string
-cnx-easybake DEBUG Recipe default length: 90
+cnx-easybake DEBUG Rule (14): li::after 
+cnx-easybake DEBUG     default: content attr(string(itemtype))
+cnx-easybake DEBUG IdentToken as string: itemtype
+cnx-easybake DEBUG Recipe default length: 114
