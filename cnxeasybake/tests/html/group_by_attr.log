@@ -7,13 +7,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -26,13 +29,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -45,13 +51,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -64,13 +73,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -83,13 +95,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -102,13 +117,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
@@ -121,13 +139,16 @@ cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
 cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: attr-sortkey attr(sortkey)
+cnx-easybake DEBUG IdentToken as string: sortkey
 cnx-easybake DEBUG     default: attr-id attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (12): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
 cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (18): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)

@@ -1,9 +1,11 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] div[data-type="page"] 
 cnx-easybake DEBUG     default: string-set section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: counter-reset mycounter
 cnx-easybake DEBUG Rule (5): div[data-type="chapter"] div[data-type="page"] div[data-type="title"] 
 cnx-easybake DEBUG     default: string-set myid attr(id) " " string(section) string(no-such-string)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG IdentToken as string: section
 cnx-easybake DEBUG IdentToken as string: no-such-string
 cnx-easybake WARNING no-such-string blank string
@@ -66,9 +68,11 @@ cnx-easybake DEBUG     default: class first-letter(mytitle)
 cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] div[data-type="page"] 
 cnx-easybake DEBUG     default: string-set section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: counter-reset mycounter
 cnx-easybake DEBUG Rule (5): div[data-type="chapter"] div[data-type="page"] div[data-type="title"] 
 cnx-easybake DEBUG     default: string-set myid attr(id) " " string(section) string(no-such-string)
+cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG IdentToken as string: section
 cnx-easybake DEBUG IdentToken as string: no-such-string
 cnx-easybake WARNING no-such-string blank string
@@ -95,6 +99,7 @@ cnx-easybake DEBUG     default: class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type)
 cnx-easybake DEBUG IdentToken as string: myid
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: container section
 cnx-easybake DEBUG     default: sort-by dl > dt
 cnx-easybake DEBUG Recipe default length: 40

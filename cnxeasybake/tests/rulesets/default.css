@@ -1,0 +1,13 @@
+li {
+  string-set: itemtype attr(data-type, 'item');
+  string-set: itemclass attr(class, 'item');
+}
+li::after {
+  content: "The type here: " string(itemtype, 'None!');
+}
+li::after {
+  content: "The class here: " string(itemclass, 'None!');
+}
+li::after {
+  content: "The other here: " string(itemother, 'None!');
+}

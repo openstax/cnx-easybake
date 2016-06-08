@@ -2,6 +2,7 @@ cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (21): body::before 
 cnx-easybake DEBUG     default: content "Hint, the food is at item #" target-counter("#burger", items) " And maybe at #" target-counter("#" attr(foodid), items) "And has a title:" target-string("#mylist", lname)
 cnx-easybake DEBUG IdentToken as string: items
+cnx-easybake DEBUG IdentToken as string: foodid
 cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG Rule (1): ul 
