@@ -475,17 +475,29 @@ class Oven():
 
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
-                    strname = serialize(term.arguments)
-                    val = self.lookup('strings', strname)
+                    str_args = split(term.arguments, ',')
+                    str_name = self.eval_string_value(element,
+                                                      str_args[0])[0]
+                    str_def = ''
+                    if len(str_args) > 1:
+                        str_def = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                    val = self.lookup('strings', str_name)
                     if val == '':
                         logger.warning("{} blank string".
-                                       format(strname))
-                        continue
+                                       format(str_name))
+                        val = str_def
                     strval += val
 
                 elif term.name == u'attr':
-                    att_name = serialize(term.arguments)
-                    strval += element.etree_element.get(att_name, '')
+                    att_args = split(term.arguments, ',')
+                    att_name = self.eval_string_value(element,
+                                                      att_args[0])[0]
+                    att_def = ''
+                    if len(att_args) > 1:
+                        att_def = self.eval_string_value(element,
+                                                         att_args[1])[0]
+                    strval += element.etree_element.get(att_name, att_def)
 
                 elif term.name == u'uuid':
                     strval += str(uuid4())
@@ -500,12 +512,14 @@ class Oven():
                     if strval:
                         vals.append(strval)
                         strval = ''
-                    delayed = [serialize(a).strip('" \'')
-                               for a in split(term.arguments, ',')]
+                    target_args = split(term.arguments, ',')
+                    vref = self.eval_string_value(element,
+                                                  target_args[0])[0]
+                    vname = self.eval_string_value(element,
+                                                   target_args[1])[0]
+
                     vtype = term.name[7:]+'s'
-                    delayed.insert(0, self)
-                    delayed.append(vtype)
-                    vals.append(TargetVal(*delayed))
+                    vals.append(TargetVal(self, vref[1:], vname, vtype))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
@@ -560,12 +574,19 @@ class Oven():
 
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
-                    other_strname = serialize(term.arguments)
-                    val = self.lookup('strings', other_strname)
+                    str_args = split(term.arguments, ',')
+                    str_name = self.eval_string_value(element,
+                                                      str_args[0])[0]
+                    str_def = ''
+                    if len(str_args) > 1:
+                        str_def = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                    val = self.lookup('strings', str_name)
                     if val == '':
                         logger.warning("{} blank string".
-                                       format(strname))
-                        continue
+                                       format(str_name))
+                        val = str_def
+
                     if strname is not None:
                         strval += val
                     else:
@@ -579,8 +600,14 @@ class Oven():
 
                 elif term.name == u'attr':
                     if strname is not None:
-                        att_name = serialize(term.arguments)
-                        strval += element.etree_element.get(att_name, '')
+                        att_args = split(term.arguments, ',')
+                        att_name = self.eval_string_value(element,
+                                                          att_args[0])[0]
+                        att_def = ''
+                        if len(att_args) > 1:
+                            att_def = self.eval_string_value(element,
+                                                             att_args[1])[0]
+                        strval += element.etree_element.get(att_name, att_def)
                     else:
                         logger.warning("Bad string-set: {}".format(args))
 
@@ -790,13 +817,20 @@ class Oven():
 
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
-                    strname = serialize(term.arguments)
-                    val = self.lookup('strings', strname)
+                    str_args = split(term.arguments, ',')
+                    str_name = self.eval_string_value(element,
+                                                      str_args[0])[0]
+                    str_def = ''
+                    if len(str_args) > 1:
+                        str_def = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                    val = self.lookup('strings', str_name)
                     if val == '':
                         logger.warning("{} blank string".
-                                       format(strname))
-                        continue
-                    actions.append(('string', val))
+                                       format(str_name))
+                        val = str_def
+                    if val != '':
+                        actions.append(('string', val))
 
                 elif term.name == 'counter':
                     counterargs = [serialize(t).strip(" \'")
@@ -805,17 +839,26 @@ class Oven():
                     actions.append(('string', (count,)))
 
                 elif term.name.startswith('target-'):
-                    delayed = [serialize(a).strip('" \'')
-                               for a in split(term.arguments, ',')]
+                    target_args = split(term.arguments, ',')
+                    vref = self.eval_string_value(element,
+                                                  target_args[0])[0]
+                    vname = self.eval_string_value(element,
+                                                   target_args[1])[0]
+
                     vtype = term.name[7:]+'s'
-                    delayed.insert(0, self)
-                    delayed.append(vtype)
-                    actions.append(('string', [TargetVal(*delayed)]))
+                    actions.append(('string', [TargetVal(self, vref[1:],
+                                                         vname, vtype)]))
 
                 elif term.name == u'attr':
-                    att_name = serialize(term.arguments)
-                    actions.append(('string',
-                                    element.etree_element.get(att_name, '')))
+                    att_args = split(term.arguments, ',')
+                    att_name = self.eval_string_value(element,
+                                                      att_args[0])[0]
+                    att_def = ''
+                    if len(att_args) > 1:
+                        att_def = self.eval_string_value(element,
+                                                         att_args[1])[0]
+                    att_val = element.etree_element.get(att_name, att_def)
+                    actions.append(('string', att_val))
 
                 elif term.name == u'uuid':
                     actions.append(('string', str(uuid4())))

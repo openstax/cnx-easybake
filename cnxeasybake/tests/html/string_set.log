@@ -1,16 +1,21 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] div[data-type="page"] 
 cnx-easybake DEBUG     default: string-set section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: counter-reset mycounter
 cnx-easybake DEBUG Rule (5): div[data-type="chapter"] div[data-type="page"] div[data-type="title"] 
 cnx-easybake DEBUG     default: string-set myid attr(id) " " string(section) string(no-such-string)
-cnx-easybake WARNING myid blank string
+cnx-easybake DEBUG IdentToken as string: id
+cnx-easybake DEBUG IdentToken as string: section
+cnx-easybake DEBUG IdentToken as string: no-such-string
+cnx-easybake WARNING no-such-string blank string
 cnx-easybake DEBUG     default: string-set mytitle first-letter(content()) ": " content()
 cnx-easybake DEBUG Rule (9): div[data-type="chapter"] div[data-type="page"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG     default: string-set "bad bad"
 cnx-easybake WARNING Bad string-set:  "bad bad"
 cnx-easybake DEBUG     default: string-set string(section)
+cnx-easybake DEBUG IdentToken as string: section
 cnx-easybake WARNING Bad string-set:  string(section)
 cnx-easybake DEBUG     default: string-set attr(id)
 cnx-easybake WARNING Bad string-set:  attr(id)
@@ -26,6 +31,7 @@ cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG     default: string-set "bad bad"
 cnx-easybake WARNING Bad string-set:  "bad bad"
 cnx-easybake DEBUG     default: string-set string(section)
+cnx-easybake DEBUG IdentToken as string: section
 cnx-easybake WARNING Bad string-set:  string(section)
 cnx-easybake DEBUG     default: string-set attr(id)
 cnx-easybake WARNING Bad string-set:  attr(id)
@@ -41,6 +47,7 @@ cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG     default: string-set "bad bad"
 cnx-easybake WARNING Bad string-set:  "bad bad"
 cnx-easybake DEBUG     default: string-set string(section)
+cnx-easybake DEBUG IdentToken as string: section
 cnx-easybake WARNING Bad string-set:  string(section)
 cnx-easybake DEBUG     default: string-set attr(id)
 cnx-easybake WARNING Bad string-set:  attr(id)
@@ -53,32 +60,46 @@ cnx-easybake WARNING Bad string-set:pending() not allowed.  mystring pending(eoc
 cnx-easybake DEBUG     default: string-set name counter(mycounter)
 cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default: content string(mytitle)
+cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG Rule (22): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default: content first-letter(string(mytitle))
+cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG     default: class first-letter(mytitle)
 cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG Rule (1): div[data-type="chapter"] div[data-type="page"] 
 cnx-easybake DEBUG     default: string-set section "My Section String", section2 "My Second Section String", mytype attr(data-type)
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: counter-reset mycounter
 cnx-easybake DEBUG Rule (5): div[data-type="chapter"] div[data-type="page"] div[data-type="title"] 
 cnx-easybake DEBUG     default: string-set myid attr(id) " " string(section) string(no-such-string)
-cnx-easybake WARNING myid blank string
+cnx-easybake DEBUG IdentToken as string: id
+cnx-easybake DEBUG IdentToken as string: section
+cnx-easybake DEBUG IdentToken as string: no-such-string
+cnx-easybake WARNING no-such-string blank string
 cnx-easybake DEBUG     default: string-set mytitle first-letter(content()) ": " content()
 cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default: content string(mytitle)
+cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG Rule (22): div[data-type="chapter"] div[data-type="page"]::after 
 cnx-easybake DEBUG     default: content first-letter(string(mytitle))
+cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG     default: class first-letter(mytitle)
 cnx-easybake DEBUG IdentToken as string: mytitle
 cnx-easybake DEBUG Rule (26): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class "strings, and things"
 cnx-easybake DEBUG     default: content string(section) ":" string(section2) ":" string(myid) string(no-such-string)
+cnx-easybake DEBUG IdentToken as string: section
+cnx-easybake DEBUG IdentToken as string: section2
+cnx-easybake DEBUG IdentToken as string: myid
+cnx-easybake DEBUG IdentToken as string: no-such-string
 cnx-easybake WARNING no-such-string blank string
 cnx-easybake DEBUG     default: container h1
 cnx-easybake DEBUG Rule (31): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms) "MyId: " string(myid) " " attr(data-type)
+cnx-easybake DEBUG IdentToken as string: myid
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG     default: container section
 cnx-easybake DEBUG     default: sort-by dl > dt
 cnx-easybake DEBUG Recipe default length: 40

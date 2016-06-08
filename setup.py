@@ -21,7 +21,7 @@ tests_require = (
 
 setup(
     name='cnx-easybake',
-    version='0.6.0',
+    version='0.7.0',
     author='Connexions team',
     author_email='info@cnx.org',
     url="https://github.com/connexions/cnx-easybake",

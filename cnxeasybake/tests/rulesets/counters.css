@@ -2,6 +2,7 @@ ul {
   counter-reset: lights, cardassian-lights, my-lights -1;
   counter-reset: my-food 0;
   string-set: lname "This is the food and light list";
+  attr-title: string(lname);
 }
 li {
   counter-increment: items;
@@ -15,10 +16,10 @@ li[data-type='light']:not(:first-of-type) {
 }
 li[data-type='food'] {
   counter-increment: my-food 500;
-  class: "food-" target-counter(burger, items);
+  class: "food-" target-counter("#burger", items);
 }
 body::before {
-  content: "Hint, the food is at item #" target-counter("burger", items) " And maybe at #" target-counter("fries", items) "And has a title:" target-string(mylist, lname);
+  content: "Hint, the food is at item #" target-counter("#burger", items) " And maybe at #" target-counter("#" attr(foodid), items) "And has a title:" target-string("#mylist", lname);
 }
 body::after {
   content: "There are " counter(cardassian-lights) " lights!";

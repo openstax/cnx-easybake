@@ -4,19 +4,27 @@ cnx-easybake DEBUG     default: string-set astring "Here's a string"
 cnx-easybake DEBUG Rule (4): div::before 
 cnx-easybake DEBUG     default: string-set mystring "My Cool String"
 cnx-easybake DEBUG     default: content string(astring)
+cnx-easybake DEBUG IdentToken as string: astring
 cnx-easybake DEBUG     default: class content() pending(astring) string(nostring)
 cnx-easybake WARNING Bad string value: pending() not allowed.  content() pending(astring) string(nostring)
+cnx-easybake DEBUG IdentToken as string: nostring
 cnx-easybake WARNING nostring blank string
 cnx-easybake DEBUG Rule (9): div::after 
 cnx-easybake DEBUG     default: content string(mystring)
+cnx-easybake DEBUG IdentToken as string: mystring
 cnx-easybake DEBUG     default: class string(astring)
+cnx-easybake DEBUG IdentToken as string: astring
 cnx-easybake DEBUG Rule (4): div::before 
 cnx-easybake DEBUG     default: string-set mystring "My Cool String"
 cnx-easybake DEBUG     default: content string(astring)
+cnx-easybake DEBUG IdentToken as string: astring
 cnx-easybake DEBUG     default: class content() pending(astring) string(nostring)
 cnx-easybake WARNING Bad string value: pending() not allowed.  content() pending(astring) string(nostring)
+cnx-easybake DEBUG IdentToken as string: nostring
 cnx-easybake WARNING nostring blank string
 cnx-easybake DEBUG Rule (9): div::after 
 cnx-easybake DEBUG     default: content string(mystring)
+cnx-easybake DEBUG IdentToken as string: mystring
 cnx-easybake DEBUG     default: class string(astring)
+cnx-easybake DEBUG IdentToken as string: astring
 cnx-easybake DEBUG Recipe default length: 20

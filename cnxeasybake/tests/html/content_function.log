@@ -1,31 +1,37 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
 cnx-easybake DEBUG Rule (1): li 
 cnx-easybake DEBUG     default: content attr(data-type) ": " content()
+cnx-easybake DEBUG IdentToken as string: data-type
 cnx-easybake DEBUG Rule (4): li::after 
 cnx-easybake DEBUG     default: content nosuch()
 cnx-easybake WARNING Unknown function nosuch
