@@ -27,7 +27,7 @@ CSS = 'div { copy-to: end-of-chapter;}'
 BAD_CSS = 'not a selector {}'
 
 CSS_TWO_STEP = '''div[data-type="copy-me"] { step: 1; copy-to: "end-of-chapter" }
-div[data-type="book"]::after { step: 1; content: pending("end-of-chapter")} 
+div[data-type="book"]::after { step: 1; content: pending("end-of-chapter")}
 div[data-type="book"]::after {step: 5; content: "Here is a later step" }
 '''
 
@@ -35,6 +35,7 @@ HTML_ONE_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-
 
 
 HTML_TWO_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div><div>Here is a later step</div></div>\n</body></html>'
+
 
 class OvenCssTest(unittest.TestCase):
     """Oven Css test cases.
