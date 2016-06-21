@@ -14,11 +14,27 @@ def _tempinput(data):
     temp.close()
     yield temp.name
     os.unlink(temp.name)
+HTML = '''<html><head><title>example</title></head>
+<body>
+  <div data-type="book">
+    <div data-type="copy-me">Here is something to copy</div>
+  </div>
+</body></html>
+'''
 
 CSS = 'div { copy-to: end-of-chapter;}'
 
 BAD_CSS = 'not a selector {}'
 
+CSS_TWO_STEP = '''div[data-type="copy-me"] { step: 1; copy-to: "end-of-chapter" }
+div[data-type="book"]::after { step: 1; content: pending("end-of-chapter")} 
+div[data-type="book"]::after {step: 5; content: "Here is a later step" }
+'''
+
+HTML_ONE_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div></div>\n</body></html>'
+
+
+HTML_TWO_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div><div>Here is a later step</div></div>\n</body></html>'
 
 class OvenCssTest(unittest.TestCase):
     """Oven Css test cases.
@@ -78,3 +94,25 @@ class OvenCssTest(unittest.TestCase):
         with _tempinput(CSS) as tempfilename:
             oven = self.target_cls()
             oven.update_css(tempfilename)
+
+
+class OvenBakeTest(unittest.TestCase):
+    """Oven bake test cases.
+
+    Try baking, multiple steps.
+    """
+
+    @property
+    def target_cls(self):
+        """Import the target class."""
+        from ..oven import Oven
+        return Oven
+
+    def test_bake(self):
+        """Test oven will bake something."""
+        from lxml import etree
+        oven = self.target_cls(CSS_TWO_STEP)
+        html_parser = etree.HTMLParser(encoding="utf-8")
+        html_doc = etree.HTML(HTML, html_parser)
+
+        oven.bake(html_doc)
