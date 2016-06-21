@@ -230,7 +230,7 @@ class Oven():
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 elif action == 'nodeset':
-                    node_counts[value] = node_counts.setdefault(value,0) + 1
+                    node_counts[value] = node_counts.setdefault(value, 0) + 1
                     suffix = '_copy_{}'.format(node_counts[value])
                     mycopy = copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
@@ -1230,7 +1230,7 @@ def _to_roman(num):
 
 
 def copy_w_id_suffix(elem, suffix="_copy"):
-    """Make a deep copy of the provided tree, altering ids"""
+    """Make a deep copy of the provided tree, altering ids."""
     mycopy = deepcopy(elem)
     for id_elem in mycopy.xpath('//*[@id]'):
         id_elem.set('id', id_elem.get('id') + suffix)
