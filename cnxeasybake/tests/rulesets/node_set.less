@@ -11,8 +11,11 @@ div[data-type='chapter'] {
         move-to: eoc-key-terms;
       }
       &::after {
-      content: nodes(mytitle) pending(sec-summary);
-      move-to: eoc-summaries
+        content: nodes(mytitle) pending(sec-summary);
+        move-to: eoc-summaries
+      }
+      &::after {
+        content: "My title is: " nodes(mytitle);
       }
   }
 }

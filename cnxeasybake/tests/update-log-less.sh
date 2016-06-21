@@ -1,5 +1,5 @@
 #!/bin/bash
-rulename=${1:-*}
+rulename=${*:-*}
 for r in rulesets/${rulename}.less
     do
         file=$(basename $r)

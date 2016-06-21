@@ -11,6 +11,9 @@ div[data-type='chapter'] > div[data-type='page']::after {
   content: nodes(mytitle) pending(sec-summary);
   move-to: eoc-summaries;
 }
+div[data-type='chapter'] > div[data-type='page']::after {
+  content: "My title is: " nodes(mytitle);
+}
 div[data-type='chapter']::after {
   class: summaries;
   content: pending(eoc-summaries);

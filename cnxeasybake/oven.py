@@ -171,11 +171,9 @@ class Oven():
 
     def bake(self, element, last_step=None):
         """Apply recipes to HTML tree. Will build recipes if needed."""
-        if last_step in self.state['steps']:
-            stepidx = self.state['steps'].index(last_step)
-            self.state['steps'] = self.state['steps'][:stepidx]
-        elif last_step is not None:
-            logger.warning('Bad pass name: {}'.format(last_step))
+        if last_step is not None:
+            self.state['steps'] = [s for s in self.state['steps']
+                                   if s < last_step]
         for step in self.state['steps']:
             self.state['current_step'] = step
             self.state['scope'].insert(0, step)
@@ -191,6 +189,7 @@ class Oven():
                 step, len(recipe['actions'])))
             target = None
             old_content = {}
+            node_counts = {}
             for action, value in recipe['actions']:
                 if action == 'target':
                     target = value
@@ -227,7 +226,13 @@ class Oven():
                     grouped_insert(target, value)
 
                 elif action == 'copy':
-                    mycopy = deepcopy(value)  # FIXME deal w/ ID values
+                    mycopy = copy_w_id_suffix(value)
+                    mycopy.tail = None
+                    grouped_insert(target, mycopy)
+                elif action == 'nodeset':
+                    node_counts[value] = node_counts.setdefault(value, 0) + 1
+                    suffix = '_copy_{}'.format(node_counts[value])
+                    mycopy = copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 else:
@@ -717,9 +722,9 @@ class Oven():
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
-            step['pending'][target] = [('copy', elem)]
+            step['pending'][target] = [('nodeset', elem)]
         else:
-            self.state[valstep]['pending'][target] = [('copy', elem)]
+            self.state[valstep]['pending'][target] = [('nodeset', elem)]
 
     @log_decl_method
     def do_copy_to(self, element, decl, pseudo):
@@ -870,8 +875,7 @@ class Oven():
 
                 elif term.name == u'content':
                     if pseudo in ('before', 'after'):
-                        # FIXME deal w/ IDs
-                        mycopy = deepcopy(element.etree_element)
+                        mycopy = copy_w_id_suffix(element.etree_element)
                         actions.append(('content', mycopy))
                     elif pseudo == 'outside':
                         actions.append(('move', element.etree_element))
@@ -895,7 +899,7 @@ class Oven():
                         continue
                     for action in val:
                             if action[0] == 'move':
-                                actions.append(('copy', action[1]))
+                                actions.append(('nodeset', action[1]))
                             else:
                                 actions.append(action)
 
@@ -1223,3 +1227,11 @@ def _to_roman(num):
             result += numeral
             num -= integer
     return result
+
+
+def copy_w_id_suffix(elem, suffix="_copy"):
+    """Make a deep copy of the provided tree, altering ids."""
+    mycopy = deepcopy(elem)
+    for id_elem in mycopy.xpath('//*[@id]'):
+        id_elem.set('id', id_elem.get('id') + suffix)
+    return mycopy
