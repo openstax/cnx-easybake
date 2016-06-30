@@ -38,4 +38,5 @@ div[data-type="composite-page"]::before {
   counter-increment: page;
   container: h1;
   content: "Chapter " counter(page);
+  attr-id: "myid" counter(page);
 }

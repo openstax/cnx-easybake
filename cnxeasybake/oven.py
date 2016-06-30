@@ -538,9 +538,19 @@ class Oven():
 
                     # FIXME can we do delayed first-letter
 
+                elif term.name == 'counter':
+                    counterargs = [serialize(t).strip(" \'")
+                                   for t in split(term.arguments, ',')]
+                    count = self.lookup('counters', counterargs)
+                    strval += str(count)
+
                 elif term.name == u'pending':
                     logger.warning("Bad string value: pending() not allowed. "
                                    "{}".format(serialize(value)))
+                else:
+                    logger.warning("Bad string value: unknown function: {}. "
+                                   "{}".format(term.name, serialize(value)))
+
         if strval:
             vals.append(strval)
         return vals
