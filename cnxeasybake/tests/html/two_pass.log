@@ -40,21 +40,25 @@ cnx-easybake DEBUG     second: pass second
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
+cnx-easybake DEBUG     second: attr-id "myid" counter(page)
 cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: pass second
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
+cnx-easybake DEBUG     second: attr-id "myid" counter(page)
 cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: pass second
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
+cnx-easybake DEBUG     second: attr-id "myid" counter(page)
 cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: pass second
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
+cnx-easybake DEBUG     second: attr-id "myid" counter(page)
 cnx-easybake DEBUG Rule (4): body::after 
 cnx-easybake DEBUG     second: pass default, second
 cnx-easybake DEBUG     second: content "Two passes, doubled!"
@@ -62,4 +66,4 @@ cnx-easybake DEBUG Rule (8): body::after
 cnx-easybake DEBUG     second: pass "second"
 cnx-easybake DEBUG     second: content string(onestring)
 cnx-easybake DEBUG IdentToken as string: onestring
-cnx-easybake DEBUG Recipe second length: 32
+cnx-easybake DEBUG Recipe second length: 36
