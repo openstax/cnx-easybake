@@ -253,6 +253,8 @@ class Oven():
         either before or after recursing into its children, depending on the
         presence of a pseudo-element and its value.
         """
+        element_id = element.etree_element.get('id')
+
         matching_rules = {}
         for rule, declarations, pseudo in self.matchers[step].match(element):
             matching_rules.setdefault(pseudo, []).append((rule, declarations))
@@ -265,6 +267,19 @@ class Oven():
                 for decl in declarations:
                     method = self.find_method(decl.name)
                     method(element, decl, None)
+
+        # Store all variables (strings and counters) before children
+        if element_id:
+            temp_counters = {}
+            temp_strings = {}
+            for s_step in self.state['scope']:
+                temp_counters[s_step] = {
+                        'counters': deepcopy(self.state[s_step]['counters'])}
+                temp_strings[s_step] = {
+                        'strings': deepcopy(self.state[s_step]['strings'])}
+
+            self.state['counters'][element_id] = temp_counters
+            self.state['strings'][element_id] = temp_strings
 
         # Do before
         if 'before' in matching_rules:
@@ -305,6 +320,16 @@ class Oven():
 
         # Do deferred
         if 'deferred' in matching_rules:
+            # store strings and counters, in case a deferred rule changes one
+            if element_id:
+                temp_counters = {}
+                temp_strings = {}
+                for s_step in self.state['scope']:
+                    temp_counters[s_step] = {
+                        'counters': deepcopy(self.state[s_step]['counters'])}
+                    temp_strings[s_step] = {
+                        'strings': deepcopy(self.state[s_step]['strings'])}
+
             for rule, declarations in matching_rules.get('deferred'):
                 logger.debug('Rule ({}): {}'.format(*rule))
                 self.push_target_elem(element)
@@ -312,15 +337,17 @@ class Oven():
                     method = self.find_method(decl.name)
                     method(element, decl, None)
 
-        element_id = element.etree_element.get('id')
-        if element_id:
-            self.state['counters'][element_id] = {}
-            self.state['strings'][element_id] = {}
-            for step in self.state['scope']:
-                self.state['counters'][element_id][step] = {
-                        'counters': deepcopy(self.state[step]['counters'])}
-                self.state['strings'][element_id][step] = {
-                        'strings': deepcopy(self.state[step]['strings'])}
+            # Did a deferred rule change a stored variable?
+            if element_id:
+                for s_step in self.state['scope']:
+                    for counter, val in self.state[s_step]['counters'].items():
+                        if (counter not in temp_counters or
+                                temp_counters[counter] != val):
+                            self.state['counters'][element_id][counter] = val
+                    for string, val in self.state[s_step]['strings'].items():
+                        if (string not in temp_strings or
+                                temp_strings[string] != val):
+                            self.state['strings'][element_id][string] = val
 
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
