@@ -16,7 +16,7 @@ install_requires = (
     )
 
 tests_require = (
-    'testfixtures',
+    'testfixtures', 'mock',
     )
 
 setup(
