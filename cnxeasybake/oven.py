@@ -6,6 +6,9 @@ import tinycss2
 from tinycss2 import serialize, parse_declaration_list, ast
 import cssselect2
 from cssselect2 import ElementWrapper
+from cssselect2.parser import parse
+from cssselect2.compiler import CompiledSelector
+from cssselect2.extensions import extensions
 from copy import deepcopy
 from uuid import uuid4
 
@@ -132,29 +135,32 @@ class Oven():
         for rule in rules:
             # Ignore all at-rules
             if rule.type == 'qualified-rule':
-                # HACK! - convert custom pseudo-class to pseudo-element
-                if ':deferred' in serialize(rule.prelude):
-                    idx = [rule.prelude.index(r) for r in rule.prelude
-                           if r.type == 'ident' and
-                           r.value == 'deferred'][0] - 1
-                    rule.prelude.insert(idx, rule.prelude[idx])
-                try:
-                    selectors = cssselect2.compile_selector_list(rule.prelude)
-                except cssselect2.SelectorError as error:
-                    logger.warning('Invalid selector: %s %s'
-                                   % (serialize(rule.prelude), error))
-                else:
-                    steps, decls = parse_rule_steps(rule)
-                    for sel in selectors:
-                        pseudo = sel.pseudo_element
+
+                selectors = parse(rule.prelude, extensions=extensions)
+                decls = parse_declaration_list(rule.content,
+                                               skip_whitespace=True)
+                for sel in selectors:
+                    try:
+                        csel = CompiledSelector(sel)
+                    except cssselect2.SelectorError as error:
+                        logger.warning('Invalid selector: %s %s'
+                                       % (serialize(rule.prelude), error))
+                    else:
+                        steps, extras = extract_selector_info(sel)
+                        label = csel.pseudo_element
+                        if len(extras) > 0:
+                            if label is not None:
+                                extras.insert(0, label)
+                            label = '_'.join(extras)
+
                         for step in steps:
                             if step not in self.matchers:
                                 self.matchers[step] = cssselect2.Matcher()
                             self.matchers[step].add_selector(
-                                 sel,
+                                 csel,
                                  ((rule.source_line,
                                    serialize(rule.prelude).replace('\n', ' ')),
-                                  decls, pseudo))
+                                  decls, label))
 
         steps = sorted(self.matchers.keys())
         if len(steps) > 1:
@@ -256,8 +262,8 @@ class Oven():
         element_id = element.etree_element.get('id')
 
         matching_rules = {}
-        for rule, declarations, pseudo in self.matchers[step].match(element):
-            matching_rules.setdefault(pseudo, []).append((rule, declarations))
+        for rule, declarations, label in self.matchers[step].match(element):
+            matching_rules.setdefault(label, []).append((rule, declarations))
 
         # Do non-pseudo
         if None in matching_rules:
@@ -319,7 +325,11 @@ class Oven():
                     method(element, decl, 'outside')
 
         # Do deferred
-        if 'deferred' in matching_rules:
+        if ('deferred' in matching_rules or
+             'after_deferred' in matching_rules or  # NOQA  
+             'before_deferred' in matching_rules or
+             'outside_deferred' in matching_rules):
+
             # store strings and counters, in case a deferred rule changes one
             if element_id:
                 temp_counters = {}
@@ -330,12 +340,49 @@ class Oven():
                     temp_strings[s_step] = {
                         'strings': deepcopy(self.state[s_step]['strings'])}
 
-            for rule, declarations in matching_rules.get('deferred'):
-                logger.debug('Rule ({}): {}'.format(*rule))
-                self.push_target_elem(element)
-                for decl in declarations:
-                    method = self.find_method(decl.name)
-                    method(element, decl, None)
+            # Do straight up deferred
+            if 'deferred' in matching_rules:
+                for rule, declarations in matching_rules.get('deferred'):
+                    logger.debug('Rule ({}): {}'.format(*rule))
+                    self.push_target_elem(element)
+                    for decl in declarations:
+                        method = self.find_method(decl.name)
+                        method(element, decl, None)
+
+            # Do before_deferred
+            if 'before_deferred' in matching_rules:
+                for rule, declarations in \
+                        matching_rules.get('before_deferred'):
+                    logger.debug('Rule ({}): {}'.format(*rule))
+                    # pseudo element, create wrapper
+                    self.push_pending_elem(element, 'before')
+                    for decl in declarations:
+                        method = self.find_method(decl.name)
+                        method(element, decl, 'before')
+                    # deal w/ pending_elements, per rule
+                    self.pop_pending_if_empty(element)
+
+            # Do after_deferred
+            if 'after_deferred' in matching_rules:
+                for rule, declarations in matching_rules.get('after_deferred'):
+                    logger.debug('Rule ({}): {}'.format(*rule))
+                    # pseudo element, create wrapper
+                    self.push_pending_elem(element, 'after')
+                    for decl in declarations:
+                        method = self.find_method(decl.name)
+                        method(element, decl, 'after')
+                    # deal w/ pending_elements, per rule
+                    self.pop_pending_if_empty(element)
+
+            # Do outside_deferred
+            if 'outside_deferred' in matching_rules:
+                for rule, declarations in \
+                        matching_rules.get('outside_deferred'):
+                    logger.debug('Rule ({}): {}'.format(*rule))
+                    self.push_pending_elem(element, 'outside')
+                    for decl in declarations:
+                        method = self.find_method(decl.name)
+                        method(element, decl, 'outside')
 
             # Did a deferred rule change a stored variable?
             if element_id:
@@ -1028,8 +1075,9 @@ class Oven():
 
     @log_decl_method
     def do_pass(self, element, decl, pseudo):
-        """Set processing pass for this ruleset."""
-        pass  # Handled in parse_rule_steps
+        """No longer valid way to set processing pass."""
+        logger.warning("Old-style pass as declaration not allowed."
+                       "{}".format(decl.value))
 
 
 def _itersplit(li, splitters):
@@ -1198,42 +1246,42 @@ def create_group(value):
     return node
 
 
-def parse_rule_steps(rule):
-    """Return rule steps and declartions."""
-    declarations = parse_declaration_list(rule.content, skip_whitespace=True)
+def _extract_sel_info(sel):
+    """Recurse down parsed tree, return pseudo class info"""
+    from cssselect2.parser import (CombinedSelector, CompoundSelector,
+                                   PseudoClassSelector,
+                                   FunctionalPseudoClassSelector)
     steps = []
-    for decl in declarations:
-        if decl.name == 'pass':
-            strval = ''
-            value = decl.value
-            args = serialize(value)
-            for term in value:
-                if type(term) is ast.WhitespaceToken:
-                    pass
+    extras = []
+    if isinstance(sel, CombinedSelector):
+        lstep, lextras = _extract_sel_info(sel.left)
+        rstep, rextras = _extract_sel_info(sel.right)
+        steps = lstep + rstep
+        extras = lextras + rextras
+    elif isinstance(sel, CompoundSelector):
+        for ssel in sel.simple_selectors:
+            s, e = _extract_sel_info(ssel)
+            steps.extend(s)
+            extras.extend(e)
+    elif isinstance(sel, FunctionalPseudoClassSelector):
+        if sel.name == 'pass':
+            steps.append(serialize(sel.arguments).strip('"\''))
+    elif isinstance(sel, PseudoClassSelector):
+        if sel.name == 'deferred':
+            extras.append('deferred')
+    return (steps, extras)
 
-                elif type(term) is ast.StringToken:
-                    strval += term.value
 
-                elif type(term) is ast.NumberToken:
-                    strval += str(int(term.value))
-
-                elif type(term) is ast.IdentToken:
-                    logger.debug("IdentToken as string: {}".format(term.value))
-                    strval += term.value
-
-                elif type(term) is ast.LiteralToken:
-                    steps.append(strval)
-                    strval = ''
-
-                elif type(term) is ast.FunctionBlock:
-                        logger.warning("Bad pass name: functions not allowed."
-                                       "{}".format(args))
-            if strval != '':
-                steps.append(strval)
+def extract_selector_info(sel):
+    """Return selector special pseudo class info (steps and other)."""
+    #  walk the parsed_tree, looking for pseudoClass selectors, check names
+    # add in steps and/or deferred extras
+    steps, extras = _extract_sel_info(sel.parsed_tree)
+    steps = sorted(set(steps))
+    extras = sorted(set(extras))
     if len(steps) == 0:
-        steps.append('default')
-
-    return (steps, declarations)
+        steps = ['default']
+    return (steps, extras)
 
 
 # convert integer to Roman numeral.
