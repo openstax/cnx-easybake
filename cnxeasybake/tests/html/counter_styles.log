@@ -1,4 +1,4 @@
-cnx-easybake DEBUG Passes: ['0', '2']
+cnx-easybake DEBUG Passes: ['0', u'2']
 cnx-easybake DEBUG Rule (23): body::before 
 cnx-easybake DEBUG     0: content "Hint, the food is at item #" target-counter("burger", items)
 cnx-easybake DEBUG IdentToken as string: items
@@ -66,17 +66,17 @@ cnx-easybake DEBUG     0: counter-increment cardassian-lights
 cnx-easybake DEBUG Rule (8): li::before 
 cnx-easybake DEBUG     0: container span
 cnx-easybake DEBUG     0: content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
-cnx-easybake DEBUG Rule (42): body::after 
+cnx-easybake DEBUG Rule (41): body::after 
 cnx-easybake DEBUG     0: content "There are " counter(cardassian-lights) " lights!"
-cnx-easybake DEBUG Rule (45): body::after 
+cnx-easybake DEBUG Rule (44): body::after 
 cnx-easybake DEBUG     0: content "There are " counter(lights) " lights!"
-cnx-easybake DEBUG Rule (48): body::after 
+cnx-easybake DEBUG Rule (47): body::after 
 cnx-easybake DEBUG     0: content "There are " counter(my-lights) " lights!"
-cnx-easybake DEBUG Rule (51): body::after 
+cnx-easybake DEBUG Rule (50): body::after 
 cnx-easybake DEBUG     0: content "There are " counter(my-food) " calories!"
-cnx-easybake DEBUG Rule (54): body::after 
+cnx-easybake DEBUG Rule (53): body::after 
 cnx-easybake DEBUG     0: content "There are " counter(my-food, upper-roman) " calories!, " counter(lights, upper-latin) ", " counter(cardassian-lights, lower-latin)
-cnx-easybake DEBUG Rule (57): body::after 
+cnx-easybake DEBUG Rule (56): body::after 
 cnx-easybake DEBUG     0: content counter(toobig, decimal) "|" counter(toobig, lower-roman) "|" counter(toobig, upper-roman) "|" counter(toobig, lower-alpha) "|" counter(toobig, upper-alpha) "|" counter(toobig, decimal-leading-zero)
 cnx-easybake WARNING Number out of range for roman (must be 1..4999)
 cnx-easybake WARNING Number out of range for roman (must be 1..4999)
@@ -87,7 +87,6 @@ cnx-easybake WARNING Bad ID target lookup urger
 cnx-easybake WARNING Bad ID target lookup ries
 cnx-easybake WARNING Bad ID target lookup ylist
 cnx-easybake WARNING Bad ID target lookup urger
-cnx-easybake DEBUG Rule (38): body 
+cnx-easybake DEBUG Rule (38): body:pass(2) 
 cnx-easybake DEBUG     2: content pending(b1) pending(b2) pending(b3) content()
-cnx-easybake DEBUG     2: pass 2
 cnx-easybake DEBUG Recipe 2 length: 6
