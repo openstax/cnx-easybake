@@ -326,7 +326,7 @@ class Oven():
 
         # Do deferred
         if ('deferred' in matching_rules or
-             'after_deferred' in matching_rules or  # NOQA  
+             'after_deferred' in matching_rules or  # NOQA
              'before_deferred' in matching_rules or
              'outside_deferred' in matching_rules):
 
