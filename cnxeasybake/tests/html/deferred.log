@@ -19,7 +19,7 @@ cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.practice-test
 cnx-easybake DEBUG     default: string-set childclasses string(childclasses) " " attr(class)
 cnx-easybake DEBUG IdentToken as string: childclasses
 cnx-easybake DEBUG IdentToken as string: class
-cnx-easybake DEBUG Rule (7): div[data-type="chapter"]::deferred 
+cnx-easybake DEBUG Rule (7): div[data-type="chapter"]:deferred 
 cnx-easybake DEBUG     default: class string(childclasses)
 cnx-easybake DEBUG IdentToken as string: childclasses
 cnx-easybake DEBUG Recipe default length: 9

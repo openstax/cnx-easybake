@@ -1,16 +1,14 @@
 body {
   string-set: onestring "This is a first-pass string";
 }
-body::after {
-  pass: default, second;
+:pass('default') body::after,
+:pass('second') body::after {
   content: "Two passes, doubled!";
 }
-body::after {
-  pass: "second";
+:pass('second') body::after {
   content: string(onestring);
 }
-body::after {
-  pass: counter(mine);
+:pass(counter(mine)) body::after {
   content: string(onestring);
 }
 div[data-type='chapter'] section.practice-test {
@@ -32,9 +30,8 @@ div[data-type='chapter']::after {
   container: div;
   content: pending(eoc-key-equations);
 }
-div[data-type="page"]::before,
-div[data-type="composite-page"]::before {
-  pass: second;
+:pass('second') div[data-type="page"]::before,
+:pass('second') div[data-type="composite-page"]::before {
   counter-increment: page;
   container: h1;
   content: "Chapter " counter(page);

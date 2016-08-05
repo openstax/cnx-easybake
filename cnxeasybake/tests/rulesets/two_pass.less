@@ -2,19 +2,31 @@
 body {
     string-set: onestring "This is a first-pass string";
 
-    &::after {
-        pass: default, second;
-        content: "Two passes, doubled!";
-    }
-    &::after {
-        pass: "second";
-        content: string(onestring);
-    }
-    &::after {
-        pass: counter(mine);
-        content: string(onestring);
+}
+
+:pass('default'), :pass('second') {
+    body {
+        &::after {
+    	content: "Two passes, doubled!";
+        }
     }
 }
+
+:pass('second') {
+    body {
+        &::after {
+            content: string(onestring);
+        }
+    }
+}
+:pass(counter(mine)) {
+    body {
+        &::after {
+            content: string(onestring);
+        }
+    }
+}
+
 div[data-type='chapter'] {
     section.practice-test {
         move-to: eoc-practice-test;
@@ -40,11 +52,11 @@ div[data-type='chapter'] {
 
     }
 }
-div[data-type="page"]::before, div[data-type="composite-page"]::before {
-    pass: second;
-    counter-increment: page;
-    container: h1;
-    content: "Chapter " counter(page);
-    attr-id: "myid" counter(page);
+:pass('second') {
+	div[data-type="page"]::before, div[data-type="composite-page"]::before {
+	    counter-increment: page;
+	    container: h1;
+	    content: "Chapter " counter(page);
+	    attr-id: "myid" counter(page);
+	}
 }
-

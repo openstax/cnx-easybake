@@ -1,24 +1,20 @@
-cnx-easybake DEBUG IdentToken as string: default
-cnx-easybake DEBUG IdentToken as string: second
-cnx-easybake WARNING Bad pass name: functions not allowed. counter(mine)
-cnx-easybake DEBUG IdentToken as string: second
-cnx-easybake DEBUG Passes: ['default', u'second']
+cnx-easybake DEBUG Passes: ['default', u'counter(mine)', u'second']
 cnx-easybake DEBUG Rule (1): body 
 cnx-easybake DEBUG     default: string-set onestring "This is a first-pass string"
-cnx-easybake DEBUG Rule (16): div[data-type="chapter"] section.practice-test 
+cnx-easybake DEBUG Rule (14): div[data-type="chapter"] section.practice-test 
 cnx-easybake DEBUG     default: move-to eoc-practice-test
-cnx-easybake DEBUG Rule (19): div[data-type="chapter"] section.key-equations 
+cnx-easybake DEBUG Rule (17): div[data-type="chapter"] section.key-equations 
 cnx-easybake DEBUG     default: move-to eoc-key-equations
-cnx-easybake DEBUG Rule (16): div[data-type="chapter"] section.practice-test 
+cnx-easybake DEBUG Rule (14): div[data-type="chapter"] section.practice-test 
 cnx-easybake DEBUG     default: move-to eoc-practice-test
-cnx-easybake DEBUG Rule (22): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (20): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-practice-test
 cnx-easybake DEBUG IdentToken as string: eoc-practice-test
 cnx-easybake DEBUG     default: data-type composite-page
 cnx-easybake DEBUG IdentToken as string: composite-page
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG     default: content pending(eoc-practice-test)
-cnx-easybake DEBUG Rule (28): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-equations
 cnx-easybake DEBUG IdentToken as string: eoc-key-equations
 cnx-easybake DEBUG     default: data-type composite-page
@@ -27,43 +23,36 @@ cnx-easybake DEBUG     default: attr-my-type study-this
 cnx-easybake DEBUG IdentToken as string: study-this
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG     default: content pending(eoc-key-equations)
-cnx-easybake DEBUG Rule (4): body::after 
-cnx-easybake DEBUG     default: pass default, second
+cnx-easybake DEBUG Rule (4): :pass("default") body::after, :pass("second") body::after 
 cnx-easybake DEBUG     default: content "Two passes, doubled!"
-cnx-easybake DEBUG Rule (12): body::after 
-cnx-easybake DEBUG     default: pass counter(mine)
-cnx-easybake DEBUG     default: content string(onestring)
+cnx-easybake DEBUG Recipe default length: 20
+cnx-easybake DEBUG Rule (11): :pass(counter(mine)) body::after 
+cnx-easybake DEBUG     counter(mine): content string(onestring)
 cnx-easybake DEBUG IdentToken as string: onestring
-cnx-easybake DEBUG Recipe default length: 24
-cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
-cnx-easybake DEBUG     second: pass second
+cnx-easybake DEBUG Recipe counter(mine) length: 4
+cnx-easybake DEBUG Rule (33): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
-cnx-easybake DEBUG     second: pass second
+cnx-easybake DEBUG Rule (33): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
-cnx-easybake DEBUG     second: pass second
+cnx-easybake DEBUG Rule (33): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (35): div[data-type="page"]::before, div[data-type="composite-page"]::before 
-cnx-easybake DEBUG     second: pass second
+cnx-easybake DEBUG Rule (33): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (4): body::after 
-cnx-easybake DEBUG     second: pass default, second
+cnx-easybake DEBUG Rule (4): :pass("default") body::after, :pass("second") body::after 
 cnx-easybake DEBUG     second: content "Two passes, doubled!"
-cnx-easybake DEBUG Rule (8): body::after 
-cnx-easybake DEBUG     second: pass "second"
+cnx-easybake DEBUG Rule (8): :pass("second") body::after 
 cnx-easybake DEBUG     second: content string(onestring)
 cnx-easybake DEBUG IdentToken as string: onestring
 cnx-easybake DEBUG Recipe second length: 36

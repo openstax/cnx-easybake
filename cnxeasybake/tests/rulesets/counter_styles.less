@@ -40,9 +40,8 @@ body::before {
     container: p;
     move-to: b3;
     }
-body {
+body:pass(2) {
     content: pending(b1) pending(b2) pending(b3) content();
-    pass: 2;
 }
 body::after {
     content: "There are " counter(cardassian-lights) " lights!"
