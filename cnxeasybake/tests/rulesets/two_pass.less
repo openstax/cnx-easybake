@@ -1,10 +1,11 @@
 // Test two pending buckets targeting same after
-body {
+body:pass('first') {
+
     string-set: onestring "This is a first-pass string";
 
 }
 
-:pass('default'), :pass('second') {
+:pass('first'), :pass('second') {
     body {
         &::after {
     	content: "Two passes, doubled!";
@@ -27,7 +28,7 @@ body {
     }
 }
 
-div[data-type='chapter'] {
+:pass(first) div[data-type='chapter'] {
     section.practice-test {
         move-to: eoc-practice-test;
     }
