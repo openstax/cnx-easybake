@@ -164,13 +164,20 @@ class Oven():
 
         steps = sorted(self.matchers.keys())
         if len(steps) > 1:
-            steps.remove('default')
-            try:
-                steps.sort(key=int)
-                steps.insert(0, '0')
-                self.matchers['0'] = self.matchers.pop('default')
-            except ValueError:
-                steps.insert(0, 'default')
+            if 'default' in steps:
+                steps.remove('default')
+                try:
+                    steps.sort(key=int)
+                    steps.insert(0, '0')
+                    self.matchers['0'] = self.matchers.pop('default')
+                except ValueError:
+                    steps.insert(0, 'default')
+            else:
+                try:
+                    steps.sort(key=int)
+                except ValueError:
+                    pass  # already sorted alpha
+
         self.clear_state()
         self.state['steps'] = steps
         logger.debug('Passes: %s' % steps)
