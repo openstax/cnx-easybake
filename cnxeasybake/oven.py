@@ -236,8 +236,16 @@ class Oven():
                     else:
                         append_string(target, strval)
                 elif action == 'move':
+                    if value.tail is not None:
+                        val_prev = value.getprevious()
+                        if val_prev is not None:
+                            val_prev.tail = value.tail
+                        else:
+                            val_parent = value.getparent()
+                            if val_parent is not None:
+                                val_parent.text = value.tail
+                    value.tail = None
                     grouped_insert(target, value)
-
                 elif action == 'copy':
                     mycopy = copy_w_id_suffix(value)
                     mycopy.tail = None

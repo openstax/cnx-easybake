@@ -1,0 +1,21 @@
+table > caption {
+  container: span;
+  class: caption;
+  data-type: "caption";
+  move-to: tableCap;
+}
+table > caption [data-type="title"] {
+  container: span;
+  class: caption;
+  data-type: "caption-title";
+  move-to: tableTitle;
+}
+table > caption::after {
+  class: "caption-container";
+  content: pending(tableTitle) pending(tableCap);
+  move-to: tableCaption;
+}
+table::after {
+  container: caption;
+  content: pending(tableCaption);
+}
