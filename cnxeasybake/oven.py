@@ -236,15 +236,6 @@ class Oven():
                     else:
                         append_string(target, strval)
                 elif action == 'move':
-                    if value.tail is not None:
-                        val_prev = value.getprevious()
-                        if val_prev is not None:
-                            val_prev.tail = value.tail
-                        else:
-                            val_parent = value.getparent()
-                            if val_parent is not None:
-                                val_parent.text = value.tail
-                    value.tail = None
                     grouped_insert(target, value)
                 elif action == 'copy':
                     mycopy = copy_w_id_suffix(value)
@@ -1187,6 +1178,15 @@ def prepend_string(t, string):
 
 def grouped_insert(t, value):
     """Insert value into the target tree 't' with correct grouping."""
+    if value.tail is not None:
+        val_prev = value.getprevious()
+        if val_prev is not None:
+            val_prev.tail = (val_prev.tail or '') + value.tail
+        else:
+            val_parent = value.getparent()
+            if val_parent is not None:
+                val_parent.text = (val_parent.text or '') + value.tail
+    value.tail = None
     if t.isgroup and t.sort(value) is not None:
         if t.groupby:
             for child in t.tree:
