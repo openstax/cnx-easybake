@@ -277,7 +277,8 @@ class Oven():
                 logger.debug('Rule ({}): {}'.format(*rule))
                 self.push_target_elem(element)
                 for decl in declarations:
-                    if decl.type == 'declaration': # Could also be a 'comment'. Or could use `hasattr(decl, 'name')`
+                    # decl Could also be a 'comment'.
+                    if decl.type == 'declaration':
                         method = self.find_method(decl.name)
                         method(element, decl, None)
 
