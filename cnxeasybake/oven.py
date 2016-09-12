@@ -563,15 +563,14 @@ class Oven():
                     str_args = split(term.arguments, ',')
                     str_name = self.eval_string_value(element,
                                                       str_args[0])[0]
-                    str_def = ''
-                    if len(str_args) > 1:
-                        str_def = self.eval_string_value(element,
-                                                         str_args[1])[0]
                     val = self.lookup('strings', str_name)
                     if val == '':
-                        logger.warning("{} blank string".
-                                       format(str_name))
-                        val = str_def
+                        if len(str_args) > 1:
+                            val = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                        else:
+                            logger.warning("{} blank string".
+                                           format(str_name))
                     strval += val
 
                 elif term.name == u'attr':
@@ -672,15 +671,14 @@ class Oven():
                     str_args = split(term.arguments, ',')
                     str_name = self.eval_string_value(element,
                                                       str_args[0])[0]
-                    str_def = ''
-                    if len(str_args) > 1:
-                        str_def = self.eval_string_value(element,
-                                                         str_args[1])[0]
                     val = self.lookup('strings', str_name)
                     if val == '':
-                        logger.warning("{} blank string".
-                                       format(str_name))
-                        val = str_def
+                        if len(str_args) > 1:
+                            val = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                        else:
+                            logger.warning("{} blank string".
+                                           format(str_name))
 
                     if strname is not None:
                         strval += val
@@ -915,15 +913,14 @@ class Oven():
                     str_args = split(term.arguments, ',')
                     str_name = self.eval_string_value(element,
                                                       str_args[0])[0]
-                    str_def = ''
-                    if len(str_args) > 1:
-                        str_def = self.eval_string_value(element,
-                                                         str_args[1])[0]
                     val = self.lookup('strings', str_name)
                     if val == '':
-                        logger.warning("{} blank string".
-                                       format(str_name))
-                        val = str_def
+                        if len(str_args) > 1:
+                            val = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                        else:
+                            logger.warning("{} blank string".
+                                           format(str_name))
                     if val != '':
                         actions.append(('string', val))
 
