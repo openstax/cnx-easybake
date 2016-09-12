@@ -4,12 +4,11 @@ python:
   - "2.7"
     #  - "3.3" Not yet
 install:
-  - pip install coveralls
   - ./scripts/setup
 script:
   - ./scripts/test
 after_success:
   # Report test coverage to coveralls.io
-  - coveralls
+  - . ./bin/activate && coveralls
 notifications:
   email: false
