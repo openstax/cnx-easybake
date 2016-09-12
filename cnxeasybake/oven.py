@@ -277,8 +277,10 @@ class Oven():
                 logger.debug('Rule ({}): {}'.format(*rule))
                 self.push_target_elem(element)
                 for decl in declarations:
-                    method = self.find_method(decl.name)
-                    method(element, decl, None)
+                    # decl Could also be a 'comment'.
+                    if decl.type == 'declaration':
+                        method = self.find_method(decl.name)
+                        method(element, decl, None)
 
         # Store all variables (strings and counters) before children
         if element_id:
