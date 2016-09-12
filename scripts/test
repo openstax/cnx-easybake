@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+. ./bin/activate
+
+pep8 --exclude=tests *.py cnxeasybake/
+pep8 --max-line-length=1000 cnxeasybake/tests
+
+coverage run --source=cnxeasybake setup.py test
+
+deactivate
