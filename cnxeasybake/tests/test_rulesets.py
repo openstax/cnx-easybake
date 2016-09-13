@@ -31,16 +31,6 @@ def tidy(input_):
     return output
 
 
-def lessc(input_):
-    """Convert less to css."""
-    proc = subprocess.Popen(['lessc', '-'],
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            )
-    output, _ = proc.communicate(input_)
-    return output
-
 TEST_UUIDS = ["a321ce14-3b04-44ee-8fc2-7ec2e9e17906",
               "8e3fda66-929b-4688-98c3-5d37895bfded",
               "0e69e521-0a65-4a21-b685-1ae94cc2645e",
@@ -58,7 +48,7 @@ uuids = iter(TEST_UUIDS)
 class RulesetTestCase(unittest.TestCase):
     """Ruleset test cases.
 
-    Use easybake to transform <name>_raw.html with <name>.less and compare
+    Use easybake to transform <name>_raw.html with <name>.css and compare
     with <name>_cooked.html files
     """
 
@@ -75,26 +65,16 @@ class RulesetTestCase(unittest.TestCase):
     @classmethod
     def generate_tests(cls):
         """Build tests from css and html files."""
-        for less_filename in glob.glob(os.path.join(TEST_RULESET_DIR,
-                                       '*.less')):
-            filename_no_ext = less_filename.rsplit('.less', 1)[0]
+        for css_filename in glob.glob(os.path.join(TEST_RULESET_DIR, '*.css')):
+            filename_no_ext = css_filename.rsplit('.css', 1)[0]
             header = []
             logs = []
             desc = None
-            with open('{}.less'.format(filename_no_ext), 'rb') as f_less:
-                for line in f_less:
-                    if line.startswith('// '):
-                        header.append(line[3:])
-                    elif line.startswith('/'):
-                        header.append(line[1:])
-                f_less.seek(0)
+            with open('{}.css'.format(filename_no_ext), 'rb') as f_css:
+                header.append(filename_no_ext)
+                f_css.seek(0)
                 css_fname = '{}.css'.format(filename_no_ext)
-                fnum = f_less.fileno()
-
-                if not os.path.isfile(css_fname) or \
-                   os.fstat(fnum).st_mtime > os.stat(css_fname).st_mtime:
-                    with open(css_fname, 'wb') as f_css:
-                        f_css.write(lessc(f_less.read()))
+                fnum = f_css.fileno()
 
             if len(header) > 0:
                 desc = header[0]

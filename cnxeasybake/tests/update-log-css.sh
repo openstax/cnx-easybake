@@ -1,11 +1,12 @@
 #!/bin/bash
+set -e
+
 rulename=${*:-*}
-for r in rulesets/${rulename}.less
+for r in rulesets/${rulename}.css
     do
         file=$(basename $r)
-        name=${file%%.less}
+        name=${file%%.css}
         echo $name
-        lessc rulesets/${name}.less rulesets/${name}.css
         cnx-easybake -d rulesets/${name}.css html/${name}_raw.html html/${name}_cooked.html.tmp 2> html/${name}.log
         if ! cmp html/${name}_cooked.html{,.tmp};  then
             diff -u html/${name}_cooked.html{,.tmp}
@@ -14,4 +15,4 @@ for r in rulesets/${rulename}.less
             rm html/${name}_cooked.html.tmp
         fi
         touch rulesets/${name}.css
-    done  
+    done
