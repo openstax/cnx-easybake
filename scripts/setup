@@ -2,7 +2,7 @@
 set -e
 
 echo "Step 1/2: Setting up a python virtualenv"
-if [ ! "${CI}" == "true" ] # Skip when running Travis
+if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
   virtualenv .
   . ./bin/activate
@@ -16,7 +16,7 @@ pip install coverage
 pip install coveralls
 
 
-if [ ! "${CI}" == "true" ] # Skip when running Travis
+if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
   deactivate
 fi

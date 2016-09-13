@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ ! "${CI}" == "true" ] # Skip when running Travis
+if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
   . ./bin/activate
 fi
@@ -11,7 +11,7 @@ pep8 --max-line-length=1000 cnxeasybake/tests
 
 coverage run --source=cnxeasybake setup.py test
 
-if [ ! "${CI}" == "true" ] # Skip when running Travis
+if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
   deactivate
 fi
