@@ -1,11 +1,17 @@
 #!/bin/sh
 set -e
 
-. ./bin/activate
+if [ ! "${CI}" == "true" ] # Skip when running Travis
+then
+  . ./bin/activate
+fi
 
 pep8 --exclude=tests *.py cnxeasybake/
 pep8 --max-line-length=1000 cnxeasybake/tests
 
 coverage run --source=cnxeasybake setup.py test
 
-deactivate
+if [ ! "${CI}" == "true" ] # Skip when running Travis
+then
+  deactivate
+fi

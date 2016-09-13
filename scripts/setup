@@ -2,9 +2,11 @@
 set -e
 
 echo "Step 1/2: Setting up a python virtualenv"
-virtualenv .
-. ./bin/activate
-
+if [ ! "${CI}" == "true" ] # Skip when running Travis
+then
+  virtualenv .
+  . ./bin/activate
+fi
 
 echo "Step 2/2: Installing python packages"
 
@@ -13,4 +15,8 @@ pip install pep8
 pip install coverage
 pip install coveralls
 
-deactivate
+
+if [ ! "${CI}" == "true" ] # Skip when running Travis
+then
+  deactivate
+fi
