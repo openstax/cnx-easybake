@@ -23,6 +23,7 @@ include
 ##############
 build/
 dist/
+/cnxeasybake/tests/html/*.html.tmp
 
 # Coverage #
 ############

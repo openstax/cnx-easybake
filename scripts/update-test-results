@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+GIT_ROOT=$(git rev-parse --show-toplevel)
+TESTDIR="${GIT_ROOT}/cnxeasybake/tests"
+
+rulename=${*:-*}
+for r in "${TESTDIR}"/rulesets/${rulename}.css
+    do
+        file=$(basename $r)
+        name=${file%%.css}
+        echo $name
+        ruleset="${TESTDIR}/rulesets/${name}.css"
+        resultname="${TESTDIR}/html/${name}"
+        cnx-easybake -d "${ruleset}" "${resultname}_raw.html" "${resultname}_cooked.html.tmp" 2> "${resultname}.log"
+        if  ! diff -u "${resultname}_cooked.html"{,.tmp}
+        then
+            mv "${resultname}_cooked.html"{.tmp,}
+        else
+            rm "${resultname}_cooked.html.tmp"
+        fi
+    done
