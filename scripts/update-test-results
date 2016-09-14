@@ -1,21 +1,45 @@
 #!/bin/bash
 set -e
-GIT_ROOT=$(git rev-parse --show-toplevel)
-TESTDIR="${GIT_ROOT}/cnxeasybake/tests"
+git_root=$(git rev-parse --show-toplevel)
+testdir="${git_root}/cnxeasybake/tests"
 
-rulename=${*:-*}
-for r in "${TESTDIR}"/rulesets/${rulename}.css
+
+if [ $# = 0 ]
+then
+    echo "Updating all test output results."
+    read -p "Are you sure? [N/y] " answer
+	case ${answer:0:1} in
+		y|Y ) :
+		;;
+		* )
+			exit;
+		;;
+	esac
+fi
+
+rulename=${@:-*}
+
+for r in "${testdir}"/rulesets/${rulename}.css
     do
         file=$(basename $r)
         name=${file%%.css}
         echo $name
-        ruleset="${TESTDIR}/rulesets/${name}.css"
-        resultname="${TESTDIR}/html/${name}"
+        ruleset="${testdir}/rulesets/${name}.css"
+        resultname="${testdir}/html/${name}"
         cnx-easybake -d "${ruleset}" "${resultname}_raw.html" "${resultname}_cooked.html.tmp" 2> "${resultname}.log"
         if  ! diff -u "${resultname}_cooked.html"{,.tmp}
         then
             mv "${resultname}_cooked.html"{.tmp,}
+            if [ $name = "uuid" ]
+            then
+                UUIDS=1
+            fi
         else
             rm "${resultname}_cooked.html.tmp"
         fi
     done
+if [ $UUIDS == 1 ]
+then
+    # FIXME - come up with a way to not have this happen
+    echo "UUID generator tests likely to fail. Check actual diff"
+fi
