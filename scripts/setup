@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+echo "Step 1/2: Setting up a python virtualenv (if not already in one)"
+if [ ! "${CI}" = "true" ] # Skip when running Travis
+then
+  # Only activate the virtualenv if not already in one
+  if [ -z "${VIRTUAL_ENV}" ]
+  then
+    virtualenv .
+    . ./bin/activate
+  fi
+fi
+
+echo "Step 2/2: Installing python packages"
+
+python setup.py install
+pip install pep8
+pip install coverage
+pip install coveralls
+
+# Note: deactivate is not necessary because the virtualenv is deactivated at the end of the script

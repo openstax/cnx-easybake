@@ -16,11 +16,14 @@
 bin
 lib
 include
+/.Python
+/pip-selfcheck.json
 
 # Build file #
 ##############
 build/
 dist/
+/cnxeasybake/tests/html/*.html.tmp
 
 # Coverage #
 ############

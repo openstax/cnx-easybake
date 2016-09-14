@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+if [ ! "${CI}" = "true" ] # Skip when running Travis
+then
+  [ -n "${VIRTUAL_ENV}" ] || . ./bin/activate
+fi
+
+pep8 --exclude=tests *.py cnxeasybake/
+pep8 --max-line-length=1000 cnxeasybake/tests
+
+coverage run --source=cnxeasybake setup.py test
+
+# Note: deactivate is not necessary because the virtualenv is deactivated at the end of the script

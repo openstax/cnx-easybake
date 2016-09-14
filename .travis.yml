@@ -3,19 +3,12 @@ sudo: false
 python:
   - "2.7"
     #  - "3.3" Not yet
-before_install:
-  # Install the coverage utility and coveralls reporting utility
-  - pip install coverage
-  - pip install coveralls
-  - pip install pep8
-  - pep8 --exclude=tests *.py cnxeasybake/
-  - pep8 --max-line-length=1000 cnxeasybake/tests
 install:
-  - python setup.py install
+  - ./scripts/setup
 script:
-  - coverage run --source=cnxeasybake setup.py test
+  - ./scripts/test
 after_success:
   # Report test coverage to coveralls.io
-  - coveralls
+  - . ./bin/activate && coveralls
 notifications:
   email: false
