@@ -19,8 +19,4 @@ pip install pep8
 pip install coverage
 pip install coveralls
 
-
-if [ ! "${CI}" = "true" ] # Skip when running Travis
-then
-  deactivate
-fi
+# Note: deactivate is not necessary because the virtualenv is deactivated at the end of the script
