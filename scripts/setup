@@ -1,11 +1,15 @@
 #!/bin/sh
 set -e
 
-echo "Step 1/2: Setting up a python virtualenv"
+echo "Step 1/2: Setting up a python virtualenv (if not already in one)"
 if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
-  virtualenv .
-  . ./bin/activate
+  # Only activate the virtualenv if not already in one
+  if [ -z "${VIRTUAL_ENV}" ]
+  then
+    virtualenv .
+    . ./bin/activate
+  fi
 fi
 
 echo "Step 2/2: Installing python packages"

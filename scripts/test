@@ -3,7 +3,7 @@ set -e
 
 if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
-  . ./bin/activate
+  [ -n "${VIRTUAL_ENV}" ] || . ./bin/activate
 fi
 
 pep8 --exclude=tests *.py cnxeasybake/
