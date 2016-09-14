@@ -1,13 +1,16 @@
 #!/bin/sh
 set -e
+GIT_ROOT=$(git rev-parse --show-toplevel)
+
 
 if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
-  [ -n "${VIRTUAL_ENV}" ] || . ./bin/activate
+  [ -n "${VIRTUAL_ENV}" ] || source "${GIT_ROOT}"/bin/activate
 fi
 
-pep8 --exclude=tests *.py cnxeasybake/
-pep8 --max-line-length=1000 cnxeasybake/tests
+cd "${GIT_ROOT}"
+pep8 --exclude=tests *.py "${GIT_ROOT}"/cnxeasybake/
+pep8 --max-line-length=1000 "${GIT_ROOT}"/cnxeasybake/tests
 
 coverage run --source=cnxeasybake setup.py test
 

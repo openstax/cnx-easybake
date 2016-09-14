@@ -30,7 +30,9 @@ def main(argv=None):
                                                  " collation)")
     parser.add_argument('-v', '--version', action="version",
                         version=__version__, help='Report the library version')
-    parser.add_argument("css_rules", help="CSS3 ruleset stylesheet recipe")
+    parser.add_argument("css_rules",
+                        type=argparse.FileType('r'),
+                        help="CSS3 ruleset stylesheet recipe")
     parser.add_argument("html_in", nargs="?",
                         type=argparse.FileType('r'),
                         help="raw HTML file to cook (default stdin)",
