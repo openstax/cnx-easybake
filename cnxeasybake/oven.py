@@ -975,7 +975,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning(u"{} empty bucket".format(target))
+                        logger.info(u"{} empty bucket".format(target))
                         continue
                     actions.extend(val)
                     del self.state[val_step]['pending'][target]
@@ -984,7 +984,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning(u"{} empty bucket".format(target))
+                        logger.info(u"{} empty bucket".format(target))
                         continue
                     for action in val:
                             if action[0] == 'move':
@@ -996,7 +996,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning(u"{} empty bucket".format(target))
+                        logger.info(u"{} empty bucket".format(target))
                         continue
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
