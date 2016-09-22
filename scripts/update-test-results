@@ -17,6 +17,9 @@ then
 	esac
 fi
 
+# Activate virtualenv if not already in one
+[ -n "${VIRTUAL_ENV}" ] || source "${git_root}"/bin/activate
+
 rulename=${@:-*}
 
 for r in "${testdir}"/rulesets/${rulename}.css
