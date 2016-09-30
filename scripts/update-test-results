@@ -38,7 +38,7 @@ for r in "${testdir}"/rulesets/${rulename}.css
             rm "${resultname}_cooked.html.tmp"
         fi
     done
-if [ $UUIDS == 1 ]
+if [[ $UUIDS == 1 ]]
 then
     # FIXME - come up with a way to not have this happen
     echo "UUID generator tests likely to fail. Check actual diff"
