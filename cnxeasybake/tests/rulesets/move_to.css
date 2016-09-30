@@ -1,6 +1,8 @@
+/* Move and sort */
 div[data-type='chapter'] dl.definition {
   move-to: eoc-key-terms;
 }
+/* Containers */
 div[data-type='chapter']::after {
   class: eoc-key-terms;
   content: pending(eoc-key-terms);

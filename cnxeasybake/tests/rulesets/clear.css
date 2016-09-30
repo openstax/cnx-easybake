@@ -1,6 +1,8 @@
+/* Clear */
 div[data-type='chapter'] section.key-equations {
   move-to: trash;
 }
+/* Containers */
 body::after {
   content: clear(trash) clear(notrash);
 }

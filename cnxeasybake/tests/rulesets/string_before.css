@@ -1,3 +1,4 @@
+/* Doing string-set in a before */
 body {
   string-set: astring "Here's a string";
 }

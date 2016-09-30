@@ -71,10 +71,10 @@ class RulesetTestCase(unittest.TestCase):
             logs = []
             desc = None
             with open('{}.css'.format(filename_no_ext), 'rb') as f_css:
-                header.append(filename_no_ext)
+                for line in f_css:
+                    if line.startswith('/* '):
+                        header.append(line[3:-3])
                 f_css.seek(0)
-                css_fname = '{}.css'.format(filename_no_ext)
-                fnum = f_css.fileno()
 
             if len(header) > 0:
                 desc = header[0]

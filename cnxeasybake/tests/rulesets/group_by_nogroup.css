@@ -1,3 +1,4 @@
+/* Simple group by, without groups */
 div[data-type="page"] > div[data-type="document-title"] {
   string-set: section-title content();
 }

@@ -1,3 +1,4 @@
+/* Group by with nocase option */
 div[data-type="page"] > div[data-type="document-title"] {
   string-set: section-title content();
 }

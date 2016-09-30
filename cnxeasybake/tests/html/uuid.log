@@ -1,11 +1,11 @@
 cnx-easybake DEBUG Passes: ['default']
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.practice-test 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] section.practice-test 
 cnx-easybake DEBUG     default: move-to eoc-practice-test
-cnx-easybake DEBUG Rule (4): div[data-type="chapter"] section.key-equations 
+cnx-easybake DEBUG Rule (5): div[data-type="chapter"] section.key-equations 
 cnx-easybake DEBUG     default: move-to eoc-key-equations
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] section.practice-test 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] section.practice-test 
 cnx-easybake DEBUG     default: move-to eoc-practice-test
-cnx-easybake DEBUG Rule (7): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (8): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-practice-test
 cnx-easybake DEBUG IdentToken as string: eoc-practice-test
 cnx-easybake DEBUG     default: data-type composite-page
@@ -13,7 +13,7 @@ cnx-easybake DEBUG IdentToken as string: composite-page
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG     default: attr-id uuid()
 cnx-easybake DEBUG     default: content uuid() " " pending(eoc-practice-test)
-cnx-easybake DEBUG Rule (14): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (15): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-equations
 cnx-easybake DEBUG IdentToken as string: eoc-key-equations
 cnx-easybake DEBUG     default: data-type composite-page

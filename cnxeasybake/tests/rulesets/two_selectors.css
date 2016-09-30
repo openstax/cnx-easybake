@@ -1,3 +1,4 @@
+/* Two selectors  */
 section[data-type="glossary"],
 section[data-type="summary"] {
   move-to: trash;

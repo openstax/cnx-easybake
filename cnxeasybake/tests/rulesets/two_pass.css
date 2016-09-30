@@ -1,3 +1,4 @@
+/* Two pending buckets targeting same after */
 body:pass('first') {
   string-set: onestring "This is a first-pass string";
 }

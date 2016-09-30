@@ -1,3 +1,4 @@
+/* Deferred pseudo class */
 div[data-type='chapter'] section.practice-test {
   string-set: childclasses string(childclasses) " " attr(class);
 }

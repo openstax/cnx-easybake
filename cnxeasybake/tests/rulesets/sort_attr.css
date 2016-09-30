@@ -1,3 +1,4 @@
+/* Sort on an attr  - content provided sort key */
 div[data-type="page"] > div[data-type="document-title"] {
   string-set: section-title content();
 }

@@ -1,3 +1,4 @@
+/* Counters */
 ul {
   counter-reset: lights, cardassian-lights, my-lights -1;
   counter-reset: my-food 0;

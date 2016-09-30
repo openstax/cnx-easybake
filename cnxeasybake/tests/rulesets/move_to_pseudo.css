@@ -1,3 +1,4 @@
+/* Node-set and nodes() */
 div[data-type='chapter'] > div[data-type='page'] > div[data-type='title'] {
   node-set: mytitle;
 }
@@ -11,6 +12,7 @@ div[data-type='chapter'] > div[data-type='page'] > section[data-type='summary']:
 div[data-type='chapter'] > div[data-type='page'] dl.definition {
   move-to: eoc-key-terms;
 }
+/* Containers */
 div[data-type='chapter']::after {
   class: summaries;
   content: pending(eoc-summaries);
