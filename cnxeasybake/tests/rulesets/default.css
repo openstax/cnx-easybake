@@ -1,3 +1,4 @@
+/* Two param attr and string functions - with default */
 li {
   string-set: itemtype attr(data-type, 'item');
   string-set: itemclass attr(class, 'item');

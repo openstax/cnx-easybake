@@ -1,3 +1,4 @@
+/* Content function and no function error */
 li {
   content: attr(data-type) ": " content();
 }

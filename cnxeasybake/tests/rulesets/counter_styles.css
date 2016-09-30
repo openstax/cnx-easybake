@@ -1,3 +1,4 @@
+/* Counter styles */
 ul {
   counter-reset: lights, cardassian-lights, my-lights -1, my-food 0, toobig 6000;
   string-set: lname "This is the food and light list";

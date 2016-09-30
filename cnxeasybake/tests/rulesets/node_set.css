@@ -1,3 +1,4 @@
+/* Node-set and nodes() */
 div[data-type='chapter'] > div[data-type='page'] > div[data-type='title'] {
   node-set: mytitle;
 }
@@ -14,6 +15,7 @@ div[data-type='chapter'] > div[data-type='page']::after {
 div[data-type='chapter'] > div[data-type='page']::after {
   content: "My title is: " nodes(mytitle);
 }
+/* Containers */
 div[data-type='chapter']::after {
   class: summaries;
   content: pending(eoc-summaries);

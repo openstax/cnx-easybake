@@ -1,30 +1,30 @@
 cnx-easybake DEBUG Passes: ['default']
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
 cnx-easybake DEBUG     default: node-set mytitle
-cnx-easybake DEBUG Rule (4): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
+cnx-easybake DEBUG Rule (5): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
 cnx-easybake DEBUG     default: move-to sec-summary
-cnx-easybake DEBUG Rule (7): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"]::after 
+cnx-easybake DEBUG Rule (8): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"]::after 
 cnx-easybake DEBUG     default: content nodes(mytitle) pending(sec-summary)
 cnx-easybake DEBUG     default: move-to eoc-summaries
-cnx-easybake DEBUG Rule (11): div[data-type="chapter"] > div[data-type="page"] dl.definition 
+cnx-easybake DEBUG Rule (12): div[data-type="chapter"] > div[data-type="page"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (11): div[data-type="chapter"] > div[data-type="page"] dl.definition 
+cnx-easybake DEBUG Rule (12): div[data-type="chapter"] > div[data-type="page"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (11): div[data-type="chapter"] > div[data-type="page"] dl.definition 
+cnx-easybake DEBUG Rule (12): div[data-type="chapter"] > div[data-type="page"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] > div[data-type="page"] > div[data-type="title"] 
 cnx-easybake DEBUG     default: node-set mytitle
-cnx-easybake DEBUG Rule (4): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
+cnx-easybake DEBUG Rule (5): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"] 
 cnx-easybake DEBUG     default: move-to sec-summary
-cnx-easybake DEBUG Rule (7): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"]::after 
+cnx-easybake DEBUG Rule (8): div[data-type="chapter"] > div[data-type="page"] > section[data-type="summary"]::after 
 cnx-easybake DEBUG     default: content nodes(mytitle) pending(sec-summary)
 cnx-easybake DEBUG     default: move-to eoc-summaries
-cnx-easybake DEBUG Rule (14): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (16): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class summaries
 cnx-easybake DEBUG IdentToken as string: summaries
 cnx-easybake DEBUG     default: content pending(eoc-summaries)
 cnx-easybake DEBUG     default: container div
-cnx-easybake DEBUG Rule (19): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (21): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms)

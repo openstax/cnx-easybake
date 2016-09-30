@@ -1,11 +1,11 @@
 cnx-easybake DEBUG Passes: ['default']
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (1): div[data-type="chapter"] dl.definition 
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] dl.definition 
 cnx-easybake DEBUG     default: move-to eoc-key-terms
-cnx-easybake DEBUG Rule (4): div[data-type="chapter"]::after 
+cnx-easybake DEBUG Rule (6): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-terms
 cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms)

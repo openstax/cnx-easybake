@@ -1,3 +1,4 @@
+/* Wrapping two pending targets inside another */
 div[data-type='chapter'] section.practice-test {
   move-to: eoc-practice-test;
 }

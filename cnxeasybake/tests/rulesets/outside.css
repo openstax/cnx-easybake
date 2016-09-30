@@ -1,3 +1,4 @@
+/* Wrapping a div around an element */
 div[data-type='chapter'] table::after {
   content: "This is a table title";
   container: span;
