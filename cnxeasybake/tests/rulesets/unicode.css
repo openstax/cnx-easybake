@@ -1,0 +1,36 @@
+div[data-type='chapter'] div[data-type='page'] {
+  string-set: section "My Section String™", section2 "My Secönd Section Stríng", mytype attr(data-type);
+  counter-reset: mycounter;
+}
+div[data-type='chapter'] div[data-type='page'] div[data-type='title'] {
+  string-set: myid attr(id) " " string(section) string(no-such-string);
+  string-set: mytitle first-letter(content()) ": " content();
+}
+div[data-type='chapter'] div[data-type='page'] dl.definition {
+  move-to: eoc-key-terms;
+  string-set: "bad bad";
+  string-set: string(section);
+  string-set: attr(id);
+  string-set: badname badname;
+  string-set: , badname;
+  string-set: mystring pending(eoc-key-terms);
+  string-set: name counter(mycounter);
+}
+div[data-type='chapter'] div[data-type='page']::after {
+  content: string(mytitle);
+}
+div[data-type='chapter'] div[data-type='page']::after {
+  content: first-letter(string(mytitle));
+  class: first-letter(mytitle);
+}
+div[data-type='chapter']::after {
+  class: "strings, and things";
+  content: string(section) ":" string(section2) ":" string(myid) string(no-such-string);
+  container: h1;
+}
+div[data-type='chapter']::after {
+  class: eoc-key-terms;
+  content: pending(eoc-key-terms) "MyId®: " string(myid) " " attr(data-type);
+  container: section;
+  sort-by: dl > dt;
+}

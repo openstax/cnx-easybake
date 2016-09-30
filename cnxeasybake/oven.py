@@ -25,7 +25,7 @@ def log_decl_method(func):
     def with_logging(*args, **kwargs):
         self = args[0]
         decl = args[2]
-        logger.debug("    {}: {} {}".format(self.state['current_step'],
+        logger.debug(u"    {}: {} {}".format(self.state['current_step'],
                      decl.name, serialize(decl.value).strip()))
         return func(*args, **kwargs)
     return with_logging
@@ -46,11 +46,11 @@ class Target():
 
     def __str__(self):
         """Return string."""
-        return ("tree: {0.tree} "
-                "location: {0.location} "
-                "sort: {0.sort} "
-                "isgroup: {0.isgroup} "
-                "groupby: {0.groupby}".format(self))
+        return (u"tree: {0.tree} "
+                u"location: {0.location} "
+                u"sort: {0.sort} "
+                u"isgroup: {0.isgroup} "
+                u"groupby: {0.groupby}".format(self))
 
 
 class TargetVal():
@@ -143,7 +143,7 @@ class Oven():
                     try:
                         csel = CompiledSelector(sel)
                     except cssselect2.SelectorError as error:
-                        logger.warning('Invalid selector: %s %s'
+                        logger.warning(u'Invalid selector: %s %s'
                                        % (serialize(rule.prelude), error))
                     else:
                         steps, extras = extract_selector_info(sel)
@@ -180,7 +180,7 @@ class Oven():
 
         self.clear_state()
         self.state['steps'] = steps
-        logger.debug('Passes: %s' % steps)
+        logger.debug(u'Passes: %s' % steps)
 
     def bake(self, element, last_step=None):
         """Apply recipes to HTML tree. Will build recipes if needed."""
@@ -198,7 +198,7 @@ class Oven():
             else:
                 recipe = self.state[step]
 
-            logger.debug('Recipe {} length: {}'.format(
+            logger.debug(u'Recipe {} length: {}'.format(
                 step, len(recipe['actions'])))
             target = None
             old_content = {}
@@ -243,12 +243,12 @@ class Oven():
                     grouped_insert(target, mycopy)
                 elif action == 'nodeset':
                     node_counts[value] = node_counts.setdefault(value, 0) + 1
-                    suffix = '_copy_{}'.format(node_counts[value])
+                    suffix = u'_copy_{}'.format(node_counts[value])
                     mycopy = copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 else:
-                    logger.warning('Missing action {}'.format(action))
+                    logger.warning(u'Missing action {}'.format(action))
 
         # Do numbering
 
@@ -274,7 +274,7 @@ class Oven():
         # Do non-pseudo
         if None in matching_rules:
             for rule, declarations in matching_rules.get(None):
-                logger.debug('Rule ({}): {}'.format(*rule))
+                logger.debug(u'Rule ({}): {}'.format(*rule))
                 self.push_target_elem(element)
                 for decl in declarations:
                     # decl Could also be a 'comment'.
@@ -298,7 +298,7 @@ class Oven():
         # Do before
         if 'before' in matching_rules:
             for rule, declarations in matching_rules.get('before'):
-                logger.debug('Rule ({}): {}'.format(*rule))
+                logger.debug(u'Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'before')
                 for decl in declarations:
@@ -314,7 +314,7 @@ class Oven():
         # Do after
         if 'after' in matching_rules:
             for rule, declarations in matching_rules.get('after'):
-                logger.debug('Rule ({}): {}'.format(*rule))
+                logger.debug(u'Rule ({}): {}'.format(*rule))
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'after')
                 for decl in declarations:
@@ -326,7 +326,7 @@ class Oven():
         # Do outside
         if 'outside' in matching_rules:
             for rule, declarations in matching_rules.get('outside'):
-                logger.debug('Rule ({}): {}'.format(*rule))
+                logger.debug(u'Rule ({}): {}'.format(*rule))
                 self.push_pending_elem(element, 'outside')
                 for decl in declarations:
                     method = self.find_method(decl.name)
@@ -351,7 +351,7 @@ class Oven():
             # Do straight up deferred
             if 'deferred' in matching_rules:
                 for rule, declarations in matching_rules.get('deferred'):
-                    logger.debug('Rule ({}): {}'.format(*rule))
+                    logger.debug(u'Rule ({}): {}'.format(*rule))
                     self.push_target_elem(element)
                     for decl in declarations:
                         method = self.find_method(decl.name)
@@ -361,7 +361,7 @@ class Oven():
             if 'before_deferred' in matching_rules:
                 for rule, declarations in \
                         matching_rules.get('before_deferred'):
-                    logger.debug('Rule ({}): {}'.format(*rule))
+                    logger.debug(u'Rule ({}): {}'.format(*rule))
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'before')
                     for decl in declarations:
@@ -373,7 +373,7 @@ class Oven():
             # Do after_deferred
             if 'after_deferred' in matching_rules:
                 for rule, declarations in matching_rules.get('after_deferred'):
-                    logger.debug('Rule ({}): {}'.format(*rule))
+                    logger.debug(u'Rule ({}): {}'.format(*rule))
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'after')
                     for decl in declarations:
@@ -386,7 +386,7 @@ class Oven():
             if 'outside_deferred' in matching_rules:
                 for rule, declarations in \
                         matching_rules.get('outside_deferred'):
-                    logger.debug('Rule ({}): {}'.format(*rule))
+                    logger.debug(u'Rule ({}): {}'.format(*rule))
                     self.push_pending_elem(element, 'outside')
                     for decl in declarations:
                         method = self.find_method(decl.name)
@@ -448,7 +448,7 @@ class Oven():
         """Find class method to call for declaration based on name."""
         method = None
         try:
-            method = getattr(self, 'do_{}'.format(
+            method = getattr(self, u'do_{}'.format(
                              (name).replace('-', '_')))
         except AttributeError:
             if name.startswith('data-'):
@@ -456,7 +456,7 @@ class Oven():
             elif name.startswith('attr-'):
                 method = getattr(self, 'do_attr_any')
             else:
-                logger.warning('Missing method {}'.format(
+                logger.warning(u'Missing method {}'.format(
                                  (name).replace('-', '_')))
         if method:
             return method
@@ -485,7 +485,7 @@ class Oven():
                 state = self.state[vtype][target_id]
                 steps = self.state[vtype][target_id].keys()
             except KeyError:
-                logger.warning('Bad ID target lookup {}'.format(target_id))
+                logger.warning(u'Bad ID target lookup {}'.format(target_id))
                 return nullval
 
         else:
@@ -519,21 +519,21 @@ class Oven():
             if 1 <= val <= 26:
                 valstr = chr(val + 96)
             else:
-                logger.warning('Counter out of range'
+                logger.warning(u'Counter out of range'
                                ' for latin (must be 1...26)')
                 valstr = str(val)
         elif style == 'upper-latin' or style == 'upper-alpha':
             if 1 <= val <= 26:
                 valstr = chr(val + 64)
             else:
-                logger.warning('Counter out of range'
+                logger.warning(u'Counter out of range'
                                ' for latin (must be 1...26)')
                 valstr = str(val)
         elif style == 'decimal':
             valstr = str(val)
         else:
-            logger.warning("ERROR: Counter numbering not supported for"
-                           " list type {}. Using decimal.".format(style))
+            logger.warning(u"ERROR: Counter numbering not supported for"
+                           u" list type {}. Using decimal.".format(style))
             valstr = str(val)
         return valstr
 
@@ -553,11 +553,11 @@ class Oven():
                 strval += term.value
 
             elif type(term) is ast.IdentToken:
-                logger.debug("IdentToken as string: {}".format(term.value))
+                logger.debug(u"IdentToken as string: {}".format(term.value))
                 strval += term.value
 
             elif type(term) is ast.LiteralToken:
-                logger.debug("LiteralToken as string: {}".format(term.value))
+                logger.debug(u"LiteralToken as string: {}".format(term.value))
                 strval += term.value
 
             elif type(term) is ast.FunctionBlock:
@@ -571,7 +571,7 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning("{} blank string".
+                            logger.warning(u"{} blank string".
                                            format(str_name))
                     strval += val
 
@@ -613,9 +613,9 @@ class Oven():
                         if isinstance(tmpstr[0], basestring):
                             strval += tmpstr[0][0]
                         else:
-                            logger.warning("Bad string value:"
-                                           " nested target-* not allowed. "
-                                           "{}".format(serialize(value)))
+                            logger.warning(u"Bad string value:"
+                                           u" nested target-* not allowed. "
+                                           u"{}".format(serialize(value)))
 
                     # FIXME can we do delayed first-letter
 
@@ -626,11 +626,11 @@ class Oven():
                     strval += str(count)
 
                 elif term.name == u'pending':
-                    logger.warning("Bad string value: pending() not allowed. "
-                                   "{}".format(serialize(value)))
+                    logger.warning(u"Bad string value: pending() not allowed. "
+                                   u"{}".format(serialize(value)))
                 else:
-                    logger.warning("Bad string value: unknown function: {}. "
-                                   "{}".format(term.name, serialize(value)))
+                    logger.warning(u"Bad string value: unknown function: {}. "
+                                   u"{}".format(term.name, serialize(value)))
 
         if strval:
             vals.append(strval)
@@ -652,17 +652,17 @@ class Oven():
                 if strname is not None:
                     strval += term.value
                 else:
-                    logger.warning("Bad string-set: {}".format(args))
+                    logger.warning(u"Bad string-set: {}".format(args))
 
             elif type(term) is ast.IdentToken:
                 if strname is not None:
-                    logger.warning("Bad string-set: {}".format(args))
+                    logger.warning(u"Bad string-set: {}".format(args))
                 else:
                     strname = term.value
 
             elif type(term) is ast.LiteralToken:
                 if strname is None:
-                    logger.warning("Bad string-set: {}".format(args))
+                    logger.warning(u"Bad string-set: {}".format(args))
                 else:
                     step['strings'][strname] = strval
                     strval = ''
@@ -679,13 +679,13 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning("{} blank string".
+                            logger.warning(u"{} blank string".
                                            format(str_name))
 
                     if strname is not None:
                         strval += val
                     else:
-                        logger.warning("Bad string-set: {}".format(args))
+                        logger.warning(u"Bad string-set: {}".format(args))
 
                 elif term.name == 'counter':
                     counterargs = [serialize(t).strip(" \'")
@@ -704,7 +704,7 @@ class Oven():
                                                              att_args[1])[0]
                         strval += element.etree_element.get(att_name, att_def)
                     else:
-                        logger.warning("Bad string-set: {}".format(args))
+                        logger.warning(u"Bad string-set: {}".format(args))
 
                 elif term.name == u'content':
                     if strname is not None:
@@ -713,7 +713,7 @@ class Oven():
                                                  method='text',
                                                  with_tail=False)
                     else:
-                        logger.warning("Bad string-set: {}".format(args))
+                        logger.warning(u"Bad string-set: {}".format(args))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
@@ -721,12 +721,12 @@ class Oven():
                         if isinstance(tmpstr[0], basestring):
                             strval += tmpstr[0][0]
                         else:
-                            logger.warning("Bad string value:"
-                                           " nested target-* not allowed. "
-                                           "{}".format(serialize(args)))
+                            logger.warning(u"Bad string value:"
+                                           u" nested target-* not allowed. "
+                                           u"{}".format(serialize(args)))
 
                 elif term.name == u'pending':
-                    logger.warning("Bad string-set:pending() not allowed. {}".
+                    logger.warning(u"Bad string-set:pending() not allowed. {}".
                                    format(args))
 
         if strname is not None:
@@ -757,7 +757,7 @@ class Oven():
                     counter_name = ''
 
             else:
-                logger.warning("Unrecognized counter-reset term {}".
+                logger.warning(u"Unrecognized counter-reset term {}".
                                format(type(term)))
         if counter_name:
             step['counters'][counter_name] = 0
@@ -796,7 +796,7 @@ class Oven():
                     counter_name = ''
 
             else:
-                logger.warning("Unrecognized counter-increment term {}".
+                logger.warning(u"Unrecognized counter-increment term {}".
                                format(type(term)))
         if counter_name:
             if counter_name in step['counters']:
@@ -921,7 +921,7 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning("{} blank string".
+                            logger.warning(u"{} blank string".
                                            format(str_name))
                     if val != '':
                         actions.append(('string', val))
@@ -975,7 +975,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning("{} empty bucket".format(target))
+                        logger.warning(u"{} empty bucket".format(target))
                         continue
                     actions.extend(val)
                     del self.state[val_step]['pending'][target]
@@ -984,7 +984,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning("{} empty bucket".format(target))
+                        logger.warning(u"{} empty bucket".format(target))
                         continue
                     for action in val:
                             if action[0] == 'move':
@@ -996,15 +996,15 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.warning("{} empty bucket".format(target))
+                        logger.warning(u"{} empty bucket".format(target))
                         continue
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
 
                 else:
-                    logger.warning("Unknown function {}".format(term.name))
+                    logger.warning(u"Unknown function {}".format(term.name))
             else:
-                logger.warning("Unknown term {}".
+                logger.warning(u"Unknown term {}".
                                format(term))
 
         if pseudo:
@@ -1081,8 +1081,8 @@ class Oven():
     @log_decl_method
     def do_pass(self, element, decl, pseudo):
         """No longer valid way to set processing pass."""
-        logger.warning("Old-style pass as declaration not allowed."
-                       "{}".format(decl.value))
+        logger.warning(u"Old-style pass as declaration not allowed."
+                       u"{}".format(decl.value))
 
 
 def _itersplit(li, splitters):
@@ -1318,7 +1318,7 @@ def _to_roman(num):
         ('I',  1)
     )
     if not (0 < num < 5000):
-        logger.warning('Number out of range for roman (must be 1..4999)')
+        logger.warning(u'Number out of range for roman (must be 1..4999)')
         return str(num)
     result = ''
     for numeral, integer in roman_numeral_map:
