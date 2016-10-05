@@ -1,0 +1,604 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Rule (1): a 
+cnx-easybake DEBUG     default: string-set a_content content()
+cnx-easybake DEBUG     default: content fetch("http://archive.cnx.org" attr(href))
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG     default: data-type page
+cnx-easybake DEBUG IdentToken as string: page
+cnx-easybake DEBUG Rule (7): a::before 
+cnx-easybake DEBUG     default: container h1
+cnx-easybake DEBUG     default: content string(a_content)
+cnx-easybake DEBUG IdentToken as string: a_content
+cnx-easybake DEBUG Recipe default length: 540
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org
+cnx-easybake WARNING Failure to fetch url: http://archive.cnx.org

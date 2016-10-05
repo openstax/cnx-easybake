@@ -12,6 +12,7 @@ from cssselect2.extensions import extensions
 from copy import deepcopy
 from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
+import requests
 
 verbose = False
 
@@ -325,6 +326,10 @@ class Oven():
                     mycopy = copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
+                elif action == 'fetchurl':
+                    nodes = fetch_nodes(value)
+                    for node in nodes:
+                        target.tree.append(node)
                 else:
                     logger.warning(u'Missing action {}'.format(
                         action).encode('utf-8'))
@@ -1193,6 +1198,11 @@ class Oven():
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
 
+                elif term.name == u'fetch':
+                    url_args = split(term.arguments, ',')
+                    url_val = self.eval_string_value(element,
+                                                     url_args[0])[0]
+                    actions.append(('fetchurl', url_val))
                 else:
                     logger.warning(u"Unknown function {}".format(
                         term.name).encode('utf-8'))
@@ -1563,3 +1573,15 @@ def copy_w_id_suffix(elem, suffix="_copy"):
     for id_elem in mycopy.xpath('//*[@id]'):
         id_elem.set('id', id_elem.get('id') + suffix)
     return mycopy
+
+
+def fetch_nodes(url):
+    """Get the contents at url, return parsed nodes child of body tag."""
+    req = requests.get(url)
+    if req.ok:
+        html = etree.HTML(req.text)
+        nodes = html.xpath('body/*')
+        return nodes
+    else:
+        logger.warning(u'Failure to fetch url: {}'.format(url))
+        return []

@@ -1,0 +1,10 @@
+a {
+    string-set: a_content content();
+    content: fetch('http://archive.cnx.org' attr(href));
+    container: div;
+    data-type: page;
+}
+a::before {
+    container: h1;
+    content: string(a_content);
+}
