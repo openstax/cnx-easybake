@@ -55,7 +55,7 @@ class RulesetTestCase(unittest.TestCase):
 
     def setUp(cls):
         """Setup logcap."""
-        cls.logcap = LogCapture()
+        cls.logcap = LogCapture('cnx-easybake')
         logger.setLevel(logging.DEBUG)
 
     def tearDown(cls):
