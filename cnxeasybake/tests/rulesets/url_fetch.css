@@ -1,6 +1,6 @@
 a {
     string-set: a_content content();
-    content: fetch('http://archive.cnx.org' attr(href));
+    content: fetch('http://archive.cnx.org' attr(href), 'body > *');
     container: div;
     data-type: page;
 }
