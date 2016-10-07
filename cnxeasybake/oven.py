@@ -1203,12 +1203,12 @@ class Oven():
                     url_args = split(term.arguments, ',')
                     url_val = self.eval_string_value(element,
                                                      url_args[0])[0]
-                    url_def = ''
+                    url_css = ''
                     if len(url_args) > 1:
-                        url_def = self.eval_string_value(element,
+                        url_css = self.eval_string_value(element,
                                                          url_args[1])[0]
 
-                    actions.append(('fetchurl', (url_val, url_def)))
+                    actions.append(('fetchurl', (url_val, url_css)))
                 else:
                     logger.warning(u"Unknown function {}".format(
                         term.name).encode('utf-8'))

@@ -16,6 +16,8 @@ install_requires = (
     'lxml',
     'PyICU==1.9.8;platform_system=="Darwin"',  # FIXME link/symbol prob OSX
     'PyICU',
+    'requests',
+    'requests_file',
     )
 
 tests_require = (
