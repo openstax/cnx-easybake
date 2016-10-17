@@ -1,0 +1,90 @@
+cnx-easybake DEBUG Passes: ['0', u'2']
+cnx-easybake DEBUG Rule (1): div.index::before 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: class os-index-divider
+cnx-easybake DEBUG IdentToken as string: os-index-divider
+cnx-easybake DEBUG     0: content ", "
+cnx-easybake DEBUG     0: move-to indexDivider
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (7): span.index-item:not(:last-child)::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content() nodes(indexDivider)
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Rule (13): span.index-item:last-child::outside 
+cnx-easybake DEBUG     0: container span
+cnx-easybake DEBUG     0: content content()
+cnx-easybake DEBUG     0: class extra
+cnx-easybake DEBUG IdentToken as string: extra
+cnx-easybake DEBUG Recipe 0 length: 67
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (19): span.extra > *:pass(2) 
+cnx-easybake DEBUG     2: move-to realIndex
+cnx-easybake DEBUG Rule (23): div.index:deferred:pass(2) 
+cnx-easybake DEBUG     2: content pending(realIndex)
+cnx-easybake DEBUG Recipe 2 length: 19
