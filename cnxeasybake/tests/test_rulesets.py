@@ -49,7 +49,7 @@ class RulesetTestCase(unittest.TestCase):
     """Ruleset test cases.
 
     Use easybake to transform <name>_raw.html with <name>.css and compare
-    with <name>_cooked.html files
+    with <name>_baked.html files
     """
 
     maxDiff = None
@@ -88,9 +88,9 @@ class RulesetTestCase(unittest.TestCase):
                 logs = tuple(logs)
 
             with open(os.path.join(TEST_HTML_DIR,
-                                   '{}_cooked.html'.format(test_name)),
+                                   '{}_baked.html'.format(test_name)),
                       'rb') as f:
-                cooked_html = tidy(f.read())
+                baked_html = tidy(f.read())
 
             with open(os.path.join(TEST_HTML_DIR,
                                    '{}_raw.html'.format(test_name)),
@@ -99,10 +99,10 @@ class RulesetTestCase(unittest.TestCase):
 
             setattr(cls, 'test_{}'.format(test_name),
                     cls.create_test('{}.css'.format(filename_no_ext),
-                                    html, cooked_html, desc, logs))
+                                    html, baked_html, desc, logs))
 
     @classmethod
-    def create_test(cls, css, html, cooked_html, desc, logs):
+    def create_test(cls, css, html, baked_html, desc, logs):
         """Create a specific ruleset test."""
         @mock.patch('cnxeasybake.oven.uuid4', uuids.next)
         def run_test(self):
@@ -111,7 +111,7 @@ class RulesetTestCase(unittest.TestCase):
             oven.bake(element)
             output = tidy(etree.tostring(element, method='html'))
             # https://bugs.python.org/issue10164
-            self.assertEqual(output.split(b'\n'), cooked_html.split(b'\n'))
+            self.assertEqual(output.split(b'\n'), baked_html.split(b'\n'))
             if len(logs) == 0:
                 self.logcap.check()
             else:
