@@ -26,7 +26,7 @@ Example::
 
 Example usage::
 
-    cnx-easybake poc.css poc-raw.html poc-cooked.html
+    cnx-easybake poc.css poc-raw.html poc-baked.html
 
 
 TEST
