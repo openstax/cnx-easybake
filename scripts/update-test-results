@@ -29,16 +29,16 @@ for r in "${testdir}"/rulesets/${rulename}.css
         echo $name
         ruleset="${testdir}/rulesets/${name}.css"
         resultname="${testdir}/html/${name}"
-        cnx-easybake -d "${ruleset}" "${resultname}_raw.html" "${resultname}_cooked.html.tmp" 2> "${resultname}.log"
-        if  ! diff -u "${resultname}_cooked.html"{,.tmp}
+        cnx-easybake -d "${ruleset}" "${resultname}_raw.html" "${resultname}_baked.html.tmp" 2> "${resultname}.log"
+        if  ! diff -u "${resultname}_baked.html"{,.tmp}
         then
-            mv "${resultname}_cooked.html"{.tmp,}
+            mv "${resultname}_baked.html"{.tmp,}
             if [ $name = "uuid" ]
             then
                 UUIDS=1
             fi
         else
-            rm "${resultname}_cooked.html.tmp"
+            rm "${resultname}_baked.html.tmp"
         fi
     done
 if [[ $UUIDS == 1 ]]

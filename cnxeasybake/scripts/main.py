@@ -25,7 +25,7 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None):
 
 def main(argv=None):
     """Commandline script wrapping Baker."""
-    parser = argparse.ArgumentParser(description="Process raw HTML to cooked"
+    parser = argparse.ArgumentParser(description="Process raw HTML to baked"
                                                  " (embedded numbering and"
                                                  " collation)")
     parser.add_argument('-v', '--version', action="version",
@@ -35,11 +35,11 @@ def main(argv=None):
                         help="CSS3 ruleset stylesheet recipe")
     parser.add_argument("html_in", nargs="?",
                         type=argparse.FileType('r'),
-                        help="raw HTML file to cook (default stdin)",
+                        help="raw HTML file to bake (default stdin)",
                         default=sys.stdin)
     parser.add_argument("html_out", nargs="?",
                         type=argparse.FileType('w'),
-                        help="cooked HTML file output (default stdout)",
+                        help="baked HTML file output (default stdout)",
                         default=sys.stdout)
     parser.add_argument('-s', '--stop-at', action='store', metavar='<pass>',
                         help='Stop baking just before given pass name')
