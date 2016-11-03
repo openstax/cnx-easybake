@@ -41,17 +41,17 @@ cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (34): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
+cnx-easybake DEBUG Rule (35): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (34): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
+cnx-easybake DEBUG Rule (35): :pass("second") div[data-type="page"]::before, :pass("second") div[data-type="composite-page"]::before 
 cnx-easybake DEBUG     second: counter-increment page
 cnx-easybake DEBUG     second: container h1
 cnx-easybake DEBUG     second: content "Chapter " counter(page)
 cnx-easybake DEBUG     second: attr-id "myid" counter(page)
-cnx-easybake DEBUG Rule (5): :pass("first") body::after, :pass("second") body::after 
+cnx-easybake DEBUG Rule (6): :pass("first") body::after, :pass("second") body::after 
 cnx-easybake DEBUG     second: content "Two passes, doubled!"
 cnx-easybake DEBUG Rule (9): :pass("second") body::after 
 cnx-easybake DEBUG     second: content string(onestring)

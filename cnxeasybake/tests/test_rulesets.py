@@ -17,7 +17,6 @@ TEST_RULESET_DIR = os.path.join(here, 'rulesets')
 TEST_HTML_DIR = os.path.join(here, 'html')
 
 logger = logging.getLogger('cnx-easybake')
-logger.setLevel(logging.DEBUG)
 
 
 def tidy(input_):
@@ -57,10 +56,12 @@ class RulesetTestCase(unittest.TestCase):
     def setUp(cls):
         """Setup logcap."""
         cls.logcap = LogCapture()
+        logger.setLevel(logging.DEBUG)
 
     def tearDown(cls):
         """Teardown logcap."""
         cls.logcap.uninstall()
+        logger.setLevel(logging.WARN)
 
     @classmethod
     def generate_tests(cls):
@@ -81,9 +82,7 @@ class RulesetTestCase(unittest.TestCase):
 
             test_name = os.path.basename(filename_no_ext)
             log_fname = '{}.log'.format(test_name)
-            import codecs
-            with codecs.open(os.path.join(TEST_HTML_DIR, log_fname),
-                             'rb', encoding='utf-8') as f_log:
+            with open(os.path.join(TEST_HTML_DIR, log_fname)) as f_log:
                 logs = (tuple(line[:-1].split(' ', 2)) for line in f_log)
                 logs = tuple(logs)
 
