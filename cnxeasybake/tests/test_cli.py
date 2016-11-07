@@ -15,8 +15,6 @@ import unittest
 from contextlib import contextmanager
 from io import StringIO
 
-from testfixtures import LogCapture
-
 
 # noqa from http://stackoverflow.com/questions/4219717/how-to-assert-output-with-nosetest-unittest-in-python
 @contextmanager
@@ -118,7 +116,8 @@ optional arguments:
                         Stop baking just before given pass name
   -d, --debug           Send debugging info to stderr
   -c coverage.lcov, --coverage-file coverage.lcov
-                        output coverage file (lcov format)
+                        output coverage file (lcov format). If filename starts
+                        with '+', append coverage info.
 """
 
         self.assertEqual(stderr, '')
