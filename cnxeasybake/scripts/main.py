@@ -30,6 +30,17 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None,
         print('end_of_record', file=coverage_file)
 
 
+class FileTypeExt(argparse.FileType):
+    """FileType that extends if filename starts with + and mode = 'w'"""
+
+    def __call__(self, string):
+        if string.startswith('+'):
+            string = string[1:]
+            if self._mode == 'w':
+                self._mode = 'a'
+        return super(FileTypeExt, self).__call__(string)
+
+
 def main(argv=None):
     """Commandline script wrapping Baker."""
     parser = argparse.ArgumentParser(description="Process raw HTML to baked"
@@ -53,8 +64,9 @@ def main(argv=None):
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
     parser.add_argument('-c', '--coverage-file', metavar='coverage.lcov',
-                        type=argparse.FileType('w'),
-                        help="output coverage file (lcov format)")
+                        type=FileTypeExt('w'),
+                        help="output coverage file (lcov format). If "
+                        "filename starts with '+', append coverage info.")
     args = parser.parse_args(argv)
 
     formatter = logging.Formatter('%(name)s %(levelname)s %(message)s')
