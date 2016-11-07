@@ -5,4 +5,4 @@ To generate a new ruleset test, create a `CSS` file  in the `rulesets` folder, n
 ```
 $ ./scripts/update-test-results testname  # From the git root
 ```
- If the testname is omitted, all CSS files will be updated.
+ If the testname is omitted, results for all CSS files will be updated.

@@ -12,7 +12,8 @@ from cnxeasybake import Oven, __version__
 logger = logging.getLogger('cnx-easybake')
 
 
-def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None):
+def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None,
+             coverage_file=None):
     """Process the given HTML file stream with the css stream."""
     html_parser = etree.HTMLParser(encoding="utf-8")
     html_doc = etree.HTML(html_in.read(), html_parser)
@@ -21,6 +22,12 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None):
 
     # serialize out HTML
     print (etree.tostring(html_doc, method="html"), file=html_out)
+
+    # generate CSS coverage_file file
+    if coverage_file:
+        print('SF:{}'.format(css_in.name), file=coverage_file)
+        print(oven.get_coverage_report(), file=coverage_file)
+        print('end_of_record', file=coverage_file)
 
 
 def main(argv=None):
@@ -45,6 +52,9 @@ def main(argv=None):
                         help='Stop baking just before given pass name')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
+    parser.add_argument('-c', '--coverage-file', metavar='coverage.lcov',
+                        type=argparse.FileType('w'),
+                        help="output coverage file (lcov format)")
     args = parser.parse_args(argv)
 
     formatter = logging.Formatter('%(name)s %(levelname)s %(message)s')
@@ -55,7 +65,9 @@ def main(argv=None):
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    easybake(args.css_rules, args.html_in, args.html_out, args.stop_at)
+    easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
+             args.coverage_file)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
