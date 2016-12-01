@@ -87,14 +87,24 @@ class Oven():
     them to an HTML file.
     """
 
-    def __init__(self, css_in=None):
+    def __init__(self, css_in=None, use_repeatable_ids=False):
         """Initialize oven, with optional inital CSS."""
         self.coverage_lines = []
+        self.use_repeatable_ids = use_repeatable_ids
+        self.repeatable_id_counter = 0
         if css_in:
             self.update_css(css_in, clear_css=True)  # clears state as well
         else:
             self.matchers = {}
             self.clear_state()
+
+    def generate_id(self):
+        """Generate a fresh id"""
+        if self.use_repeatable_ids:
+            self.repeatable_id_counter += 1
+            return 'autobaked-{}'.format(self.repeatable_id_counter)
+        else:
+            return str(uuid4())
 
     def clear_state(self):
         """Clear the recipe state."""
@@ -614,7 +624,7 @@ class Oven():
                     strval += element.etree_element.get(att_name, att_def)
 
                 elif term.name == u'uuid':
-                    strval += str(uuid4())
+                    strval += self.generate_id()
 
                 elif term.name == u'content':
                     strval += etree.tostring(element.etree_element,
@@ -995,7 +1005,7 @@ class Oven():
                     actions.append(('string', att_val))
 
                 elif term.name == u'uuid':
-                    actions.append(('string', str(uuid4())))
+                    actions.append(('string', self.generate_id()))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
