@@ -67,6 +67,9 @@ def main(argv=None):
                         type=FileTypeExt('w'),
                         help="output coverage file (lcov format). If "
                         "filename starts with '+', append coverage info.")
+    parser.add_argument('--use-repeatable-ids', action='store_true',
+                        help="use repeatable id attributes instead of uuids "
+                        "which is useful for diffing")
     args = parser.parse_args(argv)
 
     formatter = logging.Formatter('%(name)s %(levelname)s %(message)s')

@@ -80,6 +80,7 @@ class CliTestCase(unittest.TestCase):
             stderr = str(err.getvalue())
 
         usage_message = """usage: setup.py [-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
+                [--use-repeatable-ids]
                 css_rules [html_in] [html_out]
 setup.py: error: too few arguments
 """
@@ -100,6 +101,7 @@ setup.py: error: too few arguments
             stderr = str(err.getvalue())
 
         usage_message = """usage: setup.py [-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
+                [--use-repeatable-ids]
                 css_rules [html_in] [html_out]
 
 Process raw HTML to baked (embedded numbering and collation)
@@ -118,6 +120,8 @@ optional arguments:
   -c coverage.lcov, --coverage-file coverage.lcov
                         output coverage file (lcov format). If filename starts
                         with '+', append coverage info.
+  --use-repeatable-ids  use repeatable id attributes instead of uuids which is
+                        useful for diffing
 """
 
         self.assertEqual(stderr, '')
