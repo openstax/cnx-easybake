@@ -539,6 +539,33 @@ class Oven():
         else:
             return nullval
 
+    def lookupAll(self, vtype):
+        """Return all values from the variable store vtype. (copy/pasta from lookup())
+
+        Valid vtypes are `strings` 'counters', and `pending`. If the value
+        is not found in the current steps store, earlier steps will be
+        checked. If not found, '', 0, or (None, None) is returned.
+        """
+        nullvals = {'strings': '', 'counters': 0, 'pending': (None, None)}
+        nullval = nullvals[vtype]
+        vstyle = None
+
+        state = self.state
+        steps = self.state['scope']
+
+        ret = {}
+        for step in steps:
+            for vname in state[step][vtype]:
+                if vtype == 'pending':
+                    # TODO: Convert these nodes into selectors by traversing
+                    # up the element's parents looking for ids
+                    ret[vname] = state[step][vtype][vname]
+                else:
+                    val = state[step][vtype][vname]
+                    ret[vname] = val
+
+        return ret
+
     def counter_style(self, val, style):
         """Return counter value in given style."""
         if style == 'decimal-leading-zero':
@@ -664,6 +691,12 @@ class Oven():
                                    for t in split(term.arguments, ',')]
                     count = self.lookup('counters', counterargs)
                     strval += str(count)
+
+                elif term.name == u'debug-current-counters':
+                    strval += str(self.lookupAll('counters'))
+
+                elif term.name == u'debug-current-strings':
+                    strval += str(self.lookupAll('strings'))
 
                 elif term.name == u'pending':
                     logger.warning(u"Bad string value: pending() not allowed. "
@@ -1053,6 +1086,10 @@ class Oven():
                         continue
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
+
+                # elif term.name == u'debug-current-counters':
+                #     counters = str(self.lookupAll('counters'))
+                #     actions.append(('string', counters))
 
                 else:
                     logger.warning(u"Unknown function {}".format(

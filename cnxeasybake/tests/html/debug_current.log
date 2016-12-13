@@ -1,0 +1,26 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): body * 
+cnx-easybake DEBUG     default: counter-increment counterName
+cnx-easybake DEBUG     default: counter-increment counterDoubleName 2
+cnx-easybake DEBUG     default: string-set stringName "val=" counter(counterName)
+cnx-easybake DEBUG     default: string-set stringDoubleName "val=" counter(counterDoubleName)
+cnx-easybake DEBUG Rule (7): body * 
+cnx-easybake DEBUG     default: attr-data-counters debug-current-counters()
+cnx-easybake DEBUG     default: attr-data-strings debug-current-strings()
+cnx-easybake DEBUG Rule (1): body * 
+cnx-easybake DEBUG     default: counter-increment counterName
+cnx-easybake DEBUG     default: counter-increment counterDoubleName 2
+cnx-easybake DEBUG     default: string-set stringName "val=" counter(counterName)
+cnx-easybake DEBUG     default: string-set stringDoubleName "val=" counter(counterDoubleName)
+cnx-easybake DEBUG Rule (7): body * 
+cnx-easybake DEBUG     default: attr-data-counters debug-current-counters()
+cnx-easybake DEBUG     default: attr-data-strings debug-current-strings()
+cnx-easybake DEBUG Rule (1): body * 
+cnx-easybake DEBUG     default: counter-increment counterName
+cnx-easybake DEBUG     default: counter-increment counterDoubleName 2
+cnx-easybake DEBUG     default: string-set stringName "val=" counter(counterName)
+cnx-easybake DEBUG     default: string-set stringDoubleName "val=" counter(counterDoubleName)
+cnx-easybake DEBUG Rule (7): body * 
+cnx-easybake DEBUG     default: attr-data-counters debug-current-counters()
+cnx-easybake DEBUG     default: attr-data-strings debug-current-strings()
+cnx-easybake DEBUG Recipe default length: 9

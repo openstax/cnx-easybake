@@ -1,0 +1,10 @@
+body * {
+  counter-increment: counterName;
+  counter-increment: counterDoubleName 2;
+  string-set: stringName "val=" counter(counterName);
+  string-set: stringDoubleName "val=" counter(counterDoubleName);
+}
+body * {
+  attr-data-counters: debug-current-counters();
+  attr-data-strings: debug-current-strings();
+}
