@@ -1075,6 +1075,127 @@ class Oven():
             wastebin = []
 
     @log_decl_method
+    def do_debug_log(self, element, decl, pseudo):
+        """Implement debug-log declaration.
+
+            This is useful so developers can add their own logging
+            since this CSS is sort of a programming language.
+
+            Note: This is copy/pasta'd from do_content
+        """
+        step = self.state[self.state['current_step']]
+
+        message = ''
+
+        wastebin = []
+        elem = self.current_target().tree
+
+        # decl.value is parsed representation: loop over it
+        # if a string, to pending elem - either text, or tail of last child
+        # if a string(x) retrieve value from state and attach as tail
+        # if a pending(x), do the target/extend dance
+        # content() attr(x), link(x,y) etc.
+        for term in decl.value:
+            if type(term) is ast.WhitespaceToken:
+                continue
+
+            elif type(term) is ast.StringToken:
+                message += str(term.value)
+
+            elif type(term) is ast.LiteralToken:
+                message += str(term.value)
+
+            elif type(term) is ast.FunctionBlock:
+                if term.name == 'string':
+                    str_args = split(term.arguments, ',')
+                    str_name = self.eval_string_value(element,
+                                                      str_args[0])[0]
+                    val = self.lookup('strings', str_name)
+                    if val == '':
+                        if len(str_args) > 1:
+                            val = self.eval_string_value(element,
+                                                         str_args[1])[0]
+                        else:
+                            logger.warning(u"{} blank string".
+                                           format(str_name).encode('utf-8'))
+                    if val != '':
+                        message += str(val)
+
+                elif term.name == 'counter':
+                    counterargs = [serialize(t).strip(" \'")
+                                   for t in split(term.arguments, ',')]
+                    count = self.lookup('counters', counterargs)
+                    message += str((count,))
+
+                elif term.name.startswith('target-'):
+                    target_args = split(term.arguments, ',')
+                    vref = self.eval_string_value(element,
+                                                  target_args[0])[0]
+                    vname = self.eval_string_value(element,
+                                                   target_args[1])[0]
+
+                    vtype = term.name[7:]+'s'
+                    message += 'BUG_TARGET_NOT_SUPPORTED_YET'
+
+                elif term.name == u'attr':
+                    att_args = split(term.arguments, ',')
+                    att_name = self.eval_string_value(element,
+                                                      att_args[0])[0]
+                    att_def = ''
+                    if len(att_args) > 1:
+                        att_def = self.eval_string_value(element,
+                                                         att_args[1])[0]
+                    att_val = element.etree_element.get(att_name, att_def)
+                    message += str(att_val)
+
+                elif term.name == u'uuid':
+                    message += str(self.generate_id())
+
+                elif term.name == u'first-letter':
+                    tmpstr = self.eval_string_value(element, term.arguments)
+                    if tmpstr:
+                        message += str(tmpstr[0])
+
+                elif term.name == u'content':
+                    if pseudo in ('before', 'after'):
+                        mycopy = copy_w_id_suffix(element.etree_element)
+                        message += str(mycopy)
+                    elif pseudo == 'outside':
+                        message += 'MOVE ' + str(element.etree_element)
+                    else:
+                        message += str(None)
+
+                elif term.name == 'pending':
+                    target = serialize(term.arguments)
+                    val, val_step = self.lookup('pending', target)
+                    if val is None:
+                        message += 'PENDING_LEN=0'
+                        continue
+
+                    message += 'PENDING_LEN=' + len(val)
+
+                elif term.name == 'nodes':
+                    target = serialize(term.arguments)
+                    val, val_step = self.lookup('pending', target)
+                    if val is None:
+                        message += 'NODES_LEN=0'
+                        continue
+                    message += 'NODES_LEN=' + len(val)
+
+                elif term.name == u'clear':
+                    message += 'BUG_CLEAR_NOT_SUPPORTED'
+
+                else:
+                    logger.warning(u"Unknown function {}".format(
+                        term.name).encode('utf-8'))
+            else:
+                logger.warning(u"Unknown term {}".format(
+                    term).encode('utf-8'))
+
+        # Finally, log the message
+        logger.warning(message)
+
+    @log_decl_method
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         sort_css = groupby_css = flags = ''

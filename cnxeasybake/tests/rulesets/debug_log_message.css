@@ -1,0 +1,4 @@
+body * {
+  counter-increment: counterName;
+  debug-log: "CUSTOM_LOG_MESSAGE" counter(counterName);
+}

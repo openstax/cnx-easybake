@@ -1,0 +1,10 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): body * 
+cnx-easybake DEBUG     default: counter-increment counterName
+cnx-easybake DEBUG     default: debug-log "CUSTOM_LOG_MESSAGE" counter(counterName)
+cnx-easybake WARNING CUSTOM_LOG_MESSAGE(1,)
+cnx-easybake DEBUG Rule (1): body * 
+cnx-easybake DEBUG     default: counter-increment counterName
+cnx-easybake DEBUG     default: debug-log "CUSTOM_LOG_MESSAGE" counter(counterName)
+cnx-easybake WARNING CUSTOM_LOG_MESSAGE(2,)
+cnx-easybake DEBUG Recipe default length: 1
