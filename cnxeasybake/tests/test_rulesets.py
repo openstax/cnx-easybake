@@ -5,18 +5,50 @@ import os
 import subprocess
 import unittest
 import logging
-import mock
 from testfixtures import LogCapture
 
 from lxml import etree
 
 from ..oven import Oven
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 here = os.path.abspath(os.path.dirname(__file__))
 TEST_RULESET_DIR = os.path.join(here, 'rulesets')
 TEST_HTML_DIR = os.path.join(here, 'html')
 
 logger = logging.getLogger('cnx-easybake')
+
+
+class MockResponse:
+    def __init__(self, content, status_code):
+        self.content = content
+        self.status_code = status_code
+
+    def content(self):
+        return self.content
+
+REQUEST_RESPONSES = ['<body>The <emphasis>first</emphasis> response</body>',
+                     '<body>The <bold>second response</bold>.</body>',
+                     '<body>The 3rd and last response</body>']
+
+
+def resp_loop():
+    while True:
+        for resp in REQUEST_RESPONSES:
+            yield MockResponse(resp, 200)
+
+
+next_res = resp_loop()
+
+
+def mocked_requests_get(*args, **kwargs):
+    # Replace requests.get with this mock
+    # modified from http://stackoverflow.com/a/28507806/5430
+    return next_res.next()
 
 
 def tidy(input_):
@@ -104,6 +136,7 @@ class RulesetTestCase(unittest.TestCase):
     def create_test(cls, css, html, baked_html, desc, logs):
         """Create a specific ruleset test."""
         @mock.patch('cnxeasybake.oven.uuid4', uuids.next)
+        @mock.patch('requests.get', mocked_requests_get)
         def run_test(self):
             element = etree.XML(html)
             oven = Oven(css)
