@@ -1265,7 +1265,13 @@ def grouped_insert(t, value):
 
     elif t.location == 'outside':
         value.tail = t.tree.tail
-        t.parent.insert(t.parent.index(t.tree), value)
+        try:
+            t.parent.insert(t.parent.index(t.tree), value)
+        except (ValueError):
+            logger.error(u"Element being wrapped no longer exists in the DOM."
+                         u" It could be that this element was matched twice"
+                         u" by 2 selectors.")
+            raise
         value.append(t.tree)
 
     elif t.location == 'before':
