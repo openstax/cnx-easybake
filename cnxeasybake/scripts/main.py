@@ -13,11 +13,11 @@ logger = logging.getLogger('cnx-easybake')
 
 
 def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None,
-             coverage_file=None):
+             coverage_file=None, use_repeatable_ids=False):
     """Process the given HTML file stream with the css stream."""
     html_parser = etree.HTMLParser(encoding="utf-8")
     html_doc = etree.HTML(html_in.read(), html_parser)
-    oven = Oven(css_in)
+    oven = Oven(css_in, use_repeatable_ids)
     oven.bake(html_doc, last_step)
 
     # serialize out HTML
@@ -81,7 +81,7 @@ def main(argv=None):
         logger.setLevel(logging.DEBUG)
 
     easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
-             args.coverage_file)
+             args.coverage_file, args.use_repeatable_ids)
 
 
 if __name__ == "__main__":
