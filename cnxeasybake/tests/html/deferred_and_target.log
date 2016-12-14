@@ -1,0 +1,8 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (2): a[href] 
+cnx-easybake DEBUG     default: content target-string(attr(href), stringName)
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG IdentToken as string: stringName
+cnx-easybake DEBUG Rule (5): div:deferred 
+cnx-easybake DEBUG     default: string-set stringName "hello"
+cnx-easybake DEBUG Recipe default length: 4

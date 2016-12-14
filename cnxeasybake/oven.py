@@ -430,11 +430,11 @@ class Oven():
                     for counter, val in self.state[s_step]['counters'].items():
                         if (counter not in temp_counters or
                                 temp_counters[counter] != val):
-                            self.state['counters'][element_id][counter] = val
+                            self.state['counters'][element_id][s_step]['counters'][counter] = val  # NOQA
                     for string, val in self.state[s_step]['strings'].items():
                         if (string not in temp_strings or
                                 temp_strings[string] != val):
-                            self.state['strings'][element_id][string] = val
+                            self.state['strings'][element_id][s_step]['strings'][string] = val  # NOQA
 
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree

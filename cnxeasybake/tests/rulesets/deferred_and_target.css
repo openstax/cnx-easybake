@@ -1,0 +1,7 @@
+/* Deferred pseudo class that is used by a target */
+a[href] {
+  content: target-string(attr(href), stringName);
+}
+div:deferred {
+  string-set: stringName "hello";
+}
