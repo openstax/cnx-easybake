@@ -22,7 +22,8 @@ div[data-type='chapter'] table::outside {
   container: div;
   content: pending(table-title) content() pending(table-caption);
 }
+div[data-type='chapter'] *::outside,
 div[data-type='chapter'] *::outside {
-  class: third-outside;
+  class: double-outside-exact-selector;
   content: pending(table-caption) content() pending(table-title);
 }

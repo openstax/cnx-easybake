@@ -5,9 +5,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -17,9 +23,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -29,9 +41,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -41,9 +59,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -53,9 +77,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -65,9 +95,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -77,9 +113,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -89,9 +131,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -101,9 +149,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -113,9 +167,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -125,9 +185,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -137,9 +203,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -159,9 +231,15 @@ cnx-easybake DEBUG Rule (16): div[data-type="chapter"] *::outside
 cnx-easybake DEBUG     default: class first-outside
 cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -178,9 +256,15 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
@@ -190,10 +274,16 @@ cnx-easybake DEBUG IdentToken as string: first-outside
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside 
-cnx-easybake DEBUG     default: class third-outside
-cnx-easybake DEBUG IdentToken as string: third-outside
+cnx-easybake DEBUG Rule (25): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
 cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
 cnx-easybake INFO table-caption empty bucket
 cnx-easybake INFO table-title empty bucket
-cnx-easybake DEBUG Recipe default length: 168
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] *::outside, div[data-type="chapter"] *::outside 
+cnx-easybake DEBUG     default: class double-outside-exact-selector
+cnx-easybake DEBUG IdentToken as string: double-outside-exact-selector
+cnx-easybake DEBUG     default: content pending(table-caption) content() pending(table-title)
+cnx-easybake INFO table-caption empty bucket
+cnx-easybake INFO table-title empty bucket
+cnx-easybake DEBUG Recipe default length: 243
