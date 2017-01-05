@@ -1,0 +1,8 @@
+p::before { counter-increment: c1 100000; }
+p::before { counter-increment: c1 1; }
+
+ol,
+ol { counter-increment: c2 1; }
+
+
+#actual { content: counter(c1) ', ' counter(c2); }
