@@ -5,10 +5,10 @@ ol,
 ol { counter-increment: c2 1; }
 
 
-p.cls { counter-increment: c3 1; }
-.cls { counter-increment: c3 100000; }
+p.pair1 { counter-increment: c3 1; }
+.pair1 { counter-increment: c3 100000; }
 
-.cls { counter-increment: c4 1 !important; }
-p.cls { counter-increment: c4 100000; }
+.pair2 { counter-increment: c4 1 !important; }
+p.pair2 { counter-increment: c4 100000; }
 
 #actual { content: counter(c1) ', ' counter(c2) ', ' counter(c3) ', ' counter(c4); }

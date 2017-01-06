@@ -1,0 +1,30 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (8): p.pair1 
+cnx-easybake DEBUG     default: counter-increment c3 1
+cnx-easybake DEBUG Rule (1): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG     default: counter-increment c1 1
+cnx-easybake DEBUG Rule (8): p.pair1 
+cnx-easybake DEBUG     default: counter-increment c3 1
+cnx-easybake DEBUG Rule (1): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG     default: counter-increment c1 1
+cnx-easybake DEBUG Rule (11): .pair2 
+cnx-easybake DEBUG     default: counter-increment c4 1
+cnx-easybake DEBUG Rule (1): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG     default: counter-increment c1 1
+cnx-easybake DEBUG Rule (11): .pair2 
+cnx-easybake DEBUG     default: counter-increment c4 1
+cnx-easybake DEBUG Rule (1): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG Rule (2): p::before 
+cnx-easybake DEBUG     default: counter-increment c1 1
+cnx-easybake DEBUG Rule (5): ol, ol 
+cnx-easybake DEBUG     default: counter-increment c2 1
+cnx-easybake DEBUG Rule (14): #actual 
+cnx-easybake DEBUG     default: content counter(c1) ", " counter(c2) ", " counter(c3) ", " counter(c4)
+cnx-easybake DEBUG Recipe default length: 9

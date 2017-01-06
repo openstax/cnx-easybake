@@ -79,6 +79,21 @@ class TargetVal():
                                                 self.vname,
                                                 self.el_id))
 
+def specificity_sort_and_filter(tuples):
+    """ The tuple contains (isImportant, (specificity), name, decl) """
+    tuples = sorted(tuples, key=lambda tup: (tup[0],tup[1]) )
+    tuples.reverse()
+
+    matched_names = [] # Add to this set as we encounter items
+    ret = []
+    for important, specificity, name, decl, rule in tuples:
+        if name not in matched_names:
+            matched_names.append(name)
+            ret.append((important, specificity, name, decl, rule))
+        else:
+            print("DEBUGGER_Dropping {}".format(decl.serialize()))
+
+    return ret
 
 class Oven():
     """Collate and number HTML with CSS3.
@@ -173,7 +188,7 @@ class Oven():
                                  csel,
                                  ((rule.source_line + sel.source_line_offset,
                                    serialize(rule.prelude).replace('\n', ' ')),
-                                  decls, label))
+                                  decls, label, csel.specificity))
 
         steps = sorted(self.matchers.keys())
         if len(steps) > 1:
@@ -208,7 +223,7 @@ class Oven():
             wrapped_html_tree = ElementWrapper.from_html_root(element)
 
             if not self.state[step]['recipe']:
-                recipe = self.build_recipe(wrapped_html_tree, step)
+                recipe = self.construct_action_list(wrapped_html_tree, step)
             else:
                 recipe = self.state[step]
 
@@ -286,7 +301,7 @@ class Oven():
         """Return the the bulk of the coverage report (selectors matched)"""
         return '\n'.join(self.coverage_lines)
 
-    def build_recipe(self, element, step, depth=0):
+    def construct_action_list(self, element, step, depth=0):
         """Construct a set of steps to collate (and number) an HTML doc.
 
         Returns a state object that contains the steps to apply to the HTML
@@ -300,19 +315,25 @@ class Oven():
         element_id = element.etree_element.get('id')
 
         matching_rules = {}
-        for rule, declarations, label in self.matchers[step].match(element):
-            matching_rules.setdefault(label, []).append((rule, declarations))
+        for rule, declarations, label, specificity in self.matchers[step].match(element):
+            matching_rules.setdefault(label, []).append((rule, declarations, specificity))
 
         # Do non-pseudo
+        non_pseudo_rules = []
         if None in matching_rules:
-            for rule, declarations in matching_rules.get(None):
-                self.record_coverage(rule)
-                self.push_target_elem(element)
+            for rule, declarations, specificity in matching_rules.get(None):
                 for decl in declarations:
                     # decl Could also be a 'comment'.
                     if decl.type == 'declaration':
-                        method = self.find_method(decl)
-                        method(element, decl, None)
+                        non_pseudo_rules.append((decl.important, specificity, decl.name, decl, rule))
+
+        non_pseudo_rules = specificity_sort_and_filter(non_pseudo_rules)
+        for important, specificity, name, decl, rule in non_pseudo_rules:
+            # Evaluate the declaration
+            self.record_coverage(rule) # TODO: This currently over-records the rule. It should record the declaration
+            self.push_target_elem(element)
+            method = self.find_method(decl)
+            method(element, decl, None)
 
         # Store all variables (strings and counters) before children
         if element_id:
@@ -328,41 +349,80 @@ class Oven():
             self.state['strings'][element_id] = temp_strings
 
         # Do before
+        before_rules = []
         if 'before' in matching_rules:
-            for rule, declarations in matching_rules.get('before'):
+            for rule, declarations, specificity in matching_rules.get('before'):
                 self.record_coverage(rule)
                 # pseudo element, create wrapper
-                self.push_pending_elem(element, 'before')
+                # self.push_pending_elem(element, 'before')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'before')
+                    # method = self.find_method(decl)
+                    # method(element, decl, 'before')
+                    before_rules.append((decl.important, specificity, decl.name, decl, rule))
                 # deal w/ pending_elements, per rule
-                self.pop_pending_if_empty(element)
+                # self.pop_pending_if_empty(element)
+
+        before_rules = specificity_sort_and_filter(before_rules)
+        if len(before_rules) > 0:
+            # pseudo element, create wrapper
+            self.push_pending_elem(element, 'before')
+            for important, specificity, name, decl, rule in before_rules:
+                # Evaluate the declaration
+                self.record_coverage(rule) # TODO: This currently over-records the rule. It should record the declaration
+                method = self.find_method(decl)
+                method(element, decl, 'before')
+            # deal w/ pending_elements, per rule
+            self.pop_pending_if_empty(element)
 
         # Recurse
         for el in element.iter_children():
-            _state = self.build_recipe(el, step, depth=depth+1)  # noqa
+            _state = self.construct_action_list(el, step, depth=depth+1)  # noqa
 
         # Do after
+        after_rules = []
         if 'after' in matching_rules:
-            for rule, declarations in matching_rules.get('after'):
+            for rule, declarations, specificity in matching_rules.get('after'):
                 self.record_coverage(rule)
-                # pseudo element, create wrapper
-                self.push_pending_elem(element, 'after')
+                # # pseudo element, create wrapper
+                # self.push_pending_elem(element, 'after')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'after')
-                # deal w/ pending_elements, per rule
-                self.pop_pending_if_empty(element)
+                    # method = self.find_method(decl)
+                    # method(element, decl, 'after')
+                    after_rules.append((decl.important, specificity, decl.name, decl, rule))
+                # # deal w/ pending_elements, per rule
+                # self.pop_pending_if_empty(element)
+
+        after_rules = specificity_sort_and_filter(after_rules)
+        if len(after_rules) > 0:
+            # pseudo element, create wrapper
+            self.push_pending_elem(element, 'after')
+            for important, specificity, name, decl, rule in after_rules:
+                # Evaluate the declaration
+                self.record_coverage(rule) # TODO: This currently over-records the rule. It should record the declaration
+                method = self.find_method(decl)
+                method(element, decl, 'after')
+            # deal w/ pending_elements, per rule
+            self.pop_pending_if_empty(element)
 
         # Do outside
         if 'outside' in matching_rules:
-            for rule, declarations in matching_rules.get('outside'):
-                self.record_coverage(rule)
-                self.push_pending_elem(element, 'outside')
+            outside_rules = []
+            for rule, declarations, specificity in matching_rules.get('outside'):
+                # self.record_coverage(rule)
+                # self.push_pending_elem(element, 'outside')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'outside')
+                    # method = self.find_method(decl)
+                    # method(element, decl, 'outside')
+                    outside_rules.append((decl.important, specificity, decl.name, decl, rule))
+
+            outside_rules = specificity_sort_and_filter(outside_rules)
+            for important, specificity, name, decl, rule in outside_rules:
+                # Evaluate the declaration
+                self.record_coverage(rule) # TODO: This currently over-records the rule. It should record the declaration
+                self.push_pending_elem(element, 'outside')
+                method = self.find_method(decl)
+                method(element, decl, 'outside')
+
 
         # Do deferred
         if ('deferred' in matching_rules or
@@ -382,12 +442,22 @@ class Oven():
 
             # Do straight up deferred
             if 'deferred' in matching_rules:
-                for rule, declarations in matching_rules.get('deferred'):
-                    self.record_coverage(rule)
-                    self.push_target_elem(element)
+                deferred_rules = []
+                for rule, declarations, specificity in matching_rules.get('deferred'):
+                    # self.record_coverage(rule)
+                    # self.push_target_elem(element)
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, None)
+                        # method = self.find_method(decl)
+                        # method(element, decl, None)
+                        deferred_rules.append((decl.important, specificity, decl.name, decl, rule))
+
+                deferred_rules = specificity_sort_and_filter(deferred_rules)
+                for important, specificity, name, decl, rule in deferred_rules:
+                    # Evaluate the declaration
+                    self.record_coverage(rule) # TODO: This currently over-records the rule. It should record the declaration
+                    method = self.find_method(decl)
+                    method(element, decl, None)
+
 
             # Do before_deferred
             if 'before_deferred' in matching_rules:
