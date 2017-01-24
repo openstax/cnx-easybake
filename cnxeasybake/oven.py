@@ -80,6 +80,15 @@ class TargetVal():
                                                 self.el_id))
 
 
+class RuleSource():
+    """ Little Duck-typing Hack to make the source_line for rules appear
+    the same as for Decl
+    """
+
+    def __init__(self, source_line):
+        self.source_line = source_line
+
+
 class Oven():
     """Collate and number HTML with CSS3.
 
@@ -217,53 +226,58 @@ class Oven():
             target = None
             old_content = {}
             node_counts = {}
-            for action, value in recipe['actions']:
-                if action == 'target':
-                    target = value
-                    old_content = {}
-                elif action == 'tag':
-                    target.tree.tag = value
-                elif action == 'clear':
-                    old_content['text'] = target.tree.text
-                    target.tree.text = None
-                    old_content['children'] = []
-                    for child in target.tree:
-                        old_content['children'].append(child)
-                        target.tree.remove(child)
-                elif action == 'content':
-                    if value is not None:
-                        append_string(target, value.text)
-                        for child in value:
-                            target.tree.append(child)
-                    elif old_content:
-                        append_string(target, old_content['text'])
-                        for child in old_content['children']:
-                            target.tree.append(child)
-                elif action == 'attrib':
-                    attname, vals = value
-                    strval = u''.join([u'{}'.format(s) for s in vals])
-                    target.tree.set(attname, strval)
-                elif action == 'string':
-                    strval = u''.join([u'{}'.format(s) for s in value])
-                    if target.location == 'before':
-                        prepend_string(target, strval)
+            for action, value, decl in recipe['actions']:
+                try:
+                    if action == 'target':
+                        target = value
+                        old_content = {}
+                    elif action == 'tag':
+                        target.tree.tag = value
+                    elif action == 'clear':
+                        old_content['text'] = target.tree.text
+                        target.tree.text = None
+                        old_content['children'] = []
+                        for child in target.tree:
+                            old_content['children'].append(child)
+                            target.tree.remove(child)
+                    elif action == 'content':
+                        if value is not None:
+                            append_string(target, value.text)
+                            for child in value:
+                                target.tree.append(child)
+                        elif old_content:
+                            append_string(target, old_content['text'])
+                            for child in old_content['children']:
+                                target.tree.append(child)
+                    elif action == 'attrib':
+                        attname, vals = value
+                        strval = u''.join([u'{}'.format(s) for s in vals])
+                        target.tree.set(attname, strval)
+                    elif action == 'string':
+                        strval = u''.join([u'{}'.format(s) for s in value])
+                        if target.location == 'before':
+                            prepend_string(target, strval)
+                        else:
+                            append_string(target, strval)
+                    elif action == 'move':
+                        grouped_insert(target, value)
+                    elif action == 'copy':
+                        mycopy = copy_w_id_suffix(value)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
+                    elif action == 'nodeset':
+                        node_counts[value] = node_counts.setdefault(value, 0) + 1  # NOQA
+                        suffix = u'_copy_{}'.format(node_counts[value])
+                        mycopy = copy_w_id_suffix(value, suffix)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
                     else:
-                        append_string(target, strval)
-                elif action == 'move':
-                    grouped_insert(target, value)
-                elif action == 'copy':
-                    mycopy = copy_w_id_suffix(value)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                elif action == 'nodeset':
-                    node_counts[value] = node_counts.setdefault(value, 0) + 1
-                    suffix = u'_copy_{}'.format(node_counts[value])
-                    mycopy = copy_w_id_suffix(value, suffix)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                else:
-                    logger.warning(u'Missing action {}'.format(
-                        action).encode('utf-8'))
+                        logger.warning(u'Missing action {}'.format(
+                            action).encode('utf-8'))
+                except Exception as e:
+                    logger.error(u'Exception on CSS line {}'.format(
+                            decl.source_line).encode('utf-8'))
+                    raise e
 
         # Do numbering
 
@@ -307,7 +321,8 @@ class Oven():
         if None in matching_rules:
             for rule, declarations in matching_rules.get(None):
                 self.record_coverage(rule)
-                self.push_target_elem(element)
+                self.push_target_elem(element, None,
+                                      RuleSource(rule[0]))
                 for decl in declarations:
                     # decl Could also be a 'comment'.
                     if decl.type == 'declaration':
@@ -332,7 +347,7 @@ class Oven():
             for rule, declarations in matching_rules.get('before'):
                 self.record_coverage(rule)
                 # pseudo element, create wrapper
-                self.push_pending_elem(element, 'before')
+                self.push_pending_elem(element, 'before', RuleSource(rule[0]))
                 for decl in declarations:
                     method = self.find_method(decl)
                     method(element, decl, 'before')
@@ -348,7 +363,7 @@ class Oven():
             for rule, declarations in matching_rules.get('after'):
                 self.record_coverage(rule)
                 # pseudo element, create wrapper
-                self.push_pending_elem(element, 'after')
+                self.push_pending_elem(element, 'after', RuleSource(rule[0]))
                 for decl in declarations:
                     method = self.find_method(decl)
                     method(element, decl, 'after')
@@ -359,7 +374,7 @@ class Oven():
         if 'outside' in matching_rules:
             for rule, declarations in matching_rules.get('outside'):
                 self.record_coverage(rule)
-                self.push_pending_elem(element, 'outside')
+                self.push_pending_elem(element, 'outside', RuleSource(rule[0]))
                 for decl in declarations:
                     method = self.find_method(decl)
                     method(element, decl, 'outside')
@@ -368,7 +383,7 @@ class Oven():
         if 'inside' in matching_rules:
             for rule, declarations in matching_rules.get('inside'):
                 self.record_coverage(rule)
-                self.push_pending_elem(element, 'inside')
+                self.push_pending_elem(element, 'inside', RuleSource(rule[0]))
                 for decl in declarations:
                     method = self.find_method(decl)
                     method(element, decl, 'inside')
@@ -394,7 +409,7 @@ class Oven():
             if 'deferred' in matching_rules:
                 for rule, declarations in matching_rules.get('deferred'):
                     self.record_coverage(rule)
-                    self.push_target_elem(element)
+                    self.push_target_elem(element, None, RuleSource(rule[0]))
                     for decl in declarations:
                         method = self.find_method(decl)
                         method(element, decl, None)
@@ -405,7 +420,8 @@ class Oven():
                         matching_rules.get('before_deferred'):
                     self.record_coverage(rule)
                     # pseudo element, create wrapper
-                    self.push_pending_elem(element, 'before')
+                    self.push_pending_elem(element, 'before',
+                                           RuleSource(rule[0]))
                     for decl in declarations:
                         method = self.find_method(decl)
                         method(element, decl, 'before')
@@ -417,7 +433,8 @@ class Oven():
                 for rule, declarations in matching_rules.get('after_deferred'):
                     self.record_coverage(rule)
                     # pseudo element, create wrapper
-                    self.push_pending_elem(element, 'after')
+                    self.push_pending_elem(element, 'after',
+                                           RuleSource(rule[0]))
                     for decl in declarations:
                         method = self.find_method(decl)
                         method(element, decl, 'after')
@@ -429,7 +446,8 @@ class Oven():
                 for rule, declarations in \
                         matching_rules.get('outside_deferred'):
                     self.record_coverage(rule)
-                    self.push_pending_elem(element, 'outside')
+                    self.push_pending_elem(element, 'outside',
+                                           RuleSource(rule[0]))
                     for decl in declarations:
                         method = self.find_method(decl)
                         method(element, decl, 'outside')
@@ -462,22 +480,22 @@ class Oven():
 
     # Need target incase any declarations impact it
 
-    def push_target_elem(self, element, pseudo=None):
+    def push_target_elem(self, element, pseudo, decl):
         """Place target element onto action stack."""
         actions = self.state[self.state['current_step']]['actions']
         if len(actions) > 0 and actions[-1][0] == 'target':
             actions.pop()
         actions.append(('target', Target(element.etree_element,
                                          pseudo, element.parent.etree_element
-                                         )))
+                                         ), decl))
 
-    def push_pending_elem(self, element, pseudo):
+    def push_pending_elem(self, element, pseudo, decl):
         """Create and place pending target element onto stack."""
-        self.push_target_elem(element, pseudo)
+        self.push_target_elem(element, pseudo, decl)
         elem = etree.Element('div')
         actions = self.state[self.state['current_step']]['actions']
-        actions.append(('move', elem))
-        actions.append(('target', Target(elem)))
+        actions.append(('move', elem, decl))
+        actions.append(('target', Target(elem), decl))
 
     def pop_pending_if_empty(self, element):
         """Remove empty wrapper element."""
@@ -491,7 +509,7 @@ class Oven():
     def current_target(self):
         """Return current target."""
         actions = self.state[self.state['current_step']]['actions']
-        for action, value in reversed(actions):
+        for action, value, decl in reversed(actions):
             if action == 'target':
                 return value
 
@@ -882,9 +900,9 @@ class Oven():
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
-            step['pending'][target] = [('nodeset', elem)]
+            step['pending'][target] = [('nodeset', elem, decl)]
         else:
-            self.state[valstep]['pending'][target] = [('nodeset', elem)]
+            self.state[valstep]['pending'][target] = [('nodeset', elem, decl)]
 
     @log_decl_method
     def do_copy_to(self, element, decl, pseudo):
@@ -894,9 +912,9 @@ class Oven():
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
         if not valstep:
-            step['pending'][target] = [('copy', elem)]
+            step['pending'][target] = [('copy', elem, decl)]
         else:
-            self.state[valstep]['pending'][target].append(('copy', elem))
+            self.state[valstep]['pending'][target].append(('copy', elem, decl))
 
     @log_decl_method
     def do_move_to(self, element, decl, pseudo):
@@ -915,9 +933,9 @@ class Oven():
 
         _, valstep = self.lookup('pending', target)
         if not valstep:
-            step['pending'][target] = [('move', elem)]
+            step['pending'][target] = [('move', elem, decl)]
         else:
-            self.state[valstep]['pending'][target].append(('move', elem))
+            self.state[valstep]['pending'][target].append(('move', elem, decl))
 
     @log_decl_method
     def do_container(self, element, decl, pseudo):
@@ -925,7 +943,7 @@ class Oven():
         value = serialize(decl.value).strip()
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        actions.append(('tag', value))
+        actions.append(('tag', value, decl))
 
     @log_decl_method
     def do_class(self, element, decl, pseudo):
@@ -933,7 +951,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
         strval = self.eval_string_value(element, decl.value)
-        actions.append(('attrib', ('class', strval)))
+        actions.append(('attrib', ('class', strval), decl))
 
     @log_decl_method
     def do_attr_any(self, element, decl, pseudo):
@@ -941,7 +959,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
         strval = self.eval_string_value(element, decl.value)
-        actions.append(('attrib', (decl.name[5:], strval)))
+        actions.append(('attrib', (decl.name[5:], strval), decl))
 
     @log_decl_method
     def do_data_any(self, element, decl, pseudo):
@@ -949,7 +967,7 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
         strval = self.eval_string_value(element, decl.value)
-        actions.append(('attrib', (decl.name, strval)))
+        actions.append(('attrib', (decl.name, strval), decl))
 
     @log_decl_method
     def do_content(self, element, decl, pseudo):
@@ -961,7 +979,7 @@ class Oven():
         wastebin = []
         elem = self.current_target().tree
         if elem == element.etree_element or pseudo == 'inside':
-            actions.append(('clear', elem))
+            actions.append(('clear', elem, decl))
 
         if pseudo:
             current_actions = len(actions)
@@ -975,10 +993,10 @@ class Oven():
                 continue
 
             elif type(term) is ast.StringToken:
-                actions.append(('string', term.value))
+                actions.append(('string', term.value, decl))
 
             elif type(term) is ast.LiteralToken:
-                actions.append(('string', term.value))
+                actions.append(('string', term.value, decl))
 
             elif type(term) is ast.FunctionBlock:
                 if term.name == 'string':
@@ -994,13 +1012,13 @@ class Oven():
                             logger.warning(u"{} blank string".
                                            format(str_name).encode('utf-8'))
                     if val != '':
-                        actions.append(('string', val))
+                        actions.append(('string', val, decl))
 
                 elif term.name == 'counter':
                     counterargs = [serialize(t).strip(" \'")
                                    for t in split(term.arguments, ',')]
                     count = self.lookup('counters', counterargs)
-                    actions.append(('string', (count,)))
+                    actions.append(('string', (count,), decl))
 
                 elif term.name.startswith('target-'):
                     target_args = split(term.arguments, ',')
@@ -1011,7 +1029,7 @@ class Oven():
 
                     vtype = term.name[7:]+'s'
                     actions.append(('string', [TargetVal(self, vref[1:],
-                                                         vname, vtype)]))
+                                                         vname, vtype)], decl))
 
                 elif term.name == u'attr':
                     att_args = split(term.arguments, ',')
@@ -1022,24 +1040,24 @@ class Oven():
                         att_def = self.eval_string_value(element,
                                                          att_args[1])[0]
                     att_val = element.etree_element.get(att_name, att_def)
-                    actions.append(('string', att_val))
+                    actions.append(('string', att_val, decl))
 
                 elif term.name == u'uuid':
-                    actions.append(('string', self.generate_id()))
+                    actions.append(('string', self.generate_id(), decl))
 
                 elif term.name == u'first-letter':
                     tmpstr = self.eval_string_value(element, term.arguments)
                     if tmpstr:
-                        actions.append(('string', tmpstr[0]))
+                        actions.append(('string', tmpstr[0], decl))
 
                 elif term.name == u'content':
                     if pseudo in ('before', 'after'):
                         mycopy = copy_w_id_suffix(element.etree_element)
-                        actions.append(('content', mycopy))
+                        actions.append(('content', mycopy, decl))
                     elif pseudo == 'outside':
-                        actions.append(('move', element.etree_element))
+                        actions.append(('move', element.etree_element, decl))
                     else:
-                        actions.append(('content', None))
+                        actions.append(('content', None, decl))
 
                 elif term.name == 'pending':
                     target = serialize(term.arguments)
@@ -1060,7 +1078,7 @@ class Oven():
                         continue
                     for action in val:
                             if action[0] == 'move':
-                                actions.append(('nodeset', action[1]))
+                                actions.append(('nodeset', action[1], decl))
                             else:
                                 actions.append(action)
 
@@ -1083,14 +1101,14 @@ class Oven():
 
         if pseudo:
             if len(actions) == current_actions:
-                wastebin.append(('move', elem))
+                wastebin.append(('move', elem, decl))
 
         if len(wastebin) > 0:
             trashbucket = etree.Element('div',
                                         attrib={'class': 'delete-me'})
             if actions[-1][0] == 'target':
                 actions.pop()
-            actions.append(('target', Target(trashbucket)))
+            actions.append(('target', Target(trashbucket), decl))
             actions.extend(wastebin)
             wastebin = []
 
