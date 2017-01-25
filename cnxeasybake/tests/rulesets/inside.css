@@ -16,6 +16,15 @@ div[data-type='chapter'] div[data-type='note']::inside {
   container: div;
 }
 
+div[data-type='chapter'] div[data-type='note'] {
+  content: 'Hardcoded title' content() 'hardcoded caption';
+}
 div[data-type='chapter'] div[data-type='note']:deferred {
   content: pending(note-title) content() pending(note-caption);
 }
+
+div[data-type='chapter'] div[data-type='alert']::inside {
+  class: alert-body-wrapper;
+  content: "before text" content() "after text";
+}
+

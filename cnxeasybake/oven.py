@@ -960,7 +960,7 @@ class Oven():
 
         wastebin = []
         elem = self.current_target().tree
-        if elem == element.etree_element:
+        if elem == element.etree_element or pseudo == 'inside':
             actions.append(('clear', elem))
 
         if pseudo:
@@ -1038,8 +1038,6 @@ class Oven():
                         actions.append(('content', mycopy))
                     elif pseudo == 'outside':
                         actions.append(('move', element.etree_element))
-                    elif pseudo == 'inside':
-                        pass  # FIXME  - work out semantics for this
                     else:
                         actions.append(('content', None))
 
