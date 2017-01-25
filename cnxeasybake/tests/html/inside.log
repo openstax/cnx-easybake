@@ -1,4 +1,10 @@
 cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (26): div[data-type="chapter"] div[data-type="alert"]::inside 
+cnx-easybake DEBUG     default: class alert-body-wrapper
+cnx-easybake DEBUG IdentToken as string: alert-body-wrapper
+cnx-easybake DEBUG     default: content "before text" content() "after text"
+cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="note"] 
+cnx-easybake DEBUG     default: content "Hardcoded title" content() "hardcoded caption"
 cnx-easybake DEBUG Rule (2): div[data-type="chapter"] div[data-type="note"]::after 
 cnx-easybake DEBUG     default: content "This is a note title"
 cnx-easybake DEBUG     default: container span
@@ -15,6 +21,6 @@ cnx-easybake DEBUG Rule (14): div[data-type="chapter"] div[data-type="note"]::in
 cnx-easybake DEBUG     default: class note-body-wrapper
 cnx-easybake DEBUG IdentToken as string: note-body-wrapper
 cnx-easybake DEBUG     default: container div
-cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="note"]:deferred 
+cnx-easybake DEBUG Rule (22): div[data-type="chapter"] div[data-type="note"]:deferred 
 cnx-easybake DEBUG     default: content pending(note-title) content() pending(note-caption)
-cnx-easybake DEBUG Recipe default length: 20
+cnx-easybake DEBUG Recipe default length: 33
