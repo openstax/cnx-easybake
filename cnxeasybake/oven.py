@@ -364,11 +364,21 @@ class Oven():
                     method = self.find_method(decl)
                     method(element, decl, 'outside')
 
+        # Do inside
+        if 'inside' in matching_rules:
+            for rule, declarations in matching_rules.get('inside'):
+                self.record_coverage(rule)
+                self.push_pending_elem(element, 'inside')
+                for decl in declarations:
+                    method = self.find_method(decl)
+                    method(element, decl, 'inside')
+
         # Do deferred
         if ('deferred' in matching_rules or
              'after_deferred' in matching_rules or  # NOQA
              'before_deferred' in matching_rules or
-             'outside_deferred' in matching_rules):
+             'outside_deferred' in matching_rules or
+             'inside_deferred' in matching_rules):
 
             # store strings and counters, in case a deferred rule changes one
             if element_id:
@@ -423,6 +433,16 @@ class Oven():
                     for decl in declarations:
                         method = self.find_method(decl)
                         method(element, decl, 'outside')
+
+            # Do inside_deferred
+            if 'inside_deferred' in matching_rules:
+                for rule, declarations in \
+                        matching_rules.get('inside_deferred'):
+                    self.record_coverage(rule)
+                    self.push_pending_elem(element, 'inside')
+                    for decl in declarations:
+                        method = self.find_method(decl)
+                        method(element, decl, 'inside')
 
             # Did a deferred rule change a stored variable?
             if element_id:
@@ -1018,6 +1038,8 @@ class Oven():
                         actions.append(('content', mycopy))
                     elif pseudo == 'outside':
                         actions.append(('move', element.etree_element))
+                    elif pseudo == 'inside':
+                        pass  # FIXME  - work out semantics for this
                     else:
                         actions.append(('content', None))
 
@@ -1262,6 +1284,15 @@ def grouped_insert(t, value):
 
     elif t.sort and t.sort(value) is not None:
         insert_sort(value, t.tree, t.sort)
+
+    elif t.location == 'inside':
+        for child in t.tree:
+            value.append(child)
+        value.text = t.tree.text
+        t.tree.text = None
+        value.tail = t.tree.tail
+        t.tree.tail = None
+        t.tree.append(value)
 
     elif t.location == 'outside':
         value.tail = t.tree.tail

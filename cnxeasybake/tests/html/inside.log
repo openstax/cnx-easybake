@@ -1,0 +1,20 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (2): div[data-type="chapter"] div[data-type="note"]::after 
+cnx-easybake DEBUG     default: content "This is a note title"
+cnx-easybake DEBUG     default: container span
+cnx-easybake DEBUG     default: class note-title
+cnx-easybake DEBUG IdentToken as string: note-title
+cnx-easybake DEBUG     default: move-to note-title
+cnx-easybake DEBUG Rule (8): div[data-type="chapter"] div[data-type="note"]::after 
+cnx-easybake DEBUG     default: content "This is a note caption"
+cnx-easybake DEBUG     default: container span
+cnx-easybake DEBUG     default: class note-caption
+cnx-easybake DEBUG IdentToken as string: note-caption
+cnx-easybake DEBUG     default: move-to note-caption
+cnx-easybake DEBUG Rule (14): div[data-type="chapter"] div[data-type="note"]::inside 
+cnx-easybake DEBUG     default: class note-body-wrapper
+cnx-easybake DEBUG IdentToken as string: note-body-wrapper
+cnx-easybake DEBUG     default: container div
+cnx-easybake DEBUG Rule (19): div[data-type="chapter"] div[data-type="note"]:deferred 
+cnx-easybake DEBUG     default: content pending(note-title) content() pending(note-caption)
+cnx-easybake DEBUG Recipe default length: 20

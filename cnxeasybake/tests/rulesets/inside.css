@@ -1,0 +1,21 @@
+/* Wrapping a div around an element */
+div[data-type='chapter'] div[data-type='note']::after {
+  content: "This is a note title";
+  container: span;
+  class: note-title;
+  move-to: note-title;
+}
+div[data-type='chapter'] div[data-type='note']::after {
+  content: "This is a note caption";
+  container: span;
+  class: note-caption;
+  move-to: note-caption;
+}
+div[data-type='chapter'] div[data-type='note']::inside {
+  class: note-body-wrapper;
+  container: div;
+}
+
+div[data-type='chapter'] div[data-type='note']:deferred {
+  content: pending(note-title) content() pending(note-caption);
+}
