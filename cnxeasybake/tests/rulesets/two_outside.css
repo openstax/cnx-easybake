@@ -1,0 +1,29 @@
+/* Wrapping a div around an element */
+/* copy-pasted from outside.css */
+div[data-type='chapter'] table::after {
+  content: "This is a table title";
+  container: span;
+  class: table-title;
+  move-to: table-title;
+}
+div[data-type='chapter'] table::after {
+  content: "This is a table caption";
+  container: span;
+  class: table-caption;
+  move-to: table-caption;
+}
+/* This generates 3 wrapper elements */
+div[data-type='chapter'] *::outside {
+  class: first-outside;
+  content: pending(table-caption) content() pending(table-title);
+}
+div[data-type='chapter'] table::outside {
+  class: second-outside;
+  container: div;
+  content: pending(table-title) content() pending(table-caption);
+}
+div[data-type='chapter'] *::outside,
+div[data-type='chapter'] *::outside {
+  class: double-outside-exact-selector;
+  content: pending(table-caption) content() pending(table-title);
+}
