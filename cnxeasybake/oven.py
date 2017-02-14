@@ -270,7 +270,12 @@ class Oven():
 
         # Do label/link updates
 
-        # Add an empty string to each element just to make sure the element is closed
+        # Add an empty string to each element just to make sure the element
+        # is closed. This is useful for browsers that parse the output
+        # as HTML5 rather than as XHTML5.
+        #
+        # One use-case would be users that inject the content into an
+        # existing HTML (not XHTML) document.
         walkAll = element.iter()
         for elt in walkAll:
             if elt.tag not in SELF_CLOSING_TAGS:
