@@ -17,6 +17,8 @@ then
 	esac
 fi
 
+./scripts/setup # Update the code in the virtualenv so it uses the latest source
+
 # Activate virtualenv if not already in one
 [ -n "${VIRTUAL_ENV}" ] || source "${git_root}"/bin/activate
 

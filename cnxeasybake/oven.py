@@ -16,6 +16,10 @@ verbose = False
 
 logger = logging.getLogger('cnx-easybake')
 
+SELF_CLOSING_TAGS = ['area', 'base', 'br', 'col', 'command', 'embed',
+                     'hr', 'img', 'input', 'keygen', 'link', 'meta',
+                     'param', 'source', 'track', 'wbr']
+
 
 def log_decl_method(func):
     """Decorate do_declartion methods for debug logging."""
@@ -268,6 +272,18 @@ class Oven():
         # Do numbering
 
         # Do label/link updates
+
+        # Add an empty string to each element just to make sure the element
+        # is closed. This is useful for browsers that parse the output
+        # as HTML5 rather than as XHTML5.
+        #
+        # One use-case would be users that inject the content into an
+        # existing HTML (not XHTML) document.
+        walkAll = element.iter()
+        for elt in walkAll:
+            if elt.tag not in SELF_CLOSING_TAGS:
+                if len(elt) == 0 and not elt.text:
+                    elt.text = ''
 
     def record_coverage_zero(self, rule, offset):
         """Add entry to coverage saying this selector was parsed"""
