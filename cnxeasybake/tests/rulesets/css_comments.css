@@ -1,1 +1,7 @@
 /* This ensures that comments in a CSS file do not cause an error */
+body {
+    /* another CSS comment, this time in a declaration */
+}
+body::after {
+    /* another CSS comment, this time in an after declaration */
+}
