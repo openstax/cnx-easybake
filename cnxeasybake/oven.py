@@ -152,8 +152,10 @@ class Oven():
             if rule.type == 'qualified-rule':
 
                 selectors = parse(rule.prelude, extensions=extensions)
-                decls = parse_declaration_list(rule.content,
-                                               skip_whitespace=True)
+                decls = [d for d in
+                         parse_declaration_list(rule.content,
+                                                skip_whitespace=True)
+                         if d.type == 'declaration']  # Could also be a comment
                 for sel in selectors:
                     try:
                         csel = CompiledSelector(sel)
@@ -325,10 +327,8 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_target_elem(element)
                 for decl in declarations:
-                    # decl Could also be a 'comment'.
-                    if decl.type == 'declaration':
-                        method = self.find_method(decl)
-                        method(element, decl, None)
+                    method = self.find_method(decl)
+                    method(element, decl, None)
 
         # Store all variables (strings and counters) before children
         if element_id:
