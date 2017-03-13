@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+pythonMajorVersion=$(python --version 2>&1 | sed 's/.* \([0-9]\).*/\1/')
+
+if [ ${pythonMajorVersion} -ne "2" ]; then
+  echo "ERROR: Expected python 2 to be the version when running `python` but got ${pythonMajorVersion}"
+  exit 1
+fi
+
 echo "Step 1/2: Setting up a python virtualenv (if not already in one)"
 if [ ! "${CI}" = "true" ] # Skip when running Travis
 then
