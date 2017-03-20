@@ -94,7 +94,7 @@ class CliTestCase(unittest.TestCase):
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
-        usage_message = """usage: setup.py [-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
+        usage_message = """[-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
                 [--use-repeatable-ids]
                 css_rules [html_in] [html_out]
 
@@ -119,7 +119,7 @@ optional arguments:
 """
 
         self.assertEqual(stderr, '')
-        self.assertEqual(stdout, usage_message)
+        self.assertIn(usage_message, stdout)
 
     def test_coverage(self):
         """Call cli coverage output."""
