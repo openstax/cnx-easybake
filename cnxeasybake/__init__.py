@@ -8,4 +8,6 @@
 """Implements baking in a subset of CSS3 content spec into HTML."""
 from .oven import Oven  # noqa
 
-__version__ = '0.7'
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

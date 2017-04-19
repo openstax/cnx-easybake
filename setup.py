@@ -7,6 +7,7 @@ GNU AFFERO GENERAL PUBLIC LICENSE Version 3.0 (AGPL).
 See LICENSE.txt for details.
 """
 from setuptools import setup, find_packages
+import versioneer
 
 install_requires = (
     'cssselect',
@@ -21,7 +22,7 @@ tests_require = (
 
 setup(
     name='cnx-easybake',
-    version='0.7.0',
+    version=versioneer.get_version(),
     author='Connexions team',
     author_email='info@cnx.org',
     url="https://github.com/connexions/cnx-easybake",
@@ -32,6 +33,7 @@ setup(
     test_suite='cnxeasybake.tests',
     install_requires=install_requires,
     include_package_data=True,
+    cmdclass=versioneer.get_cmdclass(),
     entry_points={
         'console_scripts': [
             'cnx-easybake = cnxeasybake.scripts.main:main',
