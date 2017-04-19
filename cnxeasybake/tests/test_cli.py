@@ -119,7 +119,7 @@ optional arguments:
 """
 
         self.assertEqual(stderr, '')
-        self.assertIn(usage_message, stdout)
+        self.assertIn(usage_message.replace(' ', ''), stdout.replace(' ', ''))
 
     def test_coverage(self):
         """Call cli coverage output."""
