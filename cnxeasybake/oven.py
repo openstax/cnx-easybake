@@ -205,8 +205,12 @@ class Oven():
         """Apply recipes to HTML tree. Will build recipes if needed."""
 
         if last_step is not None:
-            self.state['steps'] = [s for s in self.state['steps']
-                                   if s < last_step]
+            try:
+                self.state['steps'] = [s for s in self.state['steps']
+                                       if int(s) < int(last_step)]
+            except ValueError:
+                self.state['steps'] = [s for s in self.state['steps']
+                                       if s < last_step]
         for step in self.state['steps']:
             self.state['current_step'] = step
             self.state['scope'].insert(0, step)
