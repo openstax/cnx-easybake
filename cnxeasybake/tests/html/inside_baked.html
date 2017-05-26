@@ -9,9 +9,10 @@
             <p>Stuff that stays, as well</p>
             <div data-type="alert"><div class="alert-body-wrapper">before text
                 <p>Some text in an alert div, to test content: content()</p>
-                With tail text.
-            after text</div>
-        </div></section>
+                With child tail text. (should be wrapped)
+            after text</div></div>
+            And target tail text. (should not be wrapped)
+        </section>
     </div>
     <div data-type="page">
         <section class="practice-test">
@@ -31,8 +32,8 @@
                   </tr>
                 </table>
                 Tail text, too.
-            hardcoded caption</div>
-        <span class="note-caption">This is a note caption</span></div></section>
+            hardcoded caption</div><span class="note-caption">This is a note caption</span></div>
+        </section>
     </div>
 </div>
 </body>

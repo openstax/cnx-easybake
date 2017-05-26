@@ -1279,7 +1279,7 @@ def grouped_insert(t, value):
             val_parent = value.getparent()
             if val_parent is not None:
                 val_parent.text = (val_parent.text or '') + value.tail
-    value.tail = None
+        value.tail = None
     if t.isgroup and t.sort(value) is not None:
         if t.groupby:
             for child in t.tree:
@@ -1308,8 +1308,6 @@ def grouped_insert(t, value):
             value.append(child)
         value.text = t.tree.text
         t.tree.text = None
-        value.tail = t.tree.tail
-        t.tree.tail = None
         t.tree.append(value)
 
     elif t.location == 'outside':
