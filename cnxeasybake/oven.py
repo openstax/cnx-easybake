@@ -661,7 +661,16 @@ class Oven():
                     if len(att_args) > 1:
                         att_def = self.eval_string_value(element,
                                                          att_args[1])[0]
-                    strval += element.etree_element.get(att_name, att_def)
+                    att_val = element.etree_element.get(att_name, att_def)
+
+                    # If an element does not already have an id attribute but
+                    # the CSS is expecting one then automatically create one
+                    if att_name == u'id' and att_val is None:
+                        att_val = str(uuid4())
+                        logger.info("auto-added id attribute {}"
+                                    .format(att_val))
+
+                    strval += att_val
 
                 elif term.name == u'uuid':
                     strval += self.generate_id()
