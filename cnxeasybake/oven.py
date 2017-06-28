@@ -162,19 +162,36 @@ class Oven():
                 if rule.lower_at_keyword == 'namespace':
                     # The 2 supported formats are:
                     #
-                    # default:  [<WhitespaceToken>, <StringToken "http://www.w3.org/1999/xhtml">]
-                    # prefixed: [<WhitespaceToken>, <IdentToken html>, <WhitespaceToken>, <StringToken "http://www.w3.org/1999/xhtml">]
-                    if len(rule.prelude) == 2 and rule.prelude[0].type == 'whitespace' and rule.prelude[1].type == 'ident':
+                    # default:  [<WhitespaceToken>,
+                    #            <StringToken "http://www.w3.org/1999/xhtml">]
+                    # prefixed: [<WhitespaceToken>,
+                    #            <IdentToken html>,
+                    #            <WhitespaceToken>,
+                    #            <StringToken "http://www.w3.org/1999/xhtml">]
+                    if ((len(rule.prelude) == 2 and
+                         rule.prelude[0].type == 'whitespace' and
+                         rule.prelude[1].type == 'ident')):
+
                         # Default namespace
                         self.default_css_namespace = rule.prelude[1].value
-                    elif len(rule.prelude) == 4 and rule.prelude[0].type == 'whitespace' and rule.prelude[1].type == 'ident' and rule.prelude[2].type == 'whitespace' and rule.prelude[3].type == 'string':
+                    elif (len(rule.prelude) == 4 and
+                          rule.prelude[0].type == 'whitespace' and
+                          rule.prelude[1].type == 'ident' and
+                          rule.prelude[2].type == 'whitespace' and
+                          rule.prelude[3].type == 'string'):
                         # Prefixed namespace
-                        self.css_namespaces[rule.prelude[1].value] = rule.prelude[3].value
+                        ns_prefix = rule.prelude[1].value
+                        ns_url = rule.prelude[3].value
+                        self.css_namespaces[ns_prefix] = ns_value
                     else:
-                        logger.warning(u'Unknown @namespace format at {}:{}'.format(rule.source_line, rule.source_column).encode('utf-8'))
+                        logger.warning(u'Unknown @namespace format at {}:{}'
+                                       .format(rule.source_line,
+                                               rule.source_column)
+                                       .encode('utf-8'))
             elif rule.type == 'qualified-rule':
 
-                selectors = parse(rule.prelude, namespaces=self.css_namespaces, extensions=extensions)
+                selectors = parse(rule.prelude, namespaces=self.css_namespaces,
+                                  extensions=extensions)
                 decls = [d for d in
                          parse_declaration_list(rule.content,
                                                 skip_whitespace=True)
@@ -1178,7 +1195,8 @@ class Oven():
         else:
             css = decl.value
             flags = None
-        sort = css_to_func(self.css_namespaces, serialize(css), serialize(flags or ''))
+        sort = css_to_func(self.css_namespaces,
+                           serialize(css), serialize(flags or ''))
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
