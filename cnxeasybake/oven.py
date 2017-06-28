@@ -96,6 +96,10 @@ class Oven():
         self.coverage_lines = []
         self.use_repeatable_ids = use_repeatable_ids
         self.repeatable_id_counter = 0
+        # Store the CSS namespaces (and prefixed namespaces)
+        self.default_css_namespace = None
+        self.css_namespaces = {}
+
         if css_in:
             self.update_css(css_in, clear_css=True)  # clears state as well
         else:
@@ -146,12 +150,31 @@ class Oven():
             except AttributeError:
                 css = css_in         # Treat it as a string
 
+        # Namespaces defined in the CSS
+        if clear_css:
+            self.default_css_namespace = None
+            self.css_namespaces = {}
+
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
-            # Ignore all at-rules
-            if rule.type == 'qualified-rule':
+            # Check for any @namespace declarations
+            if rule.type == 'at-rule':
+                if rule.lower_at_keyword == 'namespace':
+                    # The 2 supported formats are:
+                    #
+                    # default:  [<WhitespaceToken>, <StringToken "http://www.w3.org/1999/xhtml">]
+                    # prefixed: [<WhitespaceToken>, <IdentToken html>, <WhitespaceToken>, <StringToken "http://www.w3.org/1999/xhtml">]
+                    if len(rule.prelude) == 2 and rule.prelude[0].type == 'whitespace' and rule.prelude[1].type == 'ident':
+                        # Default namespace
+                        self.default_css_namespace = rule.prelude[1].value
+                    elif len(rule.prelude) == 4 and rule.prelude[0].type == 'whitespace' and rule.prelude[1].type == 'ident' and rule.prelude[2].type == 'whitespace' and rule.prelude[3].type == 'string':
+                        # Prefixed namespace
+                        self.css_namespaces[rule.prelude[1].value] = rule.prelude[3].value
+                    else:
+                        logger.warning(u'Unknown @namespace format at {}:{}'.format(rule.source_line, rule.source_column).encode('utf-8'))
+            elif rule.type == 'qualified-rule':
 
-                selectors = parse(rule.prelude, extensions=extensions)
+                selectors = parse(rule.prelude, namespaces=self.css_namespaces, extensions=extensions)
                 decls = [d for d in
                          parse_declaration_list(rule.content,
                                                 skip_whitespace=True)
@@ -1129,8 +1152,8 @@ class Oven():
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
-        sort = css_to_func(sort_css, flags)
-        groupby = css_to_func(groupby_css, flags)
+        sort = css_to_func(self.css_namespaces, sort_css, flags)
+        groupby = css_to_func(self.css_namespaces, groupby_css, flags)
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1155,7 +1178,7 @@ class Oven():
         else:
             css = decl.value
             flags = None
-        sort = css_to_func(serialize(css), serialize(flags or ''))
+        sort = css_to_func(self.css_namespaces, serialize(css), serialize(flags or ''))
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1195,7 +1218,7 @@ def split(li, *splitters):
     return [subl for subl in _itersplit(li, splitters) if subl]
 
 
-def css_to_func(css, flags=None):
+def css_to_func(css_namespaces, css, flags=None):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
@@ -1205,6 +1228,7 @@ def css_to_func(css, flags=None):
         return None
     sel = parse(css.strip('" '))[0]
     xpath = HTMLTranslator().selector_to_xpath(sel)
+
     first_letter = False
     if sel.pseudo_element is not None:
         if type(sel.pseudo_element) == FunctionalPseudoElement:
@@ -1216,7 +1240,7 @@ def css_to_func(css, flags=None):
             if sel.pseudo_element == 'first-letter':
                 first_letter = True
 
-    xp = etree.XPath(xpath)
+    xp = etree.XPath(xpath, namespaces=css_namespaces)
 
     def func(elem):
         res = xp(elem)

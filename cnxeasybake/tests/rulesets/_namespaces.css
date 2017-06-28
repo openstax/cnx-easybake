@@ -1,0 +1,39 @@
+@NaMeSpAcE epub 'http://www.idpf.org/2007/ops';
+@namespace 'http://www.w3.org/1999/xhtml';
+@namespace url('http://www.w3.org/1999/xhtml');
+@namespace foo bar url('http://www.w3.org/1999/xhtml');
+
+p {
+  content: 'Default Works!';
+}
+
+epub|p {
+  content: 'EPUB works';
+}
+
+/* Sort all the list items and move them to #output */
+#input1 > * {
+  move-to: bucket1;
+}
+#output1 {
+  content: pending(bucket1);
+  sort-by: 'em';
+}
+
+/* Same as above but using the default namespace */
+#input2 li {
+  move-to: bucket1;
+}
+#output2 {
+  content: pending(bucket1);
+  sort-by: 'em';
+}
+
+/* Same as above but using an explicit namespace */
+#input3 epub|li {
+  move-to: bucket;
+}
+#output3 {
+  content: pending(bucket);
+  sort-by: 'epub|em';
+}
