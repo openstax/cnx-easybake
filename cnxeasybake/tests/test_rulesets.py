@@ -7,7 +7,6 @@ import unittest
 import logging
 import mock
 from testfixtures import LogCapture
-from StringIO import StringIO
 
 from lxml import etree
 
@@ -106,7 +105,7 @@ class RulesetTestCase(unittest.TestCase):
         """Create a specific ruleset test."""
         @mock.patch('cnxeasybake.oven.uuid4', uuids.next)
         def run_test(self):
-            element = etree.parse(StringIO(html))
+            element = etree.HTML(html)
             oven = Oven(css)
             oven.bake(element)
             output = tidy(etree.tostring(element, method='xml'))

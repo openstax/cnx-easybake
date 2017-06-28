@@ -113,6 +113,6 @@ class OvenBakeTest(unittest.TestCase):
         """Test oven will bake something."""
         from lxml import etree
         oven = self.target_cls(CSS_TWO_STEP)
-        html_doc = etree.parse(StringIO(HTML))
+        html_doc = etree.HTML(HTML)
 
         oven.bake(html_doc)
