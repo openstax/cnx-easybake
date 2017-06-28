@@ -182,7 +182,7 @@ class Oven():
                         # Prefixed namespace
                         ns_prefix = rule.prelude[1].value
                         ns_url = rule.prelude[3].value
-                        self.css_namespaces[ns_prefix] = ns_value
+                        self.css_namespaces[ns_prefix] = ns_url
                     else:
                         logger.warning(u'Unknown @namespace format at {}:{}'
                                        .format(rule.source_line,
