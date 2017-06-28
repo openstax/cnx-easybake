@@ -14,7 +14,7 @@ def _tempinput(data):
     temp.close()
     yield temp.name
     os.unlink(temp.name)
-HTML = '''<html><head><title>example</title></head>
+HTML = '''<html xmlns="http://www.w3.org/1999/xhtml"><head><title>example</title></head>
 <body>
   <div data-type="book">
     <div data-type="copy-me">Here is something to copy</div>
@@ -31,10 +31,10 @@ div[data-type="book"]::after { step: 1; content: pending("end-of-chapter")}
 div[data-type="book"]::after {step: 5; content: "Here is a later step" }
 '''
 
-HTML_ONE_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div></div>\n</body></html>'
+HTML_ONE_STEP = '<html xmlns="http://www.w3.org/1999/xhtml"><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div></div>\n</body></html>'
 
 
-HTML_TWO_STEP = '<html><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div><div>Here is a later step</div></div>\n</body></html>'
+HTML_TWO_STEP = '<html xmlns="http://www.w3.org/1999/xhtml"><head><title>example</title></head>\n<body>\n  <div data-type="book">\n    <div data-type="copy-me">Here is something to copy</div>\n  <div><div data-type="copy-me">Here is something to copy</div></div><div>Here is a later step</div></div>\n</body></html>'
 
 
 class OvenCssTest(unittest.TestCase):

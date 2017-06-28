@@ -1,4 +1,5 @@
 @NaMeSpAcE epub 'http://www.idpf.org/2007/ops';
+@namespace xhtml 'http://www.w3.org/1999/xhtml';
 /* The following are unsupported and should give a WARNING */
 @namespace 'http://www.w3.org/1999/xhtml';
 @namespace url('http://www.w3.org/1999/xhtml');
@@ -18,7 +19,7 @@ epub|p {
 }
 #output1 {
   content: pending(bucket1);
-  sort-by: 'em';
+  sort-by: 'xhtml|em';
 }
 
 /* Same as above but using the default namespace */
@@ -27,7 +28,7 @@ epub|p {
 }
 #output2 {
   content: pending(bucket1);
-  sort-by: 'em';
+  sort-by: 'xhtml|em';
 }
 
 /* Same as above but using an explicit namespace */

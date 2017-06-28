@@ -16,9 +16,10 @@ verbose = False
 
 logger = logging.getLogger('cnx-easybake')
 
-SELF_CLOSING_TAGS = ['area', 'base', 'br', 'col', 'command', 'embed',
-                     'hr', 'img', 'input', 'keygen', 'link', 'meta',
-                     'param', 'source', 'track', 'wbr']
+def prefixify(tag): return '{http://www.w3.org/1999/xhtml}' + tag
+SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
+                     'command', 'embed', 'hr', 'img', 'input', 'keygen',
+                     'link', 'meta', 'param', 'source', 'track', 'wbr']))
 
 
 def log_decl_method(func):
