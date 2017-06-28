@@ -16,10 +16,14 @@ verbose = False
 
 logger = logging.getLogger('cnx-easybake')
 
-def prefixify(tag): return '{http://www.w3.org/1999/xhtml}' + tag
+
+def prefixify(tag):
+    return '{http://www.w3.org/1999/xhtml}' + tag
+
 SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
-                     'command', 'embed', 'hr', 'img', 'input', 'keygen',
-                     'link', 'meta', 'param', 'source', 'track', 'wbr']))
+                                         'command', 'embed', 'hr', 'img',
+                                         'input', 'keygen', 'link', 'meta',
+                                         'param', 'source', 'track', 'wbr']))
 
 
 def log_decl_method(func):
@@ -167,11 +171,12 @@ class Oven():
                     #            <IdentToken html>,
                     #            <WhitespaceToken>,
                     #            <StringToken "http://www.w3.org/1999/xhtml">]
-                    if (len(rule.prelude) == 4 and
-                          rule.prelude[0].type == 'whitespace' and
-                          rule.prelude[1].type == 'ident' and
-                          rule.prelude[2].type == 'whitespace' and
-                          rule.prelude[3].type == 'string'):
+                    if ((len(rule.prelude) == 4 and
+                         rule.prelude[0].type == 'whitespace' and
+                         rule.prelude[1].type == 'ident' and
+                         rule.prelude[2].type == 'whitespace' and
+                         rule.prelude[3].type == 'string')):
+
                         # Prefixed namespace
                         ns_prefix = rule.prelude[1].value
                         ns_url = rule.prelude[3].value
@@ -185,6 +190,7 @@ class Oven():
                                        .format(rule.source_line,
                                                rule.source_column)
                                        .encode('utf-8'))
+
             elif rule.type == 'qualified-rule':
 
                 selectors = parse(rule.prelude, namespaces=self.css_namespaces,
