@@ -7,6 +7,7 @@ import unittest
 import logging
 import mock
 from testfixtures import LogCapture
+from StringIO import StringIO
 
 from lxml import etree
 
