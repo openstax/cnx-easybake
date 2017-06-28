@@ -1,4 +1,5 @@
 @NaMeSpAcE epub 'http://www.idpf.org/2007/ops';
+/* The following are unsupported and should give a WARNING */
 @namespace 'http://www.w3.org/1999/xhtml';
 @namespace url('http://www.w3.org/1999/xhtml');
 @namespace foo bar url('http://www.w3.org/1999/xhtml');

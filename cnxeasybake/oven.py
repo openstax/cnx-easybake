@@ -97,7 +97,6 @@ class Oven():
         self.use_repeatable_ids = use_repeatable_ids
         self.repeatable_id_counter = 0
         # Store the CSS namespaces (and prefixed namespaces)
-        self.default_css_namespace = None
         self.css_namespaces = {}
 
         if css_in:
@@ -152,7 +151,6 @@ class Oven():
 
         # Namespaces defined in the CSS
         if clear_css:
-            self.default_css_namespace = None
             self.css_namespaces = {}
 
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
@@ -160,21 +158,15 @@ class Oven():
             # Check for any @namespace declarations
             if rule.type == 'at-rule':
                 if rule.lower_at_keyword == 'namespace':
-                    # The 2 supported formats are:
+                    # The 1 supported format is:
                     #
-                    # default:  [<WhitespaceToken>,
+                    # default (unsupported):  [<WhitespaceToken>,
                     #            <StringToken "http://www.w3.org/1999/xhtml">]
                     # prefixed: [<WhitespaceToken>,
                     #            <IdentToken html>,
                     #            <WhitespaceToken>,
                     #            <StringToken "http://www.w3.org/1999/xhtml">]
-                    if ((len(rule.prelude) == 2 and
-                         rule.prelude[0].type == 'whitespace' and
-                         rule.prelude[1].type == 'ident')):
-
-                        # Default namespace
-                        self.default_css_namespace = rule.prelude[1].value
-                    elif (len(rule.prelude) == 4 and
+                    if (len(rule.prelude) == 4 and
                           rule.prelude[0].type == 'whitespace' and
                           rule.prelude[1].type == 'ident' and
                           rule.prelude[2].type == 'whitespace' and
@@ -184,6 +176,10 @@ class Oven():
                         ns_url = rule.prelude[3].value
                         self.css_namespaces[ns_prefix] = ns_url
                     else:
+                        # etree.XPath does not support the default namespace
+                        # and XPath is used to implement `sort-by:`
+                        # http://www.goodmami.org/2015/11/04/
+                        # ... python-xpath-and-default-namespaces.html
                         logger.warning(u'Unknown @namespace format at {}:{}'
                                        .format(rule.source_line,
                                                rule.source_column)

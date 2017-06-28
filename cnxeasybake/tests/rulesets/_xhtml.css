@@ -1,5 +1,6 @@
-/* @namespace 'http://www.w3.org/1999/xhtml'; */
 @namespace xhtml 'http://www.w3.org/1999/xhtml';
+/* The default namespaces is not supported in etree.XPath so it is not used here */
+/* @namespace 'http://www.w3.org/1999/xhtml'; */
 
 /* Sanity check */
 p {
