@@ -171,11 +171,9 @@ class Oven():
                     #            <IdentToken html>,
                     #            <WhitespaceToken>,
                     #            <StringToken "http://www.w3.org/1999/xhtml">]
-                    if ((len(rule.prelude) == 4 and
-                         rule.prelude[0].type == 'whitespace' and
-                         rule.prelude[1].type == 'ident' and
-                         rule.prelude[2].type == 'whitespace' and
-                         rule.prelude[3].type == 'string')):
+                    if len(rule.prelude) == 4 and \
+                           [tok.type for tok in rule.prelude] == \
+                           ['whitespace', 'ident', 'whitespace', 'string']:
 
                         # Prefixed namespace
                         ns_prefix = rule.prelude[1].value
@@ -1172,8 +1170,8 @@ class Oven():
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
-        sort = css_to_func(self.css_namespaces, sort_css, flags)
-        groupby = css_to_func(self.css_namespaces, groupby_css, flags)
+        sort = css_to_func(sort_css, flags, self.css_namespaces)
+        groupby = css_to_func(groupby_css, flags, self.css_namespaces)
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1198,8 +1196,8 @@ class Oven():
         else:
             css = decl.value
             flags = None
-        sort = css_to_func(self.css_namespaces,
-                           serialize(css), serialize(flags or ''))
+        sort = css_to_func(serialize(css), serialize(flags or ''),
+                           self.css_namespaces)
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1239,7 +1237,7 @@ def split(li, *splitters):
     return [subl for subl in _itersplit(li, splitters) if subl]
 
 
-def css_to_func(css_namespaces, css, flags=None):
+def css_to_func(css, flags, css_namespaces):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
