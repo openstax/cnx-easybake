@@ -1,3 +1,5 @@
+@namespace xhtml 'http://www.w3.org/1999/xhtml';
+
 div[data-type='chapter'] div[data-type='page'] {
   string-set: section "My Section String™", section2 "My Secönd Section Stríng", mytype attr(data-type);
   counter-reset: mycounter;
@@ -32,5 +34,5 @@ div[data-type='chapter']::after {
   class: eoc-key-terms;
   content: pending(eoc-key-terms) "MyId®: " string(myid) " " attr(data-type);
   container: section;
-  sort-by: dl > dt;
+  sort-by: xhtml|dl > xhtml|dt;
 }

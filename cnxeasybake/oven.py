@@ -16,9 +16,14 @@ verbose = False
 
 logger = logging.getLogger('cnx-easybake')
 
-SELF_CLOSING_TAGS = ['area', 'base', 'br', 'col', 'command', 'embed',
-                     'hr', 'img', 'input', 'keygen', 'link', 'meta',
-                     'param', 'source', 'track', 'wbr']
+
+def prefixify(tag):
+    return '{http://www.w3.org/1999/xhtml}' + tag
+
+SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
+                                         'command', 'embed', 'hr', 'img',
+                                         'input', 'keygen', 'link', 'meta',
+                                         'param', 'source', 'track', 'wbr']))
 
 
 def log_decl_method(func):
@@ -96,6 +101,9 @@ class Oven():
         self.coverage_lines = []
         self.use_repeatable_ids = use_repeatable_ids
         self.repeatable_id_counter = 0
+        # Store the CSS namespaces (and prefixed namespaces)
+        self.css_namespaces = {}
+
         if css_in:
             self.update_css(css_in, clear_css=True)  # clears state as well
         else:
@@ -146,12 +154,45 @@ class Oven():
             except AttributeError:
                 css = css_in         # Treat it as a string
 
+        # Namespaces defined in the CSS
+        if clear_css:
+            self.css_namespaces = {}
+
         rules, _ = tinycss2.parse_stylesheet_bytes(css, skip_whitespace=True)
         for rule in rules:
-            # Ignore all at-rules
-            if rule.type == 'qualified-rule':
+            # Check for any @namespace declarations
+            if rule.type == 'at-rule':
+                if rule.lower_at_keyword == 'namespace':
+                    # The 1 supported format is:
+                    #
+                    # default (unsupported):  [<WhitespaceToken>,
+                    #            <StringToken "http://www.w3.org/1999/xhtml">]
+                    # prefixed: [<WhitespaceToken>,
+                    #            <IdentToken html>,
+                    #            <WhitespaceToken>,
+                    #            <StringToken "http://www.w3.org/1999/xhtml">]
+                    if len(rule.prelude) == 4 and \
+                           [tok.type for tok in rule.prelude] == \
+                           ['whitespace', 'ident', 'whitespace', 'string']:
 
-                selectors = parse(rule.prelude, extensions=extensions)
+                        # Prefixed namespace
+                        ns_prefix = rule.prelude[1].value
+                        ns_url = rule.prelude[3].value
+                        self.css_namespaces[ns_prefix] = ns_url
+                    else:
+                        # etree.XPath does not support the default namespace
+                        # and XPath is used to implement `sort-by:`
+                        # http://www.goodmami.org/2015/11/04/
+                        # ... python-xpath-and-default-namespaces.html
+                        logger.warning(u'Unknown @namespace format at {}:{}'
+                                       .format(rule.source_line,
+                                               rule.source_column)
+                                       .encode('utf-8'))
+
+            elif rule.type == 'qualified-rule':
+
+                selectors = parse(rule.prelude, namespaces=self.css_namespaces,
+                                  extensions=extensions)
                 decls = [d for d in
                          parse_declaration_list(rule.content,
                                                 skip_whitespace=True)
@@ -1129,8 +1170,8 @@ class Oven():
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
-        sort = css_to_func(sort_css, flags)
-        groupby = css_to_func(groupby_css, flags)
+        sort = css_to_func(sort_css, flags, self.css_namespaces)
+        groupby = css_to_func(groupby_css, flags, self.css_namespaces)
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1155,7 +1196,8 @@ class Oven():
         else:
             css = decl.value
             flags = None
-        sort = css_to_func(serialize(css), serialize(flags or ''))
+        sort = css_to_func(serialize(css), serialize(flags or ''),
+                           self.css_namespaces)
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1195,7 +1237,7 @@ def split(li, *splitters):
     return [subl for subl in _itersplit(li, splitters) if subl]
 
 
-def css_to_func(css, flags=None):
+def css_to_func(css, flags, css_namespaces):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
@@ -1205,6 +1247,7 @@ def css_to_func(css, flags=None):
         return None
     sel = parse(css.strip('" '))[0]
     xpath = HTMLTranslator().selector_to_xpath(sel)
+
     first_letter = False
     if sel.pseudo_element is not None:
         if type(sel.pseudo_element) == FunctionalPseudoElement:
@@ -1216,7 +1259,7 @@ def css_to_func(css, flags=None):
             if sel.pseudo_element == 'first-letter':
                 first_letter = True
 
-    xp = etree.XPath(xpath)
+    xp = etree.XPath(xpath, namespaces=css_namespaces)
 
     def func(elem):
         res = xp(elem)

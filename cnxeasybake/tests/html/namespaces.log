@@ -1,0 +1,48 @@
+cnx-easybake WARNING Unknown @namespace format at 4:1
+cnx-easybake WARNING Unknown @namespace format at 5:1
+cnx-easybake WARNING Unknown @namespace format at 6:1
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (8): p 
+cnx-easybake DEBUG     default: content "Default Works!"
+cnx-easybake DEBUG Rule (8): p 
+cnx-easybake DEBUG     default: content "Default Works!"
+cnx-easybake DEBUG Rule (12): epub|p 
+cnx-easybake DEBUG     default: content "EPUB works"
+cnx-easybake DEBUG Rule (8): p 
+cnx-easybake DEBUG     default: content "Default Works!"
+cnx-easybake DEBUG Rule (17): #input1 > * 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (17): #input1 > * 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (17): #input1 > * 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (17): #input1 > * 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (20): #output1 
+cnx-easybake DEBUG     default: content pending(bucket1)
+cnx-easybake DEBUG     default: sort-by "xhtml|em"
+cnx-easybake DEBUG Rule (26): #input2 li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (26): #input2 li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (26): #input2 li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (26): #input2 li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (26): #input2 li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (29): #output2 
+cnx-easybake DEBUG     default: content pending(bucket1)
+cnx-easybake DEBUG     default: sort-by "xhtml|em"
+cnx-easybake DEBUG Rule (35): #input3 epub|li 
+cnx-easybake DEBUG     default: move-to bucket
+cnx-easybake DEBUG Rule (35): #input3 epub|li 
+cnx-easybake DEBUG     default: move-to bucket
+cnx-easybake DEBUG Rule (35): #input3 epub|li 
+cnx-easybake DEBUG     default: move-to bucket
+cnx-easybake DEBUG Rule (35): #input3 epub|li 
+cnx-easybake DEBUG     default: move-to bucket
+cnx-easybake DEBUG Rule (38): #output3 
+cnx-easybake DEBUG     default: content pending(bucket)
+cnx-easybake DEBUG     default: sort-by "epub|em"
+cnx-easybake DEBUG Recipe default length: 31

@@ -1,0 +1,26 @@
+@namespace xhtml 'http://www.w3.org/1999/xhtml';
+/* The default namespaces is not supported in etree.XPath so it is not used here */
+/* @namespace 'http://www.w3.org/1999/xhtml'; */
+
+/* Sanity check */
+p {
+  content: 'Default Works!';
+}
+
+/* Sort using an attribute */
+#input1 > li {
+  move-to: bucket1;
+}
+#output1 {
+  content: pending(bucket1);
+  sort-by: 'xhtml|em::attr(key)';
+}
+
+/* Sort using an element (no attribute) */
+#input2 > li {
+  move-to: bucket2;
+}
+#output2 {
+  content: pending(bucket2);
+  sort-by: 'xhtml|em';
+}

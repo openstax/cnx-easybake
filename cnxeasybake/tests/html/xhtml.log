@@ -1,0 +1,24 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (11): #input1 > li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (11): #input1 > li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (11): #input1 > li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (11): #input1 > li 
+cnx-easybake DEBUG     default: move-to bucket1
+cnx-easybake DEBUG Rule (14): #output1 
+cnx-easybake DEBUG     default: content pending(bucket1)
+cnx-easybake DEBUG     default: sort-by "xhtml|em::attr(key)"
+cnx-easybake DEBUG Rule (20): #input2 > li 
+cnx-easybake DEBUG     default: move-to bucket2
+cnx-easybake DEBUG Rule (20): #input2 > li 
+cnx-easybake DEBUG     default: move-to bucket2
+cnx-easybake DEBUG Rule (20): #input2 > li 
+cnx-easybake DEBUG     default: move-to bucket2
+cnx-easybake DEBUG Rule (20): #input2 > li 
+cnx-easybake DEBUG     default: move-to bucket2
+cnx-easybake DEBUG Rule (23): #output2 
+cnx-easybake DEBUG     default: content pending(bucket2)
+cnx-easybake DEBUG     default: sort-by "xhtml|em"
+cnx-easybake DEBUG Recipe default length: 12

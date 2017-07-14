@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Counter tests</title>
+  </head>
+  <body>
+    <p xmlns="http://www.w3.org/1999/xhtml">CHANGE_ME</p>
+    <p xmlns="http://www.idpf.org/2007/ops">CHANGE_ME_TO_EPUB</p>
+    <p>CHANGE_ME_TO_DEFAULT??</p>
+
+    Sorting without namespaces:
+    <ul id="input1">
+      <li><em key="z">z</em></li>
+      <li><em key="c">c</em></li>
+      <li><em key="a">a</em></li>
+      <li><em key="b">b</em></li>
+    </ul>
+    <ol id="output1"></ol>
+
+
+    Sorting with the default namespace:
+    <ul id="input2" xmlns="http://www.w3.org/1999/xhtml">
+      <li><em key="z">z</em></li>
+      <li><em key="c">c</em></li>
+      <li xmlns="http://philschatz.com"><em key="unmoved">unmoved</em> This should remain in the input list</li>
+      <li><em key="a">a</em></li>
+      <li><em key="b">b</em></li>
+    </ul>
+    <ol id="output2" xmlns="http://www.w3.org/1999/xhtml"></ol>
+
+
+    Sorting with an explicit namespace:
+    <ul id="input3" xmlns="http://www.idpf.org/2007/ops">
+      <li><em xmlns="wrong">a</em><em key="z">z</em></li>
+      <li><em xmlns="wrong">b</em><em key="c">c</em></li>
+      <li xmlns="http://philschatz.com"><em key="unmoved">unmoved</em> This should remain in the input list</li>
+      <li><em xmlns="wrong">c</em><em key="a">a</em></li>
+      <li><em xmlns="wrong">d</em><em key="b">b</em></li>
+    </ul>
+    <ol id="output3" xmlns="http://www.idpf.org/2007/ops"></ol>
+
+  </body>
+</html>
