@@ -221,6 +221,13 @@ class Oven():
                                  ((rule.source_line + sel.source_line_offset,
                                    serialize(rule.prelude).replace('\n', ' ')),
                                   decls, label))
+            elif rule.type == 'comment':
+                pass
+            elif rule.type == 'error':
+                raise ValueError(u'ERROR: {} {}'.format(
+                    rule.kind, rule.message))
+            else:
+                raise ValueError(u'BUG: Unknown ruletype={}'.format(rule.type))
 
         steps = sorted(self.matchers.keys())
         if len(steps) > 1:
