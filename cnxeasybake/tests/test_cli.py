@@ -70,13 +70,18 @@ class CliTestCase(unittest.TestCase):
     def test_failure(self):
         """Call cli with basic unsuccessful run."""
         os.chdir(here)
+        threw_an_error = False
         with captured_output() as (out, err):
             args = ['invalid.css', 'html/empty_raw.html', '/dev/null']
-            self.target(args)
+            try:
+                self.target(args)
+            except:
+                threw_an_error = True
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
-        self.assertEqual(stderr, '')
+        self.assertEqual(threw_an_error, True, 'Should have thrown an error')
+        self.assertEqual(stderr, 'cnx-easybake ERROR Parse Error invalid: EOF reached before {} block for a qualified rule.\n')
         self.assertEqual(stdout, '')
 
     def test_noargs(self):
