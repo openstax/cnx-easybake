@@ -712,6 +712,15 @@ class Oven():
                     if len(att_args) > 1:
                         att_def = self.eval_string_value(element,
                                                          att_args[1])[0]
+                    if '|' in att_name:
+                        ns, att = att_name.split('|')
+                        try:
+                            ns = self.css_namespaces[ns]
+                        except KeyError:
+                            logger.warning(u"Undefined namespace prefix {}"
+                                           .format(ns).encode('utf-8'))
+                            continue
+                        att_name = etree.QName(ns, att)
                     strval += element.etree_element.get(att_name, att_def)
 
                 elif term.name == u'uuid':
@@ -840,6 +849,15 @@ class Oven():
                         if len(att_args) > 1:
                             att_def = self.eval_string_value(element,
                                                              att_args[1])[0]
+                        if '|' in att_name:
+                            ns, att = att_name.split('|')
+                            try:
+                                ns = self.css_namespaces[ns]
+                            except KeyError:
+                                logger.warning(u"Undefined namespace prefix {}"
+                                               .format(ns).encode('utf-8'))
+                                continue
+                            att_name = etree.QName(ns, att)
                         strval += element.etree_element.get(att_name, att_def)
                     else:
                         logger.warning(u"Bad string-set: {}".format(
@@ -1092,6 +1110,15 @@ class Oven():
                     if len(att_args) > 1:
                         att_def = self.eval_string_value(element,
                                                          att_args[1])[0]
+                    if '|' in att_name:
+                        ns, att = att_name.split('|')
+                        try:
+                            ns = self.css_namespaces[ns]
+                        except KeyError:
+                            logger.warning(u"Undefined namespace prefix {}"
+                                           .format(ns).encode('utf-8'))
+                            continue
+                        att_name = etree.QName(ns, att)
                     att_val = element.etree_element.get(att_name, att_def)
                     actions.append(('string', att_val))
 
