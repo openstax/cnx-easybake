@@ -1,0 +1,19 @@
+/* Namespace prefix in the attr() function */
+@namespace ns "urn:ns";
+
+span#content {
+  content: attr(ns|attr);
+}
+
+span#string-set {
+  string-set: test attr(ns|attr);
+}
+
+span#string-set::after {
+  container: span;
+  content: string(test);
+}
+
+span#nested {
+  content: target-string(attr(ns|href), test);
+}

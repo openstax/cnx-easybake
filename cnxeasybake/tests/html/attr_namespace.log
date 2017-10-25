@@ -1,0 +1,22 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (4): span#content 
+cnx-easybake DEBUG     default: content attr(ns|attr)
+cnx-easybake DEBUG IdentToken as string: ns
+cnx-easybake DEBUG LiteralToken as string: |
+cnx-easybake DEBUG IdentToken as string: attr
+cnx-easybake DEBUG Rule (8): span#string-set 
+cnx-easybake DEBUG     default: string-set test attr(ns|attr)
+cnx-easybake DEBUG IdentToken as string: ns
+cnx-easybake DEBUG LiteralToken as string: |
+cnx-easybake DEBUG IdentToken as string: attr
+cnx-easybake DEBUG Rule (12): span#string-set::after 
+cnx-easybake DEBUG     default: container span
+cnx-easybake DEBUG     default: content string(test)
+cnx-easybake DEBUG IdentToken as string: test
+cnx-easybake DEBUG Rule (17): span#nested 
+cnx-easybake DEBUG     default: content target-string(attr(ns|href), test)
+cnx-easybake DEBUG IdentToken as string: ns
+cnx-easybake DEBUG LiteralToken as string: |
+cnx-easybake DEBUG IdentToken as string: href
+cnx-easybake DEBUG IdentToken as string: test
+cnx-easybake DEBUG Recipe default length: 11
