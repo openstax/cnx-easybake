@@ -9,7 +9,7 @@ INSTALL
 
 To install ``cnx-easybake``::
 
-    ./scripts/setup
+    ./script/setup
 
 
 Primarily for use as a library to process etree HTML trees.
@@ -36,4 +36,4 @@ Test files are available on in the `tests` folder.
 
 To run the tests::
 
-    ./scripts/test
+    ./script/test

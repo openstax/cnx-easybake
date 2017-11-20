@@ -1,0 +1,17 @@
+#!/bin/bash
+cd "$(dirname "$0")/.." || exit 111
+source ./script/bootstrap || exit 111
+
+GIT_ROOT=$(git rev-parse --show-toplevel)
+
+
+cd "${GIT_ROOT}"
+
+do_progress_quiet "Running pep8 on source" \
+  pep8 --exclude=tests *.py "${GIT_ROOT}"/cnxeasybake/
+
+do_progress_quiet "Running pep8 on tests" \
+  pep8 --max-line-length=1000 "${GIT_ROOT}"/cnxeasybake/tests
+
+do_progress_quiet "Running tests with code coverage" \
+  coverage run --source=cnxeasybake setup.py test

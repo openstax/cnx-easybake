@@ -1,5 +1,7 @@
 #!/bin/bash
-set -e
+cd "$(dirname "$0")/.." || exit 111
+source ./script/bootstrap || exit 111
+
 git_root=$(git rev-parse --show-toplevel)
 testdir="${git_root}/cnxeasybake/tests"
 
@@ -16,11 +18,6 @@ then
 		;;
 	esac
 fi
-
-./scripts/setup # Update the code in the virtualenv so it uses the latest source
-
-# Activate virtualenv if not already in one
-[ -n "${VIRTUAL_ENV}" ] || source "${git_root}"/bin/activate
 
 rulename=${@:-*}
 

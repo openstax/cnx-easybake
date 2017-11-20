@@ -13,9 +13,7 @@
 
 # Virtualenv #
 ##############
-bin
-lib
-include
+venv/
 /.Python
 /pip-selfcheck.json
 
