@@ -1,0 +1,99 @@
+/*** Target all critical-thinking elements and prep them to move. ***/
+:pass(0) div.critical-thinking {
+  move-to: eoc-critical-thinking;
+}
+
+/*** Target all review-questions elements and prep them to move. ***/
+
+:pass(0) div.review-questions {
+  move-to: eoc-review-questions;
+}
+
+:pass(0) [data-type="chapter"]::after {
+  class: "critical-thinking-container-title";
+  container: h3;
+  content: "The best title for Critical Thinking Container";
+  move-to: eoc-critical-thinking-title;
+}
+
+:pass(0) [data-type="chapter"]::after {
+  move-to: eoc-section-critical-thinking;
+  class: "critical-thinking-container";
+  content: nodes(eoc-section-metadata) pending(eoc-critical-thinking-title) pending(eoc-critical-thinking);
+}
+
+:pass(0) [data-type="chapter"]::after {
+  class: "review-questions-container-title";
+  container: h3;
+  content: "The best title for Review Questions Container";
+  move-to: eoc-review-questions-title;
+}
+
+:pass(0) [data-type="chapter"]::after {
+  move-to: eoc-section-review-questions;
+  class: "review-questions-container";
+  content: nodes(eoc-section-metadata) pending(eoc-review-questions-title) pending(eoc-review-questions);
+}
+
+:pass(0) [data-type="chapter"]::after {
+  class: "eoc-section-title";
+  container: h3;
+  content: "The BESTEST eoc-section-title!";
+  move-to: eoc-section-title;
+}
+
+/*** Move metadata to beginning of eoc-section ***/
+
+:pass(0) [data-type="metadata"] { /* Target the metadata element */
+  node-set: eoc-section-metadata;
+}
+
+:pass(0) [data-type="chapter"]::after { /* Place target elements into eoc-section in order */
+  class: "eoc-section";
+  content: nodes(eoc-section-metadata) pending(eoc-section-title) pending(eoc-section-critical-thinking) pending(eoc-section-review-questions);
+}
+
+/*** Mark elements Elements to destroy from DOM ***/
+
+:pass(0) div.critical-thinking > h3,
+:pass(0) div.review-questions > h3 {
+  move-to: trash;
+}
+
+/*** Change "preface" text in metadata to the same text used in another element's content.  ***/
+
+:pass(1) .eoc-section-title {
+  string-set: eoc-new-preface-title content(); 
+}
+
+:pass(1) .critical-thinking-container-title {
+  string-set: eoc-critical-thinking-title content();
+}
+
+:pass(1) .review-questions-container-title {
+  string-set: eoc-review-questions-title content();
+}
+
+:pass(2) [data-type="metadata"] h1 {
+  content: string(eoc-new-preface-title);
+}
+
+
+/*** Create metadata and match title text to text of their respective containers. ***/
+
+:pass(2) .critical-thinking-container [data-type="metadata"] h1 {
+  content: string(eoc-critical-thinking-title);
+}
+
+:pass(2) .review-questions-container [data-type="metadata"] h1 {
+  content: string(eoc-review-questions-title);
+}
+
+
+/*** Replicate these recipes for statistics-raw using similar patterns, use the real classes like we did in previous exercises. ***/
+
+
+
+:pass(100) body::after { /* Empty Trash as final pass */
+  content: clear(trash);
+}
