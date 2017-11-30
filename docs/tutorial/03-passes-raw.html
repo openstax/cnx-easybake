@@ -1,16 +1,23 @@
 <!--
-###this supposes you have the css from previous exercises working
+### This supposes you have the css from previous exercises 01-move-to & 02-created-nested-content working.
 
-`move-to: trash`: delete the extra title in the Critical Thinking and Review question sections
+1. `move-to: trash`: delete the extra title in the Critical Thinking and Review question sections
 
-`node-set: my-node`: use node-set to duplicate the book metadata into the EOC section
+2. `node-set: my-node`: use node-set to duplicate the book metadata into the EOC section
 
-`string-set: my-string content()`: use string-set to change the h1 title in the EOC title to the title of the EOC section
+3. `string-set: my-string content()`: use string-set to change the h1 title in the EOC title to the title of the EOC section
 
-more exercises: replicate metadata node-set and string-set for each assessment container (Critical Thinking and Review Questions)
+4. more exercises: replicate metadata node-set and string-set for each assessment container (Critical Thinking and Review Questions)
 
 Notes:
    make sure that the clear trash is set to :pass(100)
+   remember that clear(trash); is set to the body::after psuedo selector.  
+    
+    example:
+    :pass(100) body::after { 
+      content: clear(trash);
+    }
+    
    make sure to create enough passes to use string-set (string-set and string() cannot be on the same pass)
 -->
 
