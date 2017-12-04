@@ -1,25 +1,21 @@
 <!--
-### This supposes you have the css from previous exercises 01-move-to & 02-created-nested-content working.
+  ### This supposes you have the css from previous exercises 01-move-to, 02-created-nested-content & 03-passes working.
 
-1. `move-to: trash`: delete the extra title in the Critical Thinking and Review question sections
+   1. using two counters, number the chapters and the page title:
+    - create a span inside the chapter headers with the class "os-number" containing the chapter number
+      example: <h1 data-type="document-title"><span class="os-number">1</span>Chapter Title</h1>
+    - create a span inside the page title with the class "os-number" containing the chapter and page number
+      example: <h2 data-type="document-title"><span class="os-number">1.1</span>Page Title</h2>
+  2. move the sections "practice" to the end of chapter area
+  3. number all the exercises continuously across the two chapters.
+  4. number all solutions continuously across the two chapters.
+      Note: you must first label the exercises (using the class "os-hasSolution") that have a solution using ::deferred then count the solutions that are within a "os-hasSolution" exercise
+  5. Create an end of book container with the class "eob" and a title of End of Book Solutions
+  6. Move the solutions to the EOB section.
 
-2. `node-set: my-node`: use node-set to duplicate the book metadata into the EOC section
 
-3. `string-set: my-string content()`: use string-set to change the h1 title in the EOC title to the title of the EOC section
-
-4. more exercises: replicate metadata node-set and string-set for each assessment container (Critical Thinking and Review Questions)
-
-Notes:
-   make sure that the clear trash is set to :pass(100)
-   remember that clear(trash); is set to the body::after pseudo selector.
-
-    example:
-    :pass(100) body::after {
-      content: clear(trash);
-    }
-
-   make sure to create enough passes to use string-set (string-set and string() cannot be on the same pass)
 -->
+
 
 
 <!DOCTYPE html>
@@ -98,6 +94,74 @@ Notes:
               </p>
             </div>
           </div>
+          <section class="practice" >
+              <h3 data-type="title">
+                  Practice
+              </h3>
+              <p>
+                  <em data-effect="italics">
+                      Use the following information to answer the next five exercises.
+                  </em>
+                  Studies are often done by pharmaceutical companies to determine the effectiveness of a treatment program. Suppose that a new AIDS antibody drug is currently under study. It is given to patients once the AIDS symptoms have revealed themselves. Of interest is the average (mean) length of time in months patients live once they start the treatment. Two researchers each follow a different set of 40 patients with AIDS from the start of treatment until their deaths. The following data (in months) are collected.
+              </p>
+
+              <p>
+                  Determine what the key terms refer to in the example for Researcher A.
+              </p>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem" >
+                      <p>
+                          population
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          AIDS  patients.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          sample
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          parameter
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          The average length of time (in months) AIDS patients live after treatment.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          statistic
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          variable
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          <em data-effect="italics">
+                              X
+                          </em>
+                          = the length of time (in months) AIDS patients live after treatment
+                      </p>
+                  </div>
+              </div>
+          </section>
           <div class="review-questions">
             <h3>Review Questions</h3>
             <p>
@@ -112,6 +176,153 @@ Notes:
               quis nostrud exercitation.
             </p>
           </div>
+          <div class="will-not-move">
+            <h3> I'm here to stay.</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+          <div class="critical-thinking">
+            <h3>Critical Thinking Questions</h3>
+            <p>
+              Content will move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+           <div class="will-not-move">
+            <h3>Don't make me move!</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+        </div>
+
+              <div data-type="page">
+          <h2 data-type="document-title">Page title</h2>
+          <div class="will-not-move">
+            <h3>I didn't go anywhere</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </div>
+          <div class="review-questions">
+            <h3>Review Questions</h3>
+            <p>
+              Content will move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+          <section class="practice" >
+              <h3 data-type="title">
+                  Practice
+              </h3>
+              <p>
+                  <em data-effect="italics">
+                      Use the following information to answer the next five exercises.
+                  </em>
+                  Studies are often done by pharmaceutical companies to determine the effectiveness of a treatment program. Suppose that a new AIDS antibody drug is currently under study. It is given to patients once the AIDS symptoms have revealed themselves. Of interest is the average (mean) length of time in months patients live once they start the treatment. Two researchers each follow a different set of 40 patients with AIDS from the start of treatment until their deaths. The following data (in months) are collected.
+              </p>
+
+              <p>
+                  Determine what the key terms refer to in the example for Researcher A.
+              </p>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem" >
+                      <p>
+                          population
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          AIDS  patients.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          sample
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          parameter
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          The average length of time (in months) AIDS patients live after treatment.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          statistic
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          variable
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          <em data-effect="italics">
+                              X
+                          </em>
+                          = the length of time (in months) AIDS patients live after treatment
+                      </p>
+                  </div>
+              </div>
+          </section>
           <div class="will-not-move">
             <h3> I'm here to stay.</h3>
             <p>
@@ -209,85 +420,74 @@ Notes:
               quis nostrud exercitation.
             </p>
           </div>
-          <div class="critical-thinking">
-            <h3>Critical Thinking Questions</h3>
-            <p>
-              Content will move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-           <div class="will-not-move">
-            <h3>Don't make me move!</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-        </div>
+          <section class="practice" >
+              <h3 data-type="title">
+                  Practice
+              </h3>
+              <p>
+                  <em data-effect="italics">
+                      Use the following information to answer the next five exercises.
+                  </em>
+                  Studies are often done by pharmaceutical companies to determine the effectiveness of a treatment program. Suppose that a new AIDS antibody drug is currently under study. It is given to patients once the AIDS symptoms have revealed themselves. Of interest is the average (mean) length of time in months patients live once they start the treatment. Two researchers each follow a different set of 40 patients with AIDS from the start of treatment until their deaths. The following data (in months) are collected.
+              </p>
 
-              <div data-type="page">
-          <h2 data-type="document-title">Page title</h2>
-          <div class="will-not-move">
-            <h3>I didn't go anywhere</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </div>
-          <div class="review-questions">
-            <h3>Review Questions</h3>
-            <p>
-              Content will move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-          <div class="will-not-move">
-            <h3> I'm here to stay.</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
+              <p>
+                  Determine what the key terms refer to in the example for Researcher A.
+              </p>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem" >
+                      <p>
+                          population
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          AIDS  patients.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          sample
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          parameter
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          The average length of time (in months) AIDS patients live after treatment.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          statistic
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          variable
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          <em data-effect="italics">
+                              X
+                          </em>
+                          = the length of time (in months) AIDS patients live after treatment
+                      </p>
+                  </div>
+              </div>
+          </section>
           <div class="critical-thinking">
             <h3>Critical Thinking Questions</h3>
             <p>
@@ -324,6 +524,153 @@ Notes:
 
       <div data-type="chapter">
         <h1 data-type="document-title">Chapter Title</h1>
+        <div data-type="page">
+          <h2 data-type="document-title">Page title</h2>
+          <div class="will-not-move">
+            <h3>I didn't go anywhere</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </div>
+          <div class="review-questions">
+            <h3>Review Questions</h3>
+            <p>
+              Content will move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+          <div class="will-not-move">
+            <h3> I'm here to stay.</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+          <div class="critical-thinking">
+            <h3>Critical Thinking Questions</h3>
+            <p>
+              Content will move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+          <section class="practice" >
+              <h3 data-type="title">
+                  Practice
+              </h3>
+              <p>
+                  <em data-effect="italics">
+                      Use the following information to answer the next five exercises.
+                  </em>
+                  Studies are often done by pharmaceutical companies to determine the effectiveness of a treatment program. Suppose that a new AIDS antibody drug is currently under study. It is given to patients once the AIDS symptoms have revealed themselves. Of interest is the average (mean) length of time in months patients live once they start the treatment. Two researchers each follow a different set of 40 patients with AIDS from the start of treatment until their deaths. The following data (in months) are collected.
+              </p>
+
+              <p>
+                  Determine what the key terms refer to in the example for Researcher A.
+              </p>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem" >
+                      <p>
+                          population
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          AIDS  patients.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          sample
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          parameter
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          The average length of time (in months) AIDS patients live after treatment.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          statistic
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          variable
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          <em data-effect="italics">
+                              X
+                          </em>
+                          = the length of time (in months) AIDS patients live after treatment
+                      </p>
+                  </div>
+              </div>
+          </section>
+           <div class="will-not-move">
+            <h3>Don't make me move!</h3>
+            <p>
+              Content will not move <br />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation.
+            </p>
+          </div>
+        </div>
+
         <div data-type="page">
           <h2 data-type="document-title">Page title</h2>
           <div class="will-not-move">
@@ -463,85 +810,74 @@ Notes:
               quis nostrud exercitation.
             </p>
           </div>
-           <div class="will-not-move">
-            <h3>Don't make me move!</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-        </div>
+          <section class="practice" >
+              <h3 data-type="title">
+                  Practice
+              </h3>
+              <p>
+                  <em data-effect="italics">
+                      Use the following information to answer the next five exercises.
+                  </em>
+                  Studies are often done by pharmaceutical companies to determine the effectiveness of a treatment program. Suppose that a new AIDS antibody drug is currently under study. It is given to patients once the AIDS symptoms have revealed themselves. Of interest is the average (mean) length of time in months patients live once they start the treatment. Two researchers each follow a different set of 40 patients with AIDS from the start of treatment until their deaths. The following data (in months) are collected.
+              </p>
 
-              <div data-type="page">
-          <h2 data-type="document-title">Page title</h2>
-          <div class="will-not-move">
-            <h3>I didn't go anywhere</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </div>
-          <div class="review-questions">
-            <h3>Review Questions</h3>
-            <p>
-              Content will move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-          <div class="will-not-move">
-            <h3> I'm here to stay.</h3>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p>
-              Content will not move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
-          <div class="critical-thinking">
-            <h3>Critical Thinking Questions</h3>
-            <p>
-              Content will move <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation.
-            </p>
-          </div>
+              <p>
+                  Determine what the key terms refer to in the example for Researcher A.
+              </p>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem" >
+                      <p>
+                          population
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          AIDS  patients.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          sample
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          parameter
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          The average length of time (in months) AIDS patients live after treatment.
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          statistic
+                      </p>
+                  </div>
+              </div>
+              <div class="exercise" data-type="exercise">
+                  <div class="problem" data-type="problem">
+                      <p>
+                          variable
+                      </p>
+                  </div>
+                  <div class="solution" data-type="solution">
+                      <p>
+                          <em data-effect="italics">
+                              X
+                          </em>
+                          = the length of time (in months) AIDS patients live after treatment
+                      </p>
+                  </div>
+              </div>
+          </section>
            <div class="will-not-move">
             <h3>Don't make me move!</h3>
             <p>
