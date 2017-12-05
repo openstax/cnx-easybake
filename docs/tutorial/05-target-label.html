@@ -1,3 +1,14 @@
+<!-- 
+The goal of this tutorial is two-fold:
+a) Correctly number each table/figure (e.g. Figure 1, Table 1) with div's of class `table-caption` and `figure-caption`, respectively
+b) Ensure that each link (<a>) element of class `needs-label` that references a figure or table replaces its [LINK]
+  text with the numbering of the referenced table/figure
+
+In addition to the string(ident) function, easybake also provides a target-string(string, ident) function
+  which will return the value of string(ident) in the context of the element with the id=string[1..-1].
+  Use this to achieve the linking present in the baked version of this file.
+
+-->
 <html>
   <body>
     <div class="book">
@@ -82,7 +93,7 @@
           cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
           proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         </p>
-        <p>See this figure for a nice picture: <a  class="needs-label"href="#58dcdthw">[LINK]</a></p>
+        <p>See this figure for a nice picture: <a class="needs-label"href="#58dcdthw">[LINK]</a></p>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
           tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
