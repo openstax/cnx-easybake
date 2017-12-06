@@ -44,7 +44,7 @@ class Target():
     """Represent the target for a move or copy."""
 
     def __init__(self, tree, location=None, parent=None,
-                 sort=None, isgroup=False, groupby=None):
+                 sort=None, isgroup=False, groupby=None, lang=None):
         """Set up target object."""
         self.tree = tree
         self.location = location
@@ -52,6 +52,7 @@ class Target():
         self.sort = sort
         self.isgroup = isgroup
         self.groupby = groupby
+        self.lang = lang
 
     def __str__(self):
         """Return string."""
@@ -371,6 +372,8 @@ class Oven():
         presence of a pseudo-element and its value.
         """
         element_id = element.etree_element.get('id')
+
+        self.state['lang'] = element.lang
 
         matching_rules = {}
         for rule, declarations, label in self.matchers[step].match(element):
@@ -1213,6 +1216,7 @@ class Oven():
 
         target = self.current_target()
         target.sort = sort
+        target.lang = self.state['lang']
         target.isgroup = True
         target.groupby = groupby
         #  Find current target, set its sort/grouping as well
@@ -1239,6 +1243,7 @@ class Oven():
 
         target = self.current_target()
         target.sort = sort
+        target.lang = self.state['lang']
         target.isgroup = False
         target.groupby = None
         #  Find current target, set its sort as well
