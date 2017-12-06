@@ -10,6 +10,7 @@ from cssselect2.parser import parse
 from cssselect2.compiler import CompiledSelector
 from cssselect2.extensions import extensions
 from copy import deepcopy
+from icu import Locale, Collator
 from uuid import uuid4
 
 verbose = False
@@ -1356,6 +1357,7 @@ def prepend_string(t, string):
 
 def grouped_insert(t, value):
     """Insert value into the target tree 't' with correct grouping."""
+    collator = Collator.createInstance(Locale(t.lang) if t.lang else Locale())
     if value.tail is not None:
         val_prev = value.getprevious()
         if val_prev is not None:
@@ -1370,10 +1372,12 @@ def grouped_insert(t, value):
             for child in t.tree:
                 if child.get('class') == 'group-by':
                     # child[0] is the label span
-                    if t.groupby(child[1]) == t.groupby(value):
-                        insert_group(value, child, t.sort)
+                    order = collator.compare(
+                        t.groupby(child[1]) or '', t.groupby(value) or '')
+                    if order == 0:
+                        insert_group(value, child, t.sort, t.lang)
                         break
-                    elif t.groupby(child[1]) > t.groupby(value):
+                    elif order > 0:
                         group = create_group(t.groupby(value))
                         group.append(value)
                         child.addprevious(group)
@@ -1383,10 +1387,10 @@ def grouped_insert(t, value):
                 group.append(value)
                 t.tree.append(group)
         else:
-            insert_group(value, t.tree, t.sort)
+            insert_group(value, t.tree, t.sort, t.lang)
 
     elif t.sort and t.sort(value) is not None:
-        insert_sort(value, t.tree, t.sort)
+        insert_sort(value, t.tree, t.sort, t.lang)
 
     elif t.location == 'inside':
         for child in t.tree:
@@ -1411,29 +1415,32 @@ def grouped_insert(t, value):
         t.tree.append(value)
 
 
-def insert_sort(node, target, sort):
+def insert_sort(node, target, sort, lang):
     """Insert node into sorted position in target, using sort function."""
+    collator = Collator.createInstance(Locale(lang) if lang else Locale())
     for child in target:
-        if sort(child) > sort(node):
+        if collator.compare(sort(child) or '', sort(node) or '') > 0:
             child.addprevious(node)
             break
     else:
         target.append(node)
 
 
-def insert_group(node, target, group):
+def insert_group(node, target, group, lang):
     """Insert node into in target, using group function.
 
     This assumes the node and target share a structure of a first child
     that determines the grouping, and a second child that will be accumulated
     in the group.
     """
+    collator = Collator.createInstance(Locale(lang) if lang else Locale())
     for child in target:
-        if group(child) == group(node):
+        order = collator.compare(group(child) or '', group(node) or '')
+        if order == 0:
             for nodechild in node[1:]:
                 child.append(nodechild)
             break
-        elif group(child) > group(node):
+        elif order > 0:
             child.addprevious(node)
             break
     else:
