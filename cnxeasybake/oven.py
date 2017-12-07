@@ -10,7 +10,7 @@ from cssselect2.parser import parse
 from cssselect2.compiler import CompiledSelector
 from cssselect2.extensions import extensions
 from copy import deepcopy
-from icu import Locale, Collator
+from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
 verbose = False
@@ -20,6 +20,7 @@ logger = logging.getLogger('cnx-easybake')
 
 def prefixify(tag):
     return '{http://www.w3.org/1999/xhtml}' + tag
+
 
 SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
                                          'command', 'embed', 'hr', 'img',
@@ -1211,8 +1212,10 @@ class Oven():
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
-        sort = css_to_func(sort_css, flags, self.css_namespaces)
-        groupby = css_to_func(groupby_css, flags, self.css_namespaces)
+        sort = css_to_func(sort_css, flags,
+                           self.css_namespaces, self.state['lang'])
+        groupby = css_to_func(groupby_css, flags,
+                              self.css_namespaces, self.state['lang'])
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1239,7 +1242,7 @@ class Oven():
             css = decl.value
             flags = None
         sort = css_to_func(serialize(css), serialize(flags or ''),
-                           self.css_namespaces)
+                           self.css_namespaces, self.state['lang'])
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
@@ -1280,7 +1283,7 @@ def split(li, *splitters):
     return [subl for subl in _itersplit(li, splitters) if subl]
 
 
-def css_to_func(css, flags, css_namespaces):
+def css_to_func(css, flags, css_namespaces, lang):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
@@ -1288,6 +1291,7 @@ def css_to_func(css, flags, css_namespaces):
     #  of marking as strings and stripping " here.
     if not (css):
         return None
+
     sel = parse(css.strip('" '))[0]
     xpath = HTMLTranslator().selector_to_xpath(sel)
 
@@ -1304,6 +1308,11 @@ def css_to_func(css, flags, css_namespaces):
 
     xp = etree.XPath(xpath, namespaces=css_namespaces)
 
+    def toupper(u):
+        """Use icu library for locale sensitive uppercasing (python2)."""
+        loc = Locale(lang) if lang else Locale()
+        return unicode(UnicodeString(u).toUpper(loc))
+
     def func(elem):
         res = xp(elem)
         if res:
@@ -1315,14 +1324,14 @@ def css_to_func(css, flags, css_namespaces):
             if first_letter:
                 if res_str:
                     if flags and 'nocase' in flags:
-                        return res_str[0].upper()
+                        return toupper(res_str[0])
                     else:
                         return res_str[0]
                 else:
                     return res_str
             else:
                 if flags and 'nocase' in flags:
-                    return res_str.upper()
+                    return toupper(res_str)
                 else:
                     return res_str
 
