@@ -1384,7 +1384,8 @@ def grouped_insert(t, value):
                     order = collator.compare(
                         t.groupby(child[1]) or '', t.groupby(value) or '')
                     if order == 0:
-                        insert_group(value, child, t.sort, t.lang)
+                        c_target = Target(child, sort=t.sort, lang=t.lang)
+                        insert_group(value, c_target)
                         break
                     elif order > 0:
                         group = create_group(t.groupby(value))
@@ -1396,10 +1397,10 @@ def grouped_insert(t, value):
                 group.append(value)
                 t.tree.append(group)
         else:
-            insert_group(value, t.tree, t.sort, t.lang)
+            insert_group(value, t)
 
     elif t.sort and t.sort(value) is not None:
-        insert_sort(value, t.tree, t.sort, t.lang)
+        insert_sort(value, t)
 
     elif t.location == 'inside':
         for child in t.tree:
@@ -1424,26 +1425,33 @@ def grouped_insert(t, value):
         t.tree.append(value)
 
 
-def insert_sort(node, target, sort, lang):
-    """Insert node into sorted position in target, using sort function."""
+def insert_sort(node, target):
+    """Insert node into sorted position in target tree.
+
+    Uses sort function and language from target"""
+    sort = target.sort
+    lang = target.lang
     collator = Collator.createInstance(Locale(lang) if lang else Locale())
-    for child in target:
+    for child in target.tree:
         if collator.compare(sort(child) or '', sort(node) or '') > 0:
             child.addprevious(node)
             break
     else:
-        target.append(node)
+        target.tree.append(node)
 
 
-def insert_group(node, target, group, lang):
-    """Insert node into in target, using group function.
+def insert_group(node, target):
+    """Insert node into in target tree, in appropriate group.
 
-    This assumes the node and target share a structure of a first child
-    that determines the grouping, and a second child that will be accumulated
-    in the group.
+    Uses group and lang from target function.  This assumes the node and
+    target share a structure of a first child that determines the grouping,
+    and a second child that will be accumulated in the group.
     """
+    group = target.sort
+    lang = target.lang
+
     collator = Collator.createInstance(Locale(lang) if lang else Locale())
-    for child in target:
+    for child in target.tree:
         order = collator.compare(group(child) or '', group(node) or '')
         if order == 0:
             for nodechild in node[1:]:
@@ -1453,7 +1461,7 @@ def insert_group(node, target, group, lang):
             child.addprevious(node)
             break
     else:
-        target.append(node)
+        target.tree.append(node)
 
 
 def create_group(value):
