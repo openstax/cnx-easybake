@@ -10,6 +10,7 @@ from cssselect2.parser import parse
 from cssselect2.compiler import CompiledSelector
 from cssselect2.extensions import extensions
 from copy import deepcopy
+from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
 verbose = False
@@ -19,6 +20,7 @@ logger = logging.getLogger('cnx-easybake')
 
 def prefixify(tag):
     return '{http://www.w3.org/1999/xhtml}' + tag
+
 
 SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
                                          'command', 'embed', 'hr', 'img',
@@ -44,7 +46,7 @@ class Target():
     """Represent the target for a move or copy."""
 
     def __init__(self, tree, location=None, parent=None,
-                 sort=None, isgroup=False, groupby=None):
+                 sort=None, isgroup=False, groupby=None, lang=None):
         """Set up target object."""
         self.tree = tree
         self.location = location
@@ -52,6 +54,7 @@ class Target():
         self.sort = sort
         self.isgroup = isgroup
         self.groupby = groupby
+        self.lang = lang
 
     def __str__(self):
         """Return string."""
@@ -371,6 +374,8 @@ class Oven():
         presence of a pseudo-element and its value.
         """
         element_id = element.etree_element.get('id')
+
+        self.state['lang'] = element.lang
 
         matching_rules = {}
         for rule, declarations, label in self.matchers[step].match(element):
@@ -1207,12 +1212,15 @@ class Oven():
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
-        sort = css_to_func(sort_css, flags, self.css_namespaces)
-        groupby = css_to_func(groupby_css, flags, self.css_namespaces)
+        sort = css_to_func(sort_css, flags,
+                           self.css_namespaces, self.state['lang'])
+        groupby = css_to_func(groupby_css, flags,
+                              self.css_namespaces, self.state['lang'])
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
         target.sort = sort
+        target.lang = self.state['lang']
         target.isgroup = True
         target.groupby = groupby
         #  Find current target, set its sort/grouping as well
@@ -1234,11 +1242,12 @@ class Oven():
             css = decl.value
             flags = None
         sort = css_to_func(serialize(css), serialize(flags or ''),
-                           self.css_namespaces)
+                           self.css_namespaces, self.state['lang'])
         step = self.state[self.state['current_step']]
 
         target = self.current_target()
         target.sort = sort
+        target.lang = self.state['lang']
         target.isgroup = False
         target.groupby = None
         #  Find current target, set its sort as well
@@ -1274,7 +1283,7 @@ def split(li, *splitters):
     return [subl for subl in _itersplit(li, splitters) if subl]
 
 
-def css_to_func(css, flags, css_namespaces):
+def css_to_func(css, flags, css_namespaces, lang):
     """Convert a css selector to an xpath, supporting pseudo elements."""
     from cssselect import parse, HTMLTranslator
     from cssselect.parser import FunctionalPseudoElement
@@ -1282,6 +1291,7 @@ def css_to_func(css, flags, css_namespaces):
     #  of marking as strings and stripping " here.
     if not (css):
         return None
+
     sel = parse(css.strip('" '))[0]
     xpath = HTMLTranslator().selector_to_xpath(sel)
 
@@ -1298,6 +1308,11 @@ def css_to_func(css, flags, css_namespaces):
 
     xp = etree.XPath(xpath, namespaces=css_namespaces)
 
+    def toupper(u):
+        """Use icu library for locale sensitive uppercasing (python2)."""
+        loc = Locale(lang) if lang else Locale()
+        return unicode(UnicodeString(u).toUpper(loc))
+
     def func(elem):
         res = xp(elem)
         if res:
@@ -1309,14 +1324,14 @@ def css_to_func(css, flags, css_namespaces):
             if first_letter:
                 if res_str:
                     if flags and 'nocase' in flags:
-                        return res_str[0].upper()
+                        return toupper(res_str[0])
                     else:
                         return res_str[0]
                 else:
                     return res_str
             else:
                 if flags and 'nocase' in flags:
-                    return res_str.upper()
+                    return toupper(res_str)
                 else:
                     return res_str
 
@@ -1351,6 +1366,7 @@ def prepend_string(t, string):
 
 def grouped_insert(t, value):
     """Insert value into the target tree 't' with correct grouping."""
+    collator = Collator.createInstance(Locale(t.lang) if t.lang else Locale())
     if value.tail is not None:
         val_prev = value.getprevious()
         if val_prev is not None:
@@ -1365,10 +1381,13 @@ def grouped_insert(t, value):
             for child in t.tree:
                 if child.get('class') == 'group-by':
                     # child[0] is the label span
-                    if t.groupby(child[1]) == t.groupby(value):
-                        insert_group(value, child, t.sort)
+                    order = collator.compare(
+                        t.groupby(child[1]) or '', t.groupby(value) or '')
+                    if order == 0:
+                        c_target = Target(child, sort=t.sort, lang=t.lang)
+                        insert_group(value, c_target)
                         break
-                    elif t.groupby(child[1]) > t.groupby(value):
+                    elif order > 0:
                         group = create_group(t.groupby(value))
                         group.append(value)
                         child.addprevious(group)
@@ -1378,10 +1397,10 @@ def grouped_insert(t, value):
                 group.append(value)
                 t.tree.append(group)
         else:
-            insert_group(value, t.tree, t.sort)
+            insert_group(value, t)
 
     elif t.sort and t.sort(value) is not None:
-        insert_sort(value, t.tree, t.sort)
+        insert_sort(value, t)
 
     elif t.location == 'inside':
         for child in t.tree:
@@ -1406,33 +1425,43 @@ def grouped_insert(t, value):
         t.tree.append(value)
 
 
-def insert_sort(node, target, sort):
-    """Insert node into sorted position in target, using sort function."""
-    for child in target:
-        if sort(child) > sort(node):
+def insert_sort(node, target):
+    """Insert node into sorted position in target tree.
+
+    Uses sort function and language from target"""
+    sort = target.sort
+    lang = target.lang
+    collator = Collator.createInstance(Locale(lang) if lang else Locale())
+    for child in target.tree:
+        if collator.compare(sort(child) or '', sort(node) or '') > 0:
             child.addprevious(node)
             break
     else:
-        target.append(node)
+        target.tree.append(node)
 
 
-def insert_group(node, target, group):
-    """Insert node into in target, using group function.
+def insert_group(node, target):
+    """Insert node into in target tree, in appropriate group.
 
-    This assumes the node and target share a structure of a first child
-    that determines the grouping, and a second child that will be accumulated
-    in the group.
+    Uses group and lang from target function.  This assumes the node and
+    target share a structure of a first child that determines the grouping,
+    and a second child that will be accumulated in the group.
     """
-    for child in target:
-        if group(child) == group(node):
+    group = target.sort
+    lang = target.lang
+
+    collator = Collator.createInstance(Locale(lang) if lang else Locale())
+    for child in target.tree:
+        order = collator.compare(group(child) or '', group(node) or '')
+        if order == 0:
             for nodechild in node[1:]:
                 child.append(nodechild)
             break
-        elif group(child) > group(node):
+        elif order > 0:
             child.addprevious(node)
             break
     else:
-        target.append(node)
+        target.tree.append(node)
 
 
 def create_group(value):

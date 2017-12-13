@@ -14,6 +14,7 @@ install_requires = (
     'cssselect2',
     'tinycss2',
     'lxml',
+    'PyICU',
     )
 
 tests_require = (
