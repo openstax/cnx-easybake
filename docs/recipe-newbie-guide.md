@@ -1,33 +1,17 @@
-/* --------------------------------------------
- * 1) What are recipes?
- * --------------------------------------------
- */
+# What are recipes?
 
-/* --------------------------------------------
- * 2) Why do we use it?
- * --------------------------------------------
- */
 
-/* --------------------------------------------
- * 3) Pipeline Comparison: Docbook vs Recipes
- * --------------------------------------------
- */
+# Why do we use it?
 
-/* --------------------------------------------
- * 4) Recipe Specific CSS
- * --------------------------------------------
- */
 
- /* Common methods w/ troubleshooting & quick how-to ( step by step w/ screenshots) */
+# Pipeline Comparison: Docbook vs Recipes
 
-/* --------------------------------------------
- * 5) General troubleshooting: Common issues
- * --------------------------------------------
- */
 
-/* --------------------------------------------
- * 6) How to get started: Bake a book
- * --------------------------------------------
- */
+# Recipe Specific CSS
+  Common methods w/ troubleshooting & quick how-to ( step by step w/ screenshots)
 
- /* Checklist .  ( could be a seperate .md file depending on how large this gets. ) */
+# General troubleshooting: Common issues
+
+
+# How to get started: Bake a book
+  Checklist .  ( could be a seperate .md file depending on how large this gets. )
