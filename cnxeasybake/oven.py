@@ -1017,6 +1017,19 @@ class Oven():
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
         value = serialize(decl.value).strip()
+
+        if '|' in value:
+            namespace, tag = value.split('|', 1)
+
+            try:
+                namespace = self.css_namespaces[namespace]
+            except KeyError:
+                logger.warning(u'undefined namespace prefix: {}'.format(
+                    namespace).encode('utf-8'))
+                value = tag
+            else:
+                value = etree.QName(namespace, tag)
+
         step = self.state[self.state['current_step']]
         actions = step['actions']
         actions.append(('tag', value))
