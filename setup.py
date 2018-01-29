@@ -14,6 +14,7 @@ install_requires = (
     'cssselect2',
     'tinycss2',
     'lxml',
+    'PyICU==1.9.8;platform_system=="Darwin"',  # FIXME link/symbol prob OSX
     'PyICU',
     )
 
