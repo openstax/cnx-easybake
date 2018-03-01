@@ -378,8 +378,11 @@ class Oven():
         self.state['lang'] = element.lang
 
         matching_rules = {}
-        for rule, declarations, label in self.matchers[step].match(element):
-            matching_rules.setdefault(label, []).append((rule, declarations))
+        #  specificity, order, pseudo, payload = match
+        #  selector_rule, declaration_list, label = payload
+        for _, _, pseudo, payload in self.matchers[step].match(element):
+            rule, decs, label = payload
+            matching_rules.setdefault(label, []).append((rule, decs))
 
         # Do non-pseudo
         if None in matching_rules:
