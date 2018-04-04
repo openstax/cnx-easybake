@@ -1,0 +1,9 @@
+@namespace ns "urn:ns";
+
+span.good {
+  container: ns|element;
+}
+
+span.bad {
+  container: unknown|element;
+}

@@ -31,6 +31,11 @@ body::before {
 }
 body::after {
   class: glossary;
-  content: pending(glossary-title) pending(eob-glossary) pending(glossary-end);
+  content: nodes(glossary-title) nodes(eob-glossary) nodes(glossary-end);
   group-by: span, "span::first-letter";
+}
+body::after {
+  class: glossary;
+  content: pending(glossary-title) pending(eob-glossary) pending(glossary-end);
+  group-by: span, "span::first-letter", nocase;
 }

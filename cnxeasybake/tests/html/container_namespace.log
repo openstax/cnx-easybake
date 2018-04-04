@@ -1,0 +1,7 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (3): span.good 
+cnx-easybake DEBUG     default: container ns|element
+cnx-easybake DEBUG Rule (7): span.bad 
+cnx-easybake DEBUG     default: container unknown|element
+cnx-easybake WARNING undefined namespace prefix: unknown
+cnx-easybake DEBUG Recipe default length: 4
