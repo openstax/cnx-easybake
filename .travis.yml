@@ -4,11 +4,11 @@ python:
   - "2.7"
     #  - "3.3" Not yet
 install:
-  - ./scripts/setup
+  - ./script/setup
 script:
-  - ./scripts/test
+  - ./script/test
 after_success:
   # Report test coverage to coveralls.io
-  - . ./bin/activate && coveralls
+  - . ./venv/bin/activate && coveralls
 notifications:
   email: false
