@@ -62,6 +62,8 @@ def main(argv=None):
                         help='Stop baking just before given pass name')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Send debugging info to stderr')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help="Quiet all on stderr except errors")
     parser.add_argument('-c', '--coverage-file', metavar='coverage.lcov',
                         type=FileTypeExt('w'),
                         help="output coverage file (lcov format). If "
@@ -76,8 +78,7 @@ def main(argv=None):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    if args.debug:
-        logger.setLevel(logging.DEBUG)
+    logger.setLevel((args.quiet and logging.ERROR) or (args.debug and logging.DEBUG) or logging.WARNING)
 
     easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
              args.coverage_file, args.use_repeatable_ids)
