@@ -78,7 +78,9 @@ def main(argv=None):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    logger.setLevel((args.quiet and logging.ERROR) or (args.debug and logging.DEBUG) or logging.WARNING)
+    use_quiet_log = (args.quiet and logging.ERROR)
+    use_debug_log = (args.debug and logging.DEBUG)
+    logger.setLevel(use_quiet_log or use_debug_log or logging.WARNING)
 
     easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
              args.coverage_file, args.use_repeatable_ids)
