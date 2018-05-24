@@ -111,7 +111,7 @@ class CliTestCase(unittest.TestCase):
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
-        usage_message = """[-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
+        usage_message = """[-h] [-v] [-s <pass>] [-d] [-q] [-c coverage.lcov]
                 [--use-repeatable-ids]
                 css_rules [html_in] [html_out]
 
@@ -128,6 +128,7 @@ optional arguments:
   -s <pass>, --stop-at <pass>
                         Stop baking just before given pass name
   -d, --debug           Send debugging info to stderr
+  -q, --quiet           Quiet all on stderr except errors
   -c coverage.lcov, --coverage-file coverage.lcov
                         output coverage file (lcov format). If filename starts
                         with '+', append coverage info.
