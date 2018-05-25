@@ -84,6 +84,18 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(stderr, 'cnx-easybake ERROR Parse Error invalid: EOF reached before {} block for a qualified rule.\n')
         self.assertEqual(stdout, '')
 
+    def test_quiet_warnings(self):
+        """Call cli with basic unsuccessful run."""
+        os.chdir(here)
+        with captured_output() as (out, err):
+            args = ['-q', 'warning.css', 'html/empty_raw.html', '/dev/null']
+            self.target(args)
+            stdout = str(out.getvalue())
+            stderr = str(err.getvalue())
+
+        self.assertEqual(stderr, '')
+        self.assertEqual(stdout, '')
+
     def test_noargs(self):
         """Check basic usage message."""
         os.chdir(here)
