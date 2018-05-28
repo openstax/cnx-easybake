@@ -85,7 +85,7 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(stdout, '')
 
     def test_quiet_warnings(self):
-        """Call cli with basic unsuccessful run."""
+        """Call cli with warning producing run and silence warnings."""
         os.chdir(here)
         with captured_output() as (out, err):
             args = ['-q', 'warning.css', 'html/empty_raw.html', '/dev/null']
