@@ -96,6 +96,18 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(stderr, '')
         self.assertEqual(stdout, '')
 
+    def test_debug_override(self):
+        """Check that debug option takes priority over warning silencing"""
+        os.chdir(here)
+        with captured_output() as (out, err):
+            args = ['-q', '-d', 'warning.css', 'html/empty_raw.html', '/dev/null']
+            self.target(args)
+            stdout = str(out.getvalue())
+            stderr = str(err.getvalue())
+
+        self.assertNotEqual(stderr, '')
+        self.assertEqual(stdout, '')
+
     def test_noargs(self):
         """Check basic usage message."""
         os.chdir(here)
