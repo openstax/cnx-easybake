@@ -7,13 +7,13 @@ some manipulations of HTML files, in particular collation (moving content around
 DEPENDENCIES
 ------------
 
-For Linux and Windows Subsystem for Linux (WSL), install the following:
+Install the following:
 
-    Install nodenv at https://github.com/nodenv/nodenv#installation
+    nodenv with node-build at https://github.com/nodenv/nodenv#installation
 
-    Install pyenv at https://github.com/pyenv/pyenv#installation
+    pyenv at https://github.com/pyenv/pyenv#installation
 
-::
+also::
 
     sudo apt-get install python-dev 
     sudo apt-get install build-essential
