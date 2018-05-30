@@ -13,7 +13,8 @@ For Linux and Windows Subsystem for Linux (WSL), install the following:
 
     Install pyenv at https://github.com/pyenv/pyenv#installation
 
-.. code::
+::
+
     sudo apt-get install python-dev 
     sudo apt-get install build-essential
 
