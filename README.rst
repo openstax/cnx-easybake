@@ -9,11 +9,11 @@ DEPENDENCIES
 
 For Linux and Windows Subsystem for Linux (WSL), install the following:
 
-Install nodenv at https://github.com/nodenv/nodenv#installation
+    Install nodenv at https://github.com/nodenv/nodenv#installation
 
-Install pyenv at https://github.com/pyenv/pyenv#installation
+    Install pyenv at https://github.com/pyenv/pyenv#installation
 
-::
+.. code::
     sudo apt-get install python-dev 
     sudo apt-get install build-essential
 
