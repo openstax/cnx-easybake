@@ -7,6 +7,8 @@ some manipulations of HTML files, in particular collation (moving content around
 DEPENDENCIES
 ------------
 
+**For Windows Users:** If your username contains whitespace, the setup and installation will not work. Create a new user without whitespace in the username in order to succesfully complete installation.
+
 Install the following:
 
     nodenv with node-build at https://github.com/nodenv/nodenv#installation
