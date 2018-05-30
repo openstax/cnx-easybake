@@ -84,6 +84,30 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(stderr, 'cnx-easybake ERROR Parse Error invalid: EOF reached before {} block for a qualified rule.\n')
         self.assertEqual(stdout, '')
 
+    def test_quiet_warnings(self):
+        """Call cli with warning producing run and silence warnings."""
+        os.chdir(here)
+        with captured_output() as (out, err):
+            args = ['-q', 'warning.css', 'html/empty_raw.html', '/dev/null']
+            self.target(args)
+            stdout = str(out.getvalue())
+            stderr = str(err.getvalue())
+
+        self.assertEqual(stderr, '')
+        self.assertEqual(stdout, '')
+
+    def test_debug_override(self):
+        """Check that debug option takes priority over warning silencing"""
+        os.chdir(here)
+        with captured_output() as (out, err):
+            args = ['-q', '-d', 'warning.css', 'html/empty_raw.html', '/dev/null']
+            self.target(args)
+            stdout = str(out.getvalue())
+            stderr = str(err.getvalue())
+
+        self.assertNotEqual(stderr, '')
+        self.assertEqual(stdout, '')
+
     def test_noargs(self):
         """Check basic usage message."""
         os.chdir(here)
@@ -111,7 +135,7 @@ class CliTestCase(unittest.TestCase):
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
-        usage_message = """[-h] [-v] [-s <pass>] [-d] [-c coverage.lcov]
+        usage_message = """[-h] [-v] [-s <pass>] [-d] [-q] [-c coverage.lcov]
                 [--use-repeatable-ids]
                 css_rules [html_in] [html_out]
 
@@ -128,6 +152,7 @@ optional arguments:
   -s <pass>, --stop-at <pass>
                         Stop baking just before given pass name
   -d, --debug           Send debugging info to stderr
+  -q, --quiet           Quiet all on stderr except errors
   -c coverage.lcov, --coverage-file coverage.lcov
                         output coverage file (lcov format). If filename starts
                         with '+', append coverage info.
