@@ -1434,8 +1434,9 @@ def grouped_insert(t, value):
             parent = target_parent_descendants[0]
             parent.insert(parent.index(t.tree), value)
             value.append(t.tree)
-        except IndexError:
-            logger.warning('Target of outside has been moved or deleted')
+        except IndexError as e:
+            logger.error('Target of outside has been moved or deleted')
+            raise e
 
     elif t.location == 'before':
         value.tail = t.tree.text
