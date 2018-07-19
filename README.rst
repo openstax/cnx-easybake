@@ -4,6 +4,23 @@ cnx-easybake
 Easybake is a library (and cli tool) for using an extended subset of CSS3 to describe and 'bake-in'
 some manipulations of HTML files, in particular collation (moving content around) and numbering.
 
+DEPENDENCIES
+------------
+
+**For Windows Users:** If your username contains whitespace, the setup and installation will not work. Create a new user without whitespace in the username in order to succesfully complete installation.
+
+Install the following:
+
+    nodenv with node-build at https://github.com/nodenv/nodenv#installation
+
+    pyenv at https://github.com/pyenv/pyenv#installation
+
+also::
+
+    sudo apt-get install python-dev 
+    sudo apt-get install build-essential
+
+
 INSTALL
 -------
 
