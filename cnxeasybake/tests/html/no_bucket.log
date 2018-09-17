@@ -10,20 +10,15 @@ cnx-easybake DEBUG Rule (2): div[data-type="chapter"] section.practice-test
 cnx-easybake DEBUG     default: move-to eoc-practice-test
 cnx-easybake DEBUG Rule (14): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-practice-test
-cnx-easybake DEBUG IdentToken as string: eoc-practice-test
 cnx-easybake DEBUG     default: data-type composite-page
-cnx-easybake DEBUG IdentToken as string: composite-page
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG     default: content pending(bogus-no-such-bucket)
 cnx-easybake INFO bogus-no-such-bucket empty bucket
 cnx-easybake DEBUG Rule (20): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-equations
-cnx-easybake DEBUG IdentToken as string: eoc-key-equations
 cnx-easybake DEBUG     default: data-type composite-page
-cnx-easybake DEBUG IdentToken as string: composite-page
 cnx-easybake DEBUG     default: attr-my-type study-this
-cnx-easybake DEBUG IdentToken as string: study-this
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG     default: content pending(empty-bucket)
 cnx-easybake INFO empty-bucket empty bucket
-cnx-easybake DEBUG Recipe default length: 21
+cnx-easybake DEBUG Recipe default length: 19

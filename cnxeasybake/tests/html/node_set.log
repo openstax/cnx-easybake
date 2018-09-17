@@ -25,12 +25,10 @@ cnx-easybake DEBUG Rule (17): div[data-type="chapter"] > div[data-type="page"]::
 cnx-easybake DEBUG     default: content "My title is: " nodes(mytitle)
 cnx-easybake DEBUG Rule (21): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class summaries
-cnx-easybake DEBUG IdentToken as string: summaries
 cnx-easybake DEBUG     default: content pending(eoc-summaries)
 cnx-easybake DEBUG     default: container div
 cnx-easybake DEBUG Rule (26): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-terms
-cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms)
 cnx-easybake DEBUG     default: container section
 cnx-easybake DEBUG     default: sort-by xhtml|dl > xhtml|dt

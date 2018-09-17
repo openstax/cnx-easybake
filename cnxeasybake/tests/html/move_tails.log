@@ -2,13 +2,11 @@ cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (2): table > caption 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption"
 cnx-easybake DEBUG     default: move-to tableCap
 cnx-easybake DEBUG Rule (8): table > caption [data-type="title"] 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption-title"
 cnx-easybake DEBUG     default: move-to tableTitle
 cnx-easybake DEBUG Rule (14): table > caption::after 
@@ -21,13 +19,11 @@ cnx-easybake DEBUG     default: content pending(tableCaption)
 cnx-easybake DEBUG Rule (2): table > caption 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption"
 cnx-easybake DEBUG     default: move-to tableCap
 cnx-easybake DEBUG Rule (8): table > caption [data-type="title"] 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption-title"
 cnx-easybake DEBUG     default: move-to tableTitle
 cnx-easybake DEBUG Rule (14): table > caption::after 
@@ -40,13 +36,11 @@ cnx-easybake DEBUG     default: content pending(tableCaption)
 cnx-easybake DEBUG Rule (2): table > caption 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption"
 cnx-easybake DEBUG     default: move-to tableCap
 cnx-easybake DEBUG Rule (8): table > caption [data-type="title"] 
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class caption
-cnx-easybake DEBUG IdentToken as string: caption
 cnx-easybake DEBUG     default: data-type "caption-title"
 cnx-easybake DEBUG     default: move-to tableTitle
 cnx-easybake DEBUG Rule (14): table > caption::after 

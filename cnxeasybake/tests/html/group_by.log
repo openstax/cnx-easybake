@@ -13,190 +13,148 @@ cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (5): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content content()
 cnx-easybake DEBUG     default: container span
 cnx-easybake DEBUG     default: class glossary-term
-cnx-easybake DEBUG IdentToken as string: glossary-term
 cnx-easybake DEBUG     default: move-to gloss-term
 cnx-easybake DEBUG Rule (11): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content string(section-title)
-cnx-easybake DEBUG IdentToken as string: section-title
 cnx-easybake DEBUG     default: container a
 cnx-easybake DEBUG     default: attr-href "#" attr(id)
-cnx-easybake DEBUG IdentToken as string: id
 cnx-easybake DEBUG     default: move-to link
 cnx-easybake DEBUG Rule (17): div[data-type="page"] span[data-type="term"]::after 
 cnx-easybake DEBUG     default: content pending(gloss-term) pending(link)
 cnx-easybake DEBUG     default: class glossary-item
-cnx-easybake DEBUG IdentToken as string: glossary-item
 cnx-easybake DEBUG     default: move-to eob-glossary
 cnx-easybake DEBUG Rule (32): body::after 
 cnx-easybake DEBUG     default: class glossary
-cnx-easybake DEBUG IdentToken as string: glossary
 cnx-easybake DEBUG     default: content nodes(glossary-title) nodes(eob-glossary) nodes(glossary-end)
 cnx-easybake DEBUG     default: group-by span, "span::first-letter"
 cnx-easybake DEBUG Rule (37): body::after 
 cnx-easybake DEBUG     default: class glossary
-cnx-easybake DEBUG IdentToken as string: glossary
 cnx-easybake DEBUG     default: content pending(glossary-title) pending(eob-glossary) pending(glossary-end)
 cnx-easybake DEBUG     default: group-by span, "span::first-letter", nocase
 cnx-easybake DEBUG Recipe default length: 190

@@ -125,3 +125,59 @@ def eval_string(oven, func, p, element, type):
 def eval_content(oven, func, p, element, type):
     p.ensure_eos()
     return element.etree_element
+
+
+def parse_nodes(oven, func, p, type):
+    """Common parsing routine for ``nodes()``, ``pending()`` and ``clear()``"""
+    target = p.ident()
+    p.ensure_eos()
+
+    if not isinstance(type, css.DocumentFragment):
+        logger.warning(u"{}() can't be used as value for {}. {}"
+                       .format(func.name, type.name, serialize([func]))
+                       .encode('utf-8'))
+        return target, None, None
+
+    val, val_step = oven.lookup('pending', target)
+
+    if val is None:
+        logger.info(u"{} empty bucket".format(target).encode('utf-8'))
+
+    return target, val, val_step
+
+
+@function('nodes')
+def eval_nodes(oven, func, p, element, type):
+    target, val, val_step = parse_nodes(oven, func, p, type)
+
+    if val is None:
+        return type.default()
+
+    def map_action(action):
+        if action[0] == 'move':
+            return ('nodeset', action[1])
+        return action
+
+    return css.Value(type, list(map(map_action, val)))
+
+
+@function('clear')
+def eval_clear(oven, func, p, element, type):
+    target, val, val_step = parse_nodes(oven, func, p, type)
+
+    if val is None:
+        return type.default()
+
+    del oven.state[val_step]['pending'][target]
+    return css.Value(type, list(map(lambda x: ('drop', x[1]), val)))
+
+
+@function('pending')
+def eval_pending(oven, func, p, element, type):
+    target, val, val_step = parse_nodes(oven, func, p, type)
+
+    if val is None:
+        return type.default()
+
+    del oven.state[val_step]['pending'][target]
+    return css.Value(type, val)
