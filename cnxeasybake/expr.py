@@ -119,3 +119,9 @@ def eval_string(oven, func, p, element, type):
             value = type.default()
 
     return value
+
+
+@function('content')
+def eval_content(oven, func, p, element, type):
+    p.ensure_eos()
+    return element.etree_element
