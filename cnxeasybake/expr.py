@@ -76,3 +76,24 @@ def function(name):
         FUNCTIONS[name] = func
         return func
     return wrap
+
+
+# https://www.w3.org/TR/2018/WD-css-values-4-20180814/#attr-notation
+@function('attr')
+def eval_attr(oven, func, p, element, type):
+    name = p.qname()
+
+    if p.eat('literal', ','):
+        default = p.remaining()
+    else:
+        default = None
+
+    p.ensure_eos()
+
+    value = element.etree_element.get(name)
+    if value is None:
+        if default is not None:
+            value = evaluate(oven, element, default, type)
+        else:
+            value = type.default()
+    return value
