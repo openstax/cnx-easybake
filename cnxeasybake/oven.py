@@ -13,7 +13,7 @@ from copy import deepcopy
 from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
-from . import css
+from . import css, expr
 
 
 verbose = False
@@ -786,6 +786,19 @@ class Oven():
         if strval:
             vals.append(strval)
         return vals
+
+    def evaluate(self, element, value, type):
+        """Evaluate an expression"""
+        try:
+            return expr.evaluate(self, element, value, type)
+        except css.ParseError as ex:
+            logger.warning(u"invalid syntax at {}".format(ex).encode('utf-8'))
+            return type.default()
+
+    def resolve_value(self, value):
+        if isinstance(value, css.Value):
+            return value.into_python(self)
+        return value
 
     @log_decl_method
     def do_string_set(self, element, decl, pseudo):
