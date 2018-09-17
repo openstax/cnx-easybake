@@ -7,6 +7,7 @@ from . import util
 
 
 __all__ = (
+    'Delayed',
     'DocumentFragment',
     'ParseError',
     'Parser',
@@ -44,7 +45,18 @@ class Type(object):
 
     def convert_into(self, oven, value):
         """Convert a :class:`Value` of this type into a native Python value"""
+        if isinstance(value, Delayed):
+            return value.resolve(oven)
         return value
+
+    def is_immediate(self, value):
+        """Can this value be resolved immediately?
+
+        If this function returns ``True`` for a value, then
+        :fn:`Type.convert_into` must accept ``None`` as value of ``oven`` for
+        that value.
+        """
+        return not isinstance(value, Delayed)
 
 
 class String(Type):
@@ -75,6 +87,9 @@ class String(Type):
                 value = ''.join(value)
             return Value(self, value)
 
+        if isinstance(value, Delayed):
+            return Value(self, value)
+
         return super(type(self), self).convert_from(value)
 
     def convert_into(self, oven, value):
@@ -82,6 +97,10 @@ class String(Type):
             return ''.join(map(lambda v: self.convert_into(oven, v), value))
 
         return super(String, self).convert_into(oven, value)
+
+    def is_immediate(self, value):
+        return not isinstance(value, list) \
+           and super(String, self).is_immediate(value)
 
 
 class DocumentFragment(Type):
@@ -118,6 +137,9 @@ class DocumentFragment(Type):
             if isinstance(value.type, String):
                 return Value(self, [('string', value)])
 
+        if isinstance(value, Delayed):
+            return Value(self, [('delayed', value)])
+
         return super(DocumentFragment, self).convert_from(value)
 
 
@@ -131,9 +153,46 @@ class Value(object):
     def __repr__(self):
         return '<{} value: {!r}>'.format(self.type.name, self.value)
 
+    def chain(self, func):  # type: (Callable[[T], Value]) -> Value
+        """If this value can be resolved immediately do so and map it with
+        ``func``, otherwise chain it with ``func`` via :class:``DelayedChain``.
+        """
+        if self.type.is_immediate(self.value):
+            return Value(self.type, func(self.into_python(None)))
+        return Value(self.type, DelayedChain(self.type, self, func))
+
     def into_python(self, oven):
         """Convert this typed CSS value into a native Python value"""
         return self.type.convert_into(oven, self.value)
+
+
+class Delayed(object):
+    """Value whose evaluation must be delayed until the entire step has been
+    processed.
+    """
+
+    def resolve(self, oven):
+        """Resolve this delayed to a concrete value"""
+        raise NotImplementedError()
+
+
+class DelayedChain(Delayed):
+    """Chain of delayed values. This represents result of a computation which
+    relies on a delayed value, and thus must be delayed until said value can
+    be resolved.
+    """
+
+    def __init__(self, type, base, func):
+        self.type = type  # type: Type
+        self.base = base  # type: Value
+        self.func = func  # type: Callable[[T], Value]
+
+    def __repr__(self):
+        return '<Delayed chain {!r} through {!r}>'.format(self.base, self.func)
+
+    def resolve(self, oven):
+        base = self.base.into_python(oven)
+        return self.type.convert_from(self.func(base)).into_python(oven)
 
 
 class ParseError(Exception):

@@ -284,57 +284,65 @@ class Oven():
             target = None
             old_content = {}
             node_counts = {}
-            for action, value in recipe['actions']:
-                if action == 'target':
-                    target = value
-                    old_content = {}
-                elif action == 'tag':
-                    target.tree.tag = value
-                elif action == 'clear':
-                    old_content['text'] = target.tree.text
-                    target.tree.text = None
-                    old_content['children'] = []
-                    for child in target.tree:
-                        old_content['children'].append(child)
-                        target.tree.remove(child)
-                elif action == 'content':
-                    if value is not None:
-                        append_string(target, value.text)
-                        for child in value:
-                            target.tree.append(child)
-                    elif old_content:
-                        append_string(target, old_content['text'])
-                        for child in old_content['children']:
-                            target.tree.append(child)
-                elif action == 'attrib':
-                    attname, vals = value
-                    strval = self.resolve_value(vals)
-                    target.tree.set(attname, strval)
-                elif action == 'string':
-                    strval = self.resolve_value(value)
-                    if target.location == 'before':
-                        prepend_string(target, strval)
+
+            def process_actions(actions):
+                global target, old_content
+
+                for action, value in actions:
+                    if action == 'target':
+                        target = value
+                        old_content = {}
+                    elif action == 'tag':
+                        target.tree.tag = str(value)
+                    elif action == 'clear':
+                        old_content['text'] = target.tree.text
+                        target.tree.text = None
+                        old_content['children'] = []
+                        for child in target.tree:
+                            old_content['children'].append(child)
+                            target.tree.remove(child)
+                    elif action == 'content':
+                        if value is not None and value is not target.tree:
+                            append_string(target, value.text)
+                            for child in value:
+                                target.tree.append(child)
+                        elif old_content:
+                            append_string(target, old_content['text'])
+                            for child in old_content['children']:
+                                target.tree.append(child)
+                    elif action == 'attrib':
+                        attname, vals = value
+                        strval = self.resolve_value(vals)
+                        target.tree.set(attname, strval)
+                    elif action == 'string':
+                        strval = self.resolve_value(value)
+                        if target.location == 'before':
+                            prepend_string(target, strval)
+                        else:
+                            append_string(target, strval)
+                    elif action == 'move':
+                        grouped_insert(target, value)
+                    elif action == 'copy':
+                        mycopy = util.copy_w_id_suffix(value)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
+                    elif action == 'nodeset':
+                        node_counts[value] = node_counts.setdefault(value, 0) + 1
+                        suffix = u'_copy_{}'.format(node_counts[value])
+                        mycopy = util.copy_w_id_suffix(value, suffix)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
+                    elif action == 'drop':
+                        parent = value.getparent()
+                        if parent is not None:
+                            parent.remove(value)
+                    elif action == 'delayed':
+                        process_actions(self.resolve_value(value))
                     else:
-                        append_string(target, strval)
-                elif action == 'move':
-                    grouped_insert(target, value)
-                elif action == 'copy':
-                    mycopy = util.copy_w_id_suffix(value)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                elif action == 'nodeset':
-                    node_counts[value] = node_counts.setdefault(value, 0) + 1
-                    suffix = u'_copy_{}'.format(node_counts[value])
-                    mycopy = util.copy_w_id_suffix(value, suffix)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                elif action == 'drop':
-                    parent = value.getparent()
-                    if parent is not None:
-                        parent.remove(value)
-                else:
-                    logger.warning(u'Missing action {}'.format(
-                        action).encode('utf-8'))
+                        logger.warning(u'Missing action {}'.format(
+                            action).encode('utf-8'))
+
+            process_actions(recipe['actions'])
 
         # Do numbering
 
@@ -693,6 +701,8 @@ class Oven():
     def resolve_value(self, value):
         if isinstance(value, css.Value):
             return value.into_python(self)
+        if isinstance(value, css.Delayed):
+            return value.resolve(self)
         return value
 
     @log_decl_method
