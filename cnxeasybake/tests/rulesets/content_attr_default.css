@@ -1,0 +1,6 @@
+/* content() used as default value for attr() */
+
+div {
+    content: attr(attr, content());
+    attr-attr2: attr(attr, content());
+}

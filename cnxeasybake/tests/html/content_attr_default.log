@@ -1,0 +1,8 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (3): div 
+cnx-easybake DEBUG     default: content attr(attr, content())
+cnx-easybake DEBUG     default: attr-attr2 attr(attr, content())
+cnx-easybake DEBUG Rule (3): div 
+cnx-easybake DEBUG     default: content attr(attr, content())
+cnx-easybake DEBUG     default: attr-attr2 attr(attr, content())
+cnx-easybake DEBUG Recipe default length: 8
