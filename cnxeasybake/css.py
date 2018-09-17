@@ -6,6 +6,7 @@ from tinycss2 import ast
 __all__ = (
     'ParseError',
     'Parser',
+    'String',
     'Type',
     'Value',
 )
@@ -40,6 +41,43 @@ class Type(object):
     def convert_into(self, oven, value):
         """Convert a :class:`Value` of this type into a native Python value"""
         return value
+
+
+class String(Type):
+    """A CSS string type"""
+
+    name = "string"
+
+    def __eq__(self, other):
+        return type(other) is String
+
+    def default(self):
+        return Value(self, "")
+
+    def convert_from(self, value):
+        if isinstance(value, (str, unicode, int, long)):
+            return Value(self, unicode(value))
+
+        if etree.iselement(value):
+            value = etree.tostring(value,
+                                   encoding='unicode',
+                                   method='text',
+                                   with_tail=False)
+            return Value(self, value)
+
+        if isinstance(value, list):
+            value = map(lambda v: self.convert_from(v).value, value)
+            if all(isinstance(x, (str, unicode)) for x in value):
+                value = ''.join(value)
+            return Value(self, value)
+
+        return super(type(self), self).convert_from(value)
+
+    def convert_into(self, oven, value):
+        if isinstance(value, list):
+            return ''.join(map(lambda v: self.convert_into(oven, v), value))
+
+        return super(String, self).convert_into(oven, value)
 
 
 class Value(object):
