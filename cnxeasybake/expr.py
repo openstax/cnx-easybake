@@ -121,6 +121,21 @@ def eval_string(oven, func, p, element, type):
     return value
 
 
+# https://drafts.csswg.org/css-lists-3/#funcdef-counter
+@function('counter')
+def eval_counter(oven, func, p, element, type):
+    name = p.ident()
+
+    if p.eat('literal', ','):
+        name = (name, p.ident())
+    else:
+        name = (name,)
+
+    p.ensure_eos()
+
+    return oven.lookup('counters', name, element.id)
+
+
 @function('content')
 def eval_content(oven, func, p, element, type):
     p.ensure_eos()
