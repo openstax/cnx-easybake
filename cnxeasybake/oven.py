@@ -328,6 +328,10 @@ class Oven():
                     mycopy = util.copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
+                elif action == 'drop':
+                    parent = value.getparent()
+                    if parent is not None:
+                        parent.remove(value)
                 else:
                     logger.warning(u'Missing action {}'.format(
                         action).encode('utf-8'))
@@ -951,150 +955,19 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
 
-        wastebin = []
         elem = self.current_target().tree
         if elem == element.etree_element or pseudo == 'inside':
             actions.append(('clear', elem))
 
-        if pseudo:
-            current_actions = len(actions)
-        # decl.value is parsed representation: loop over it
-        # if a string, to pending elem - either text, or tail of last child
-        # if a string(x) retrieve value from state and attach as tail
-        # if a pending(x), do the target/extend dance
-        # content() attr(x), link(x,y) etc.
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        needs_copy = pseudo in ('before', 'after')
+        action = 'move' if pseudo == 'outside' else 'content'
+        include_nodes = (pseudo is not None) or None
+        type = css.DocumentFragment(needs_copy, action, include_nodes)
+        value = self.evaluate(element, decl.value, type).into_python(self)
+        actions.extend(value)
 
-            elif type(term) is ast.StringToken:
-                actions.append(('string', term.value))
-
-            elif type(term) is ast.LiteralToken:
-                actions.append(('string', term.value))
-
-            elif type(term) is ast.FunctionBlock:
-                if term.name == 'string':
-                    str_args = split(term.arguments, ',')
-                    str_name = self.eval_string_value(element,
-                                                      str_args[0])[0]
-                    val = self.lookup('strings', str_name)
-                    if val == '':
-                        if len(str_args) > 1:
-                            val = self.eval_string_value(element,
-                                                         str_args[1])[0]
-                        else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
-                    if val != '':
-                        actions.append(('string', val))
-
-                elif term.name == 'counter':
-                    counterargs = [serialize(t).strip(" \'")
-                                   for t in split(term.arguments, ',')]
-                    count = self.lookup('counters', counterargs)
-                    actions.append(('string', (count,)))
-
-                elif term.name.startswith('target-'):
-                    target_args = split(term.arguments, ',')
-                    vref = self.eval_string_value(element,
-                                                  target_args[0])[0]
-                    vname = self.eval_string_value(element,
-                                                   target_args[1])[0]
-
-                    vtype = term.name[7:]+'s'
-                    actions.append(('string', [TargetVal(self, vref[1:],
-                                                         vname, vtype)]))
-
-                elif term.name == u'attr':
-                    att_args = split(term.arguments, ',')
-                    att_name = self.eval_string_value(element,
-                                                      att_args[0])[0]
-                    att_def = ''
-                    if len(att_args) > 1:
-                        att_def = self.eval_string_value(element,
-                                                         att_args[1])[0]
-                    if '|' in att_name:
-                        ns, att = att_name.split('|')
-                        try:
-                            ns = self.css_namespaces[ns]
-                        except KeyError:
-                            logger.warning(u"Undefined namespace prefix {}"
-                                           .format(ns).encode('utf-8'))
-                            continue
-                        att_name = etree.QName(ns, att)
-                    att_val = element.etree_element.get(att_name, att_def)
-                    actions.append(('string', att_val))
-
-                elif term.name == u'uuid':
-                    actions.append(('string', self.generate_id()))
-
-                elif term.name == u'first-letter':
-                    tmpstr = self.eval_string_value(element, term.arguments)
-                    if tmpstr:
-                        actions.append(('string', tmpstr[0]))
-
-                elif term.name == u'content':
-                    if pseudo in ('before', 'after'):
-                        mycopy = util.copy_w_id_suffix(element.etree_element)
-                        actions.append(('content', mycopy))
-                    elif pseudo == 'outside':
-                        actions.append(('move', element.etree_element))
-                    else:
-                        actions.append(('content', None))
-
-                elif term.name == 'pending':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    actions.extend(val)
-                    del self.state[val_step]['pending'][target]
-
-                elif term.name == 'nodes':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    for action in val:
-                            if action[0] == 'move':
-                                actions.append(('nodeset', action[1]))
-                            else:
-                                actions.append(action)
-
-                elif term.name == u'clear':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    wastebin.extend(val)
-                    del self.state[val_step]['pending'][target]
-
-                else:
-                    logger.warning(u"Unknown function {}".format(
-                        term.name).encode('utf-8'))
-            else:
-                logger.warning(u"Unknown term {}".format(
-                    term).encode('utf-8'))
-
-        if pseudo:
-            if len(actions) == current_actions:
-                wastebin.append(('move', elem))
-
-        if len(wastebin) > 0:
-            trashbucket = etree.Element('div',
-                                        attrib={'class': 'delete-me'})
-            if actions[-1][0] == 'target':
-                actions.pop()
-            actions.append(('target', Target(trashbucket)))
-            actions.extend(wastebin)
-            wastebin = []
+        if pseudo and len(filter(lambda x: x[0] != 'drop', value)) == 0:
+            actions.append(('drop', elem))
 
     @log_decl_method
     def do_group_by(self, element, decl, pseudo):
