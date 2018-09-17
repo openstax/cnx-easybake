@@ -16,7 +16,7 @@ cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG     0: container p
 cnx-easybake DEBUG     0: move-to b3
 cnx-easybake DEBUG Rule (2): ul 
-cnx-easybake DEBUG     0: counter-reset lights, cardassian-lights, my-lights -1, my-food 0, toobig 6000
+cnx-easybake DEBUG     0: counter-reset lights cardassian-lights my-lights -1 my-food 0 toobig 6000
 cnx-easybake DEBUG     0: string-set lname "This is the food and light list"
 cnx-easybake DEBUG Rule (6): li 
 cnx-easybake DEBUG     0: counter-increment items

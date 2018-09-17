@@ -13,6 +13,9 @@ from copy import deepcopy
 from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
+from . import css
+
+
 verbose = False
 
 logger = logging.getLogger('cnx-easybake')
@@ -390,8 +393,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_target_elem(element)
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, None)
+                    self.run_method(element, decl, None)
 
         # Store all variables (strings and counters) before children
         if element_id:
@@ -413,8 +415,7 @@ class Oven():
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'before')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'before')
+                    self.run_method(element, decl, 'before')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_if_empty(element)
 
@@ -429,8 +430,7 @@ class Oven():
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'after')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'after')
+                    self.run_method(element, decl, 'after')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_if_empty(element)
 
@@ -440,8 +440,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_pending_elem(element, 'outside')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'outside')
+                    self.run_method(element, decl, 'outside')
 
         # Do inside
         if 'inside' in matching_rules:
@@ -449,8 +448,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_pending_elem(element, 'inside')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'inside')
+                    self.run_method(element, decl, 'inside')
 
         # Do deferred
         if ('deferred' in matching_rules or
@@ -475,8 +473,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_target_elem(element)
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, None)
+                        self.run_method(element, decl, None)
 
             # Do before_deferred
             if 'before_deferred' in matching_rules:
@@ -486,8 +483,7 @@ class Oven():
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'before')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'before')
+                        self.run_method(element, decl, 'before')
                     # deal w/ pending_elements, per rule
                     self.pop_pending_if_empty(element)
 
@@ -498,8 +494,7 @@ class Oven():
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'after')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'after')
+                        self.run_method(element, decl, 'after')
                     # deal w/ pending_elements, per rule
                     self.pop_pending_if_empty(element)
 
@@ -510,8 +505,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_pending_elem(element, 'outside')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'outside')
+                        self.run_method(element, decl, 'outside')
 
             # Do inside_deferred
             if 'inside_deferred' in matching_rules:
@@ -520,8 +514,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_pending_elem(element, 'inside')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'inside')
+                        self.run_method(element, decl, 'inside')
 
             # Did a deferred rule change a stored variable?
             if element_id:
@@ -538,6 +531,13 @@ class Oven():
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
+
+    def run_method(self, element, decl, pseudo):
+        method = self.find_method(decl)
+        try:
+            method(element, decl, pseudo)
+        except css.ParseError as ex:
+            logger.warning(unicode(ex).encode('utf-8'))
 
     # Need target incase any declarations impact it
 
@@ -903,78 +903,50 @@ class Oven():
     def do_counter_reset(self, element, decl, pseudo):
         """Clear specified counters."""
         step = self.state[self.state['current_step']]
-        counter_name = ''
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        p = css.Parser(self, decl.value)
 
-            elif type(term) is ast.IdentToken:
-                if counter_name:
-                    step['counters'][counter_name] = 0
-                counter_name = term.value
+        if p.eat('ident', 'none'):
+            p.ensure_eos()
+            return
 
-            elif type(term) is ast.LiteralToken:
-                if counter_name:
-                    step['counters'][counter_name] = 0
-                    counter_name = ''
+        while not p.is_done:
+            name = p.ident()
+            value = p.try_(css.Parser.number, default=0)
+            step['counters'][name] = value
 
-            elif type(term) is ast.NumberToken:
-                if counter_name:
-                    step['counters'][counter_name] = int(term.value)
-                    counter_name = ''
-
-            else:
-                logger.warning(u"Unrecognized counter-reset term {}".
-                               format(type(term)).encode('utf-8'))
-        if counter_name:
-            step['counters'][counter_name] = 0
+            if p.eat('literal', ','):
+                logger.warning(
+                    u"Using comma in counter-reset is not standard CSS")
 
     @log_decl_method
     def do_counter_increment(self, element, decl, pseudo):
         """Increment specified counters."""
         step = self.state[self.state['current_step']]
-        counter_name = ''
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        p = css.Parser(self, decl.value)
 
-            elif type(term) is ast.IdentToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += 1
-                    else:
-                        step['counters'][counter_name] = 1
-                counter_name = term.value
+        if p.eat('ident', 'none'):
+            p.ensure_eos()
+            return
 
-            elif type(term) is ast.LiteralToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += 1
-                    else:
-                        step['counters'][counter_name] = 1
-                    counter_name = ''
+        while not p.is_done:
+            name = p.ident()
+            value = p.try_(css.Parser.number, default=1)
 
-            elif type(term) is ast.NumberToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += int(term.value)
-                    else:
-                        step['counters'][counter_name] = int(term.value)
-                    counter_name = ''
-
+            if name in step['counters']:
+                step['counters'][name] += value
             else:
-                logger.warning(u"Unrecognized counter-increment term {}".
-                               format(type(term)).encode('utf-8'))
-        if counter_name:
-            if counter_name in step['counters']:
-                step['counters'][counter_name] += 1
-            else:
-                step['counters'][counter_name] = 1
+                step['counters'][name] = value
+
+            if p.eat('literal', ','):
+                logger.warning(
+                    u"Using comma in counter-increment is not standard CSS")
 
     @log_decl_method
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
@@ -986,7 +958,9 @@ class Oven():
     @log_decl_method
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
@@ -998,7 +972,9 @@ class Oven():
     @log_decl_method
     def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
 
@@ -1019,20 +995,9 @@ class Oven():
     @log_decl_method
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
-        value = serialize(decl.value).strip()
-
-        if '|' in value:
-            namespace, tag = value.split('|', 1)
-
-            try:
-                namespace = self.css_namespaces[namespace]
-            except KeyError:
-                logger.warning(u'undefined namespace prefix: {}'.format(
-                    namespace).encode('utf-8'))
-                value = tag
-            else:
-                value = etree.QName(namespace, tag)
-
+        p = css.Parser(self, decl.value)
+        value = p.qname()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         actions = step['actions']
         actions.append(('tag', value))
@@ -1217,14 +1182,19 @@ class Oven():
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         sort_css = groupby_css = flags = ''
-        if ',' in decl.value:
-            if decl.value.count(',') == 2:
-                sort_css, groupby_css, flags = \
-                        map(serialize, split(decl.value, ','))
-            else:
-                sort_css, groupby_css = map(serialize, split(decl.value, ','))
+
+        p = css.Parser(self, decl.value)
+        args = map(lambda x: serialize(x.remaining()),
+                   p.separated('literal', ',', 3))
+        p.ensure_eos()
+
+        if len(args) == 1:
+            sort_css, = args
+        elif len(args) == 2:
+            sort_css, groupby_css = args
         else:
-            sort_css = serialize(decl.value)
+            sort_css, groupby_css, flags = args
+
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''

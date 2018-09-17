@@ -6,7 +6,7 @@ cnx-easybake DEBUG IdentToken as string: foodid
 cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG Rule (2): ul 
-cnx-easybake DEBUG     default: counter-reset lights, cardassian-lights, my-lights -1
+cnx-easybake DEBUG     default: counter-reset lights cardassian-lights my-lights -1
 cnx-easybake DEBUG     default: counter-reset my-food 0
 cnx-easybake DEBUG     default: string-set lname "This is the food and light list"
 cnx-easybake DEBUG     default: attr-title string(lname)
