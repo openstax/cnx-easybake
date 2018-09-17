@@ -1,9 +1,13 @@
+import itertools
 import logging
 from lxml import etree
 from tinycss2 import ast
 
+from . import util
+
 
 __all__ = (
+    'DocumentFragment',
     'ParseError',
     'Parser',
     'String',
@@ -78,6 +82,43 @@ class String(Type):
             return ''.join(map(lambda v: self.convert_into(oven, v), value))
 
         return super(String, self).convert_into(oven, value)
+
+
+class DocumentFragment(Type):
+    name = "document fragment"
+
+    def __init__(self, needs_copy, action, include_nodes):
+        self.needs_copy = needs_copy
+        """Do we need to run fragments through :fun:`copy_w_id_suffix`?"""
+
+        self.action = action
+        """Action to perform on nodes in fragment"""
+
+        self.include_nodes = include_nodes
+        """Whether or not nodes should be included in list of action"""
+
+    def default(self):
+        return Value(self, [])
+
+    def convert_from(self, value):
+        if isinstance(value, (unicode, str, int, long)):
+            return Value(self, [('string', unicode(value))])
+
+        if etree.iselement(value):
+            if self.needs_copy:
+                value = util.copy_w_id_suffix(value)
+            return Value(self, [(self.action, self.include_nodes and value)])
+
+        if isinstance(value, list):
+            value = map(lambda x: self.convert_from(x).value, value)
+            value = list(itertools.chain.from_iterable(value))
+            return Value(self, value)
+
+        if isinstance(value, Value):
+            if isinstance(value.type, String):
+                return Value(self, [('string', value)])
+
+        return super(DocumentFragment, self).convert_from(value)
 
 
 class Value(object):

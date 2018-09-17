@@ -13,7 +13,7 @@ from copy import deepcopy
 from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
-from . import css, expr
+from . import css, expr, util
 
 
 verbose = False
@@ -319,13 +319,13 @@ class Oven():
                 elif action == 'move':
                     grouped_insert(target, value)
                 elif action == 'copy':
-                    mycopy = copy_w_id_suffix(value)
+                    mycopy = util.copy_w_id_suffix(value)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 elif action == 'nodeset':
                     node_counts[value] = node_counts.setdefault(value, 0) + 1
                     suffix = u'_copy_{}'.format(node_counts[value])
-                    mycopy = copy_w_id_suffix(value, suffix)
+                    mycopy = util.copy_w_id_suffix(value, suffix)
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 else:
@@ -1036,7 +1036,7 @@ class Oven():
 
                 elif term.name == u'content':
                     if pseudo in ('before', 'after'):
-                        mycopy = copy_w_id_suffix(element.etree_element)
+                        mycopy = util.copy_w_id_suffix(element.etree_element)
                         actions.append(('content', mycopy))
                     elif pseudo == 'outside':
                         actions.append(('move', element.etree_element))
@@ -1443,11 +1443,3 @@ def _to_roman(num):
             result += numeral
             num -= integer
     return result
-
-
-def copy_w_id_suffix(elem, suffix="_copy"):
-    """Make a deep copy of the provided tree, altering ids."""
-    mycopy = deepcopy(elem)
-    for id_elem in mycopy.xpath('//*[@id]'):
-        id_elem.set('id', id_elem.get('id') + suffix)
-    return mycopy
