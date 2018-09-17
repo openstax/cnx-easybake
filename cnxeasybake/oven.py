@@ -68,33 +68,6 @@ class Target():
                 u"groupby: {0.groupby}".format(self))
 
 
-class TargetVal():
-    """Delayed lookup string/counter variable."""
-
-    def __init__(self, collator, el_id, vname, vtype, vstyle=None):
-        """Set up string lookup object."""
-        self.collator = collator
-        self.el_id = el_id
-        self.vname = vname
-        self.vtype = vtype
-        self.vstyle = vstyle
-
-    def __str__(self):
-        """String value."""
-        return self.__unicode__.encode('utf-8')
-
-    def __unicode__(self):
-        """Unicode value."""
-        if self.vtype == 'counters':
-            return unicode(self.collator.lookup(self.vtype,
-                                                (self.vname, self.vstyle),
-                                                self.el_id))
-        else:
-            return unicode(self.collator.lookup(self.vtype,
-                                                self.vname,
-                                                self.el_id))
-
-
 class Oven():
     """Collate and number HTML with CSS3.
 

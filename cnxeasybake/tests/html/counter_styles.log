@@ -1,18 +1,14 @@
 cnx-easybake DEBUG Passes: ['0', u'2']
 cnx-easybake DEBUG Rule (24): body::before 
 cnx-easybake DEBUG     0: content "Hint, the food is at item #" target-counter("burger", items)
-cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG     0: container p
 cnx-easybake DEBUG     0: move-to b1
 cnx-easybake DEBUG Rule (29): body::before 
 cnx-easybake DEBUG     0: content "And maybe at #" target-counter("fries", items)
-cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG     0: container p
 cnx-easybake DEBUG     0: move-to b2
 cnx-easybake DEBUG Rule (34): body::before 
 cnx-easybake DEBUG     0: content "And has a title:" target-string(mylist, lname)
-cnx-easybake DEBUG IdentToken as string: mylist
-cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG     0: container p
 cnx-easybake DEBUG     0: move-to b3
 cnx-easybake DEBUG Rule (2): ul 
@@ -31,8 +27,6 @@ cnx-easybake DEBUG     0: counter-increment items
 cnx-easybake DEBUG Rule (20): li[data-type="food"] 
 cnx-easybake DEBUG     0: counter-increment my-food 500
 cnx-easybake DEBUG     0: class "food-" target-counter(burger, items)
-cnx-easybake DEBUG IdentToken as string: burger
-cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG Rule (9): li::before 
 cnx-easybake DEBUG     0: container span
 cnx-easybake DEBUG     0: content counter(items, decimal) "|" counter(items, lower-roman) "|" counter(items, upper-roman) "|" counter(items, lower-alpha) "|" counter(items, upper-alpha) "|" counter(items, decimal-leading-zero)
@@ -83,10 +77,15 @@ cnx-easybake WARNING Number out of range for roman (must be 1..4999)
 cnx-easybake WARNING Counter out of range for latin (must be 1...26)
 cnx-easybake WARNING Counter out of range for latin (must be 1...26)
 cnx-easybake DEBUG Recipe 0 length: 139
-cnx-easybake WARNING Bad ID target lookup urger
-cnx-easybake WARNING Bad ID target lookup ries
-cnx-easybake WARNING Bad ID target lookup ylist
-cnx-easybake WARNING Bad ID target lookup urger
+cnx-easybake WARNING Invalid target for target-counter: burger does not begin with #
+cnx-easybake WARNING Bad ID target lookup nonexistent
+cnx-easybake WARNING Invalid target for target-counter: fries does not begin with #
+cnx-easybake WARNING Bad ID target lookup nonexistent
+cnx-easybake WARNING Invalid target for target-string: mylist does not begin with #
+cnx-easybake WARNING Bad ID target lookup nonexistent
+cnx-easybake WARNING lname blank string
+cnx-easybake WARNING Invalid target for target-counter: burger does not begin with #
+cnx-easybake WARNING Bad ID target lookup nonexistent
 cnx-easybake DEBUG Rule (39): body:pass(2) 
 cnx-easybake DEBUG     2: content pending(b1) pending(b2) pending(b3) content()
 cnx-easybake DEBUG Recipe 2 length: 6

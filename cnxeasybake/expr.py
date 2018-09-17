@@ -213,3 +213,13 @@ def eval_pending(oven, func, p, element, type):
 def eval_uuid(oven, func, p, element, type):
     p.ensure_eos()
     return oven.generate_id()
+
+
+@function('target-counter')
+@function('target-string')
+def eval_target(oven, func, p, element, type):
+    vref = next(p.separated('literal', ',', 1))
+    vref = evaluate(oven, element, vref, css.String())
+    args = p.remaining()
+
+    return css.Target(type, func, vref, args)

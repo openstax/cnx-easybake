@@ -1,7 +1,7 @@
 import itertools
 import logging
 from lxml import etree
-from tinycss2 import ast
+from tinycss2 import ast, serialize
 
 from . import util
 
@@ -12,6 +12,7 @@ __all__ = (
     'ParseError',
     'Parser',
     'String',
+    'Target',
     'Type',
     'Value',
 )
@@ -174,6 +175,45 @@ class Delayed(object):
     def resolve(self, oven):
         """Resolve this delayed to a concrete value"""
         raise NotImplementedError()
+
+
+class Target(Delayed):
+    """Value of a function evaluated on a node other than the one using
+    the value. Such evaluation must be delayed as the other node might not have
+    been processed yet.
+    """
+
+    def __init__(self, type, function, vref, arguments):
+        self.type = type
+        self.function = function
+        self.vref = vref
+        self.arguments = arguments
+
+    def __repr__(self):
+        return '<Delayed {}({}) at {}>'.format(
+            self.function.name[7:], serialize(self.arguments), self.vref)
+
+    def resolve(self, oven):
+        vref = self.vref.into_python(oven)
+
+        if vref[0] != '#':
+            logger.warning(u"Invalid target for {}: {} does not begin with #"
+                           .format(self.function.name, vref).encode('utf-8'))
+            vref = '#nonexistent'
+
+        element = FakeElement(vref[1:])
+        func = ast.FunctionBlock(
+            self.function.source_line,
+            self.function.source_column + 7,
+            self.function.name[7:],
+            self.arguments,
+        )
+        return oven.evaluate(element, [func], self.type).into_python(oven)
+
+
+class FakeElement:
+    def __init__(self, id):
+        self.id = id
 
 
 class DelayedChain(Delayed):

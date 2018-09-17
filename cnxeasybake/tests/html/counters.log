@@ -1,16 +1,11 @@
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (22): body::before 
 cnx-easybake DEBUG     default: content "Hint, the food is at item #" target-counter("#burger", items) " And maybe at #" target-counter("#" attr(foodid), items) "And has a title:" target-string("#mylist", lname)
-cnx-easybake DEBUG IdentToken as string: items
-cnx-easybake DEBUG IdentToken as string: foodid
-cnx-easybake DEBUG IdentToken as string: items
-cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG Rule (2): ul 
 cnx-easybake DEBUG     default: counter-reset lights cardassian-lights my-lights -1
 cnx-easybake DEBUG     default: counter-reset my-food 0
 cnx-easybake DEBUG     default: string-set lname "This is the food and light list"
 cnx-easybake DEBUG     default: attr-title string(lname)
-cnx-easybake DEBUG IdentToken as string: lname
 cnx-easybake DEBUG Rule (8): li 
 cnx-easybake DEBUG     default: counter-increment items
 cnx-easybake DEBUG Rule (11): li[data-type="light"] 
@@ -21,7 +16,6 @@ cnx-easybake DEBUG     default: counter-increment items
 cnx-easybake DEBUG Rule (18): li[data-type="food"] 
 cnx-easybake DEBUG     default: counter-increment my-food 500
 cnx-easybake DEBUG     default: class "food-" target-counter("#burger", items)
-cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG Rule (8): li 
 cnx-easybake DEBUG     default: counter-increment items
 cnx-easybake DEBUG Rule (11): li[data-type="light"] 
@@ -41,7 +35,6 @@ cnx-easybake DEBUG     default: counter-increment items
 cnx-easybake DEBUG Rule (18): li[data-type="food"] 
 cnx-easybake DEBUG     default: counter-increment my-food 500
 cnx-easybake DEBUG     default: class "food-" target-counter("#burger", items)
-cnx-easybake DEBUG IdentToken as string: items
 cnx-easybake DEBUG Rule (8): li 
 cnx-easybake DEBUG     default: counter-increment items
 cnx-easybake DEBUG Rule (11): li[data-type="light"] 
