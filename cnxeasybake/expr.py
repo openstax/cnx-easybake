@@ -121,6 +121,17 @@ def eval_string(oven, func, p, element, type):
     return value
 
 
+def first_letter(s):
+    if s:
+        return s[0]
+    return s
+
+
+@function('first-letter')
+def eval_first_letter(oven, func, p, element, type):
+    return evaluate(oven, element, p, css.String()).chain(first_letter)
+
+
 # https://drafts.csswg.org/css-lists-3/#funcdef-counter
 @function('counter')
 def eval_counter(oven, func, p, element, type):
