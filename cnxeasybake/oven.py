@@ -308,10 +308,10 @@ class Oven():
                             target.tree.append(child)
                 elif action == 'attrib':
                     attname, vals = value
-                    strval = u''.join([u'{}'.format(s) for s in vals])
+                    strval = self.resolve_value(vals)
                     target.tree.set(attname, strval)
                 elif action == 'string':
-                    strval = u''.join([u'{}'.format(s) for s in value])
+                    strval = self.resolve_value(value)
                     if target.location == 'before':
                         prepend_string(target, strval)
                     else:
@@ -803,113 +803,18 @@ class Oven():
     @log_decl_method
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
-        args = serialize(decl.value)
-        step = self.state[self.state['current_step']]
+        p = css.Parser(self, decl.value)
 
-        strval = ''
-        strname = None
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        for sub in p.separated('literal', ','):
+            try:
+                strname = sub.ident()
+            except css.ParseError as ex:
+                logger.warning(u"Bad string-set: {}"
+                               .format(ex).encode('utf-8'))
+                return
 
-            elif type(term) is ast.StringToken:
-                if strname is not None:
-                    strval += term.value
-                else:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-
-            elif type(term) is ast.IdentToken:
-                if strname is not None:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-                else:
-                    strname = term.value
-
-            elif type(term) is ast.LiteralToken:
-                if strname is None:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-                else:
-                    step['strings'][strname] = strval
-                    strval = ''
-                    strname = None
-
-            elif type(term) is ast.FunctionBlock:
-                if term.name == 'string':
-                    str_args = split(term.arguments, ',')
-                    str_name = self.eval_string_value(element,
-                                                      str_args[0])[0]
-                    val = self.lookup('strings', str_name)
-                    if val == '':
-                        if len(str_args) > 1:
-                            val = self.eval_string_value(element,
-                                                         str_args[1])[0]
-                        else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
-
-                    if strname is not None:
-                        strval += val
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == 'counter':
-                    counterargs = [serialize(t).strip(" \'")
-                                   for t in split(term.arguments, ',')]
-                    count = self.lookup('counters', counterargs)
-                    strval += str(count)
-
-                elif term.name == u'attr':
-                    if strname is not None:
-                        att_args = split(term.arguments, ',')
-                        att_name = self.eval_string_value(element,
-                                                          att_args[0])[0]
-                        att_def = ''
-                        if len(att_args) > 1:
-                            att_def = self.eval_string_value(element,
-                                                             att_args[1])[0]
-                        if '|' in att_name:
-                            ns, att = att_name.split('|')
-                            try:
-                                ns = self.css_namespaces[ns]
-                            except KeyError:
-                                logger.warning(u"Undefined namespace prefix {}"
-                                               .format(ns).encode('utf-8'))
-                                continue
-                            att_name = etree.QName(ns, att)
-                        strval += element.etree_element.get(att_name, att_def)
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == u'content':
-                    if strname is not None:
-                        strval += etree.tostring(element.etree_element,
-                                                 encoding='unicode',
-                                                 method='text',
-                                                 with_tail=False)
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == u'first-letter':
-                    tmpstr = self.eval_string_value(element, term.arguments)
-                    if tmpstr:
-                        if isinstance(tmpstr[0], basestring):
-                            strval += tmpstr[0][0]
-                        else:
-                            logger.warning(u"Bad string value:"
-                                           u" nested target-* not allowed. "
-                                           u"{}".format(serialize(
-                                               args)).encode('utf-8'))
-
-                elif term.name == u'pending':
-                    logger.warning(u"Bad string-set:pending() not allowed. {}".
-                                   format(args).encode('utf-8'))
-
-        if strname is not None:
+            strval = self.evaluate(element, sub.remaining(), css.String())
+            step = self.state[self.state['current_step']]
             step['strings'][strname] = strval
 
     @log_decl_method
@@ -1020,7 +925,7 @@ class Oven():
         """Implement class declaration - pre-match."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', ('class', strval)))
 
     @log_decl_method
@@ -1028,7 +933,7 @@ class Oven():
         """Implement generic attribute setting."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', (decl.name[5:], strval)))
 
     @log_decl_method
@@ -1036,7 +941,7 @@ class Oven():
         """Implement generic data attribute setting."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', (decl.name, strval)))
 
     @log_decl_method
