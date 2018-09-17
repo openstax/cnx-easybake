@@ -181,3 +181,9 @@ def eval_pending(oven, func, p, element, type):
 
     del oven.state[val_step]['pending'][target]
     return css.Value(type, val)
+
+
+@function('uuid')
+def eval_uuid(oven, func, p, element, type):
+    p.ensure_eos()
+    return oven.generate_id()
