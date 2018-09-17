@@ -1,3 +1,4 @@
+import logging
 from lxml import etree
 from tinycss2 import ast
 
@@ -5,7 +6,55 @@ from tinycss2 import ast
 __all__ = (
     'ParseError',
     'Parser',
+    'Type',
+    'Value',
 )
+
+
+logger = logging.getLogger('cnx-easybake')
+
+
+class Type(object):
+    """A CSS value type"""
+
+    name = NotImplemented
+    """Name of this type. For types which have names in CSS this should
+    correspond to that name, for types which don't this should a string that
+    could conceivably be a CSS type name.
+    """
+
+    def default(self):
+        """Get default value for this type"""
+        raise NotImplementedError()
+
+    def convert_from(self, value):
+        """Convert a native Python value into a :class:`Value` of this type."""
+        if isinstance(value, Value) and value.type == self:
+            return value
+
+        logger.warning(u"Bad value for type {}: {!r}"
+                       .format(self.name, value)
+                       .encode('utf-8'))
+        return self.default()
+
+    def convert_into(self, oven, value):
+        """Convert a :class:`Value` of this type into a native Python value"""
+        return value
+
+
+class Value(object):
+    """A typed value"""
+
+    def __init__(self, type, value):
+        self.type = type  # type: Type
+        self.value = value
+
+    def __repr__(self):
+        return '<{} value: {!r}>'.format(self.type.name, self.value)
+
+    def into_python(self, oven):
+        """Convert this typed CSS value into a native Python value"""
+        return self.type.convert_into(oven, self.value)
 
 
 class ParseError(Exception):
