@@ -97,3 +97,25 @@ def eval_attr(oven, func, p, element, type):
         else:
             value = type.default()
     return value
+
+
+@function('string')
+def eval_string(oven, func, p, element, type):
+    name = p.ident()
+
+    if p.eat('literal', ','):
+        default = p.remaining()
+    else:
+        default = None
+
+    p.ensure_eos()
+
+    value = oven.lookup('strings', name, element.id)
+    if not value:
+        if default:
+            value = evaluate(oven, element, css.Parser(oven, default), type)
+        else:
+            logger.warning(u"{} blank string".format(name).encode('utf-8'))
+            value = type.default()
+
+    return value

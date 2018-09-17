@@ -532,6 +532,9 @@ class Oven():
                                 temp_strings[string] != val):
                             self.state['strings'][element_id][s_step]['strings'][string] = val  # NOQA
 
+        if 'target_id' in self.state[step]:
+            del self.state[step]['target_id']
+
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
@@ -553,6 +556,7 @@ class Oven():
         actions.append(('target', Target(element.etree_element,
                                          pseudo, element.parent.etree_element
                                          )))
+        self.state[self.state['current_step']]['target_id'] = element.id
 
     def push_pending_elem(self, element, pseudo):
         """Create and place pending target element onto stack."""
@@ -617,7 +621,9 @@ class Oven():
             else:
                 vname = vname[0]
 
-        if target_id is not None:
+        current_step = self.state['current_step']
+        current_target = self.state[current_step].get('target_id')
+        if target_id is not None and target_id != current_target:
             try:
                 state = self.state[vtype][target_id]
                 steps = self.state[vtype][target_id].keys()
