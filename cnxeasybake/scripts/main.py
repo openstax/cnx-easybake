@@ -20,7 +20,10 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None,
     oven.bake(html_doc, last_step)
 
     # serialize out HTML
-    print (etree.tostring(html_doc, method="xml"), file=html_out)
+    print(etree.tostring(html_doc,
+                         method="xml",
+                         xml_declaration=True,
+                         encoding="utf8"), file=html_out)
 
     # generate CSS coverage_file file
     if coverage_file:

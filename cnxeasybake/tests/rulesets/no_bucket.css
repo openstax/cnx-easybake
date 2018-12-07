@@ -18,9 +18,25 @@ div[data-type='chapter']::after {
   content: pending(bogus-no-such-bucket);
 }
 div[data-type='chapter']::after {
+  content: pending(empty-bucket);
   class: eoc-key-equations;
   data-type: composite-page;
   attr-my-type: study-this;
   container: div;
+}
+div[data-type='chapter']::after {
   content: pending(empty-bucket);
+  class: eoc-key-equations;
+  data-type: composite-page;
+  attr-my-type: study-this;
+  container: div;
+  move-to: also-empty-bucket;
+}
+div[data-type='chapter']::after {
+  content: pending(also-empty-bucket);
+  class: eoc-key-equations;
+  data-type: composite-page;
+  attr-my-type: study-this;
+  container: div;
+  move-to: also-empty-bucket;
 }
