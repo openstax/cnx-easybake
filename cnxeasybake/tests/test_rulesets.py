@@ -108,7 +108,8 @@ class RulesetTestCase(unittest.TestCase):
             element = etree.XML(html)
             oven = Oven(css)
             oven.bake(element)
-            output = tidy(etree.tostring(element, method='xml'))
+            output = tidy(etree.tostring(element, method='xml',
+                                         encoding="utf8"))
             # https://bugs.python.org/issue10164
             self.assertEqual(output.split(b'\n'), baked_html.split(b'\n'))
             if len(logs) == 0:

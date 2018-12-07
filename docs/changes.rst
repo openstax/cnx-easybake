@@ -2,11 +2,12 @@
 Change Log
 ==========
 
+- make commandline easybake properly encode output
+
 1.2.0
 -----
 
 - Update to depend on cnx-cssselect2 instead of a github repo named cssselect2
-
 
 1.1.0
 -----
