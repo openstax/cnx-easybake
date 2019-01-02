@@ -11,7 +11,7 @@ import versioneer
 
 install_requires = (
     'cssselect',
-    'cssselect2',
+    'cnx-cssselect2',  # importable as cssselect2
     'tinycss2',
     'lxml',
     'PyICU==1.9.8;platform_system=="Darwin"',  # FIXME link/symbol prob OSX
@@ -41,6 +41,4 @@ setup(
             'cnx-easybake = cnxeasybake.scripts.main:main',
             ],
         },
-    dependency_links=[
-        'git+https://github.com/Connexions/cssselect2.git#egg=cssselect2']
-    )
+   )
