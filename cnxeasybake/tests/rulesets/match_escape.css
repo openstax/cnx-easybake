@@ -1,0 +1,37 @@
+/* Match functional pseudo class */
+div[data-type="page"] > div[data-type="document-title"] {
+    string-set: section-title content();
+  }
+  div[data-type="page"] span[data-type="term"]:match(\^[a-zA-Z]) {
+    attr-group-by: first-letter(content());
+  }
+  div[data-type="page"] span[data-type="term"]:match(\^[\^a-zA-Z]) {
+    attr-group-by: "";
+  }
+  div[data-type="page"] span[data-type="term"]:pass(2)::after {
+    content: content();
+    attr-group-by: attr(group-by);
+    container: span;
+    class: glossary-term;
+    move-to: gloss-term;
+  }
+  div[data-type="page"] span[data-type="term"]:pass(2)::after {
+    content: string(section-title);
+    container: a;
+    attr-href: "#" attr(id);
+    move-to: link;
+  }
+  div[data-type="page"] span[data-type="term"]:pass(2)::after {
+    content: pending(gloss-term) pending(link);
+    class: glossary-item;
+    move-to: eob-glossary;
+  }
+  body:pass(2)::after {
+    class: glossary;
+    content: pending(eob-glossary);
+    group-by: span, "span::attr(group-by)", nocase;
+  }
+  body > div.glossary > div.group-by:first-of-type > span.group-label:pass(3) {
+    content: "Symbol";
+  }
+  
