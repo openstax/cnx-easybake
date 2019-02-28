@@ -13,6 +13,9 @@ from copy import deepcopy
 from icu import Locale, Collator, UnicodeString
 from uuid import uuid4
 
+from . import css, expr, util
+
+
 verbose = False
 
 logger = logging.getLogger('cnx-easybake')
@@ -63,33 +66,6 @@ class Target():
                 u"sort: {0.sort} "
                 u"isgroup: {0.isgroup} "
                 u"groupby: {0.groupby}".format(self))
-
-
-class TargetVal():
-    """Delayed lookup string/counter variable."""
-
-    def __init__(self, collator, el_id, vname, vtype, vstyle=None):
-        """Set up string lookup object."""
-        self.collator = collator
-        self.el_id = el_id
-        self.vname = vname
-        self.vtype = vtype
-        self.vstyle = vstyle
-
-    def __str__(self):
-        """String value."""
-        return self.__unicode__.encode('utf-8')
-
-    def __unicode__(self):
-        """Unicode value."""
-        if self.vtype == 'counters':
-            return unicode(self.collator.lookup(self.vtype,
-                                                (self.vname, self.vstyle),
-                                                self.el_id))
-        else:
-            return unicode(self.collator.lookup(self.vtype,
-                                                self.vname,
-                                                self.el_id))
 
 
 class Oven():
@@ -281,53 +257,65 @@ class Oven():
             target = None
             old_content = {}
             node_counts = {}
-            for action, value in recipe['actions']:
-                if action == 'target':
-                    target = value
-                    old_content = {}
-                elif action == 'tag':
-                    target.tree.tag = value
-                elif action == 'clear':
-                    old_content['text'] = target.tree.text
-                    target.tree.text = None
-                    old_content['children'] = []
-                    for child in target.tree:
-                        old_content['children'].append(child)
-                        target.tree.remove(child)
-                elif action == 'content':
-                    if value is not None:
-                        append_string(target, value.text)
-                        for child in value:
-                            target.tree.append(child)
-                    elif old_content:
-                        append_string(target, old_content['text'])
-                        for child in old_content['children']:
-                            target.tree.append(child)
-                elif action == 'attrib':
-                    attname, vals = value
-                    strval = u''.join([u'{}'.format(s) for s in vals])
-                    target.tree.set(attname, strval)
-                elif action == 'string':
-                    strval = u''.join([u'{}'.format(s) for s in value])
-                    if target.location == 'before':
-                        prepend_string(target, strval)
+
+            def process_actions(actions):
+                global target, old_content
+
+                for action, value in actions:
+                    if action == 'target':
+                        target = value
+                        old_content = {}
+                    elif action == 'tag':
+                        target.tree.tag = str(value)
+                    elif action == 'clear':
+                        old_content['text'] = target.tree.text
+                        target.tree.text = None
+                        old_content['children'] = []
+                        for child in target.tree:
+                            old_content['children'].append(child)
+                            target.tree.remove(child)
+                    elif action == 'content':
+                        if value is not None and value is not target.tree:
+                            append_string(target, value.text)
+                            for child in value:
+                                target.tree.append(child)
+                        elif old_content:
+                            append_string(target, old_content['text'])
+                            for child in old_content['children']:
+                                target.tree.append(child)
+                    elif action == 'attrib':
+                        attname, vals = value
+                        strval = self.resolve_value(vals)
+                        target.tree.set(attname, strval)
+                    elif action == 'string':
+                        strval = self.resolve_value(value)
+                        if target.location == 'before':
+                            prepend_string(target, strval)
+                        else:
+                            append_string(target, strval)
+                    elif action == 'move':
+                        grouped_insert(target, value)
+                    elif action == 'copy':
+                        mycopy = util.copy_w_id_suffix(value)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
+                    elif action == 'nodeset':
+                        node_counts[value] = node_counts.setdefault(value, 0) + 1
+                        suffix = u'_copy_{}'.format(node_counts[value])
+                        mycopy = util.copy_w_id_suffix(value, suffix)
+                        mycopy.tail = None
+                        grouped_insert(target, mycopy)
+                    elif action == 'drop':
+                        parent = value.getparent()
+                        if parent is not None:
+                            parent.remove(value)
+                    elif action == 'delayed':
+                        process_actions(self.resolve_value(value))
                     else:
-                        append_string(target, strval)
-                elif action == 'move':
-                    grouped_insert(target, value)
-                elif action == 'copy':
-                    mycopy = copy_w_id_suffix(value)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                elif action == 'nodeset':
-                    node_counts[value] = node_counts.setdefault(value, 0) + 1
-                    suffix = u'_copy_{}'.format(node_counts[value])
-                    mycopy = copy_w_id_suffix(value, suffix)
-                    mycopy.tail = None
-                    grouped_insert(target, mycopy)
-                else:
-                    logger.warning(u'Missing action {}'.format(
-                        action).encode('utf-8'))
+                        logger.warning(u'Missing action {}'.format(
+                            action).encode('utf-8'))
+
+            process_actions(recipe['actions'])
 
         # Do numbering
 
@@ -390,8 +378,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_target_elem(element)
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, None)
+                    self.run_method(element, decl, None)
 
         # Store all variables (strings and counters) before children
         if element_id:
@@ -413,8 +400,7 @@ class Oven():
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'before')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'before')
+                    self.run_method(element, decl, 'before')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_if_empty(element)
 
@@ -429,8 +415,7 @@ class Oven():
                 # pseudo element, create wrapper
                 self.push_pending_elem(element, 'after')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'after')
+                    self.run_method(element, decl, 'after')
                 # deal w/ pending_elements, per rule
                 self.pop_pending_if_empty(element)
 
@@ -440,8 +425,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_pending_elem(element, 'outside')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'outside')
+                    self.run_method(element, decl, 'outside')
 
         # Do inside
         if 'inside' in matching_rules:
@@ -449,8 +433,7 @@ class Oven():
                 self.record_coverage(rule)
                 self.push_pending_elem(element, 'inside')
                 for decl in declarations:
-                    method = self.find_method(decl)
-                    method(element, decl, 'inside')
+                    self.run_method(element, decl, 'inside')
 
         # Do deferred
         if ('deferred' in matching_rules or
@@ -475,8 +458,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_target_elem(element)
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, None)
+                        self.run_method(element, decl, None)
 
             # Do before_deferred
             if 'before_deferred' in matching_rules:
@@ -486,8 +468,7 @@ class Oven():
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'before')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'before')
+                        self.run_method(element, decl, 'before')
                     # deal w/ pending_elements, per rule
                     self.pop_pending_if_empty(element)
 
@@ -498,8 +479,7 @@ class Oven():
                     # pseudo element, create wrapper
                     self.push_pending_elem(element, 'after')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'after')
+                        self.run_method(element, decl, 'after')
                     # deal w/ pending_elements, per rule
                     self.pop_pending_if_empty(element)
 
@@ -510,8 +490,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_pending_elem(element, 'outside')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'outside')
+                        self.run_method(element, decl, 'outside')
 
             # Do inside_deferred
             if 'inside_deferred' in matching_rules:
@@ -520,8 +499,7 @@ class Oven():
                     self.record_coverage(rule)
                     self.push_pending_elem(element, 'inside')
                     for decl in declarations:
-                        method = self.find_method(decl)
-                        method(element, decl, 'inside')
+                        self.run_method(element, decl, 'inside')
 
             # Did a deferred rule change a stored variable?
             if element_id:
@@ -535,9 +513,19 @@ class Oven():
                                 temp_strings[string] != val):
                             self.state['strings'][element_id][s_step]['strings'][string] = val  # NOQA
 
+        if 'target_id' in self.state[step]:
+            del self.state[step]['target_id']
+
         if depth == 0:
             self.state[step]['recipe'] = True  # FIXME should ref HTML tree
         return self.state[step]
+
+    def run_method(self, element, decl, pseudo):
+        method = self.find_method(decl)
+        try:
+            method(element, decl, pseudo)
+        except css.ParseError as ex:
+            logger.warning(unicode(ex).encode('utf-8'))
 
     # Need target incase any declarations impact it
 
@@ -549,6 +537,7 @@ class Oven():
         actions.append(('target', Target(element.etree_element,
                                          pseudo, element.parent.etree_element
                                          )))
+        self.state[self.state['current_step']]['target_id'] = element.id
 
     def push_pending_elem(self, element, pseudo):
         """Create and place pending target element onto stack."""
@@ -613,7 +602,9 @@ class Oven():
             else:
                 vname = vname[0]
 
-        if target_id is not None:
+        current_step = self.state['current_step']
+        current_target = self.state[current_step].get('target_id')
+        if target_id is not None and target_id != current_target:
             try:
                 state = self.state[vtype][target_id]
                 steps = self.state[vtype][target_id].keys()
@@ -672,309 +663,86 @@ class Oven():
             valstr = str(val)
         return valstr
 
-    def eval_string_value(self, element, value):
-        """Evaluate parsed string.
+    def evaluate(self, element, value, type):
+        """Evaluate an expression"""
+        try:
+            return expr.evaluate(self, element, value, type)
+        except css.ParseError as ex:
+            logger.warning(u"invalid syntax at {}".format(ex).encode('utf-8'))
+            return type.default()
 
-        Returns a list of current and delayed values.
-        """
-        strval = ''
-        vals = []
-
-        for term in value:
-            if type(term) is ast.WhitespaceToken:
-                pass
-
-            elif type(term) is ast.StringToken:
-                strval += term.value
-
-            elif type(term) is ast.IdentToken:
-                logger.debug(u"IdentToken as string: {}".format(
-                    term.value).encode('utf-8'))
-                strval += term.value
-
-            elif type(term) is ast.LiteralToken:
-                logger.debug(u"LiteralToken as string: {}".format(
-                    term.value).encode('utf-8'))
-                strval += term.value
-
-            elif type(term) is ast.FunctionBlock:
-                if term.name == 'string':
-                    str_args = split(term.arguments, ',')
-                    str_name = self.eval_string_value(element,
-                                                      str_args[0])[0]
-                    val = self.lookup('strings', str_name)
-                    if val == '':
-                        if len(str_args) > 1:
-                            val = self.eval_string_value(element,
-                                                         str_args[1])[0]
-                        else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
-                    strval += val
-
-                elif term.name == u'attr':
-                    att_args = split(term.arguments, ',')
-                    att_name = self.eval_string_value(element,
-                                                      att_args[0])[0]
-                    att_def = ''
-                    if len(att_args) > 1:
-                        att_def = self.eval_string_value(element,
-                                                         att_args[1])[0]
-                    if '|' in att_name:
-                        ns, att = att_name.split('|')
-                        try:
-                            ns = self.css_namespaces[ns]
-                        except KeyError:
-                            logger.warning(u"Undefined namespace prefix {}"
-                                           .format(ns).encode('utf-8'))
-                            continue
-                        att_name = etree.QName(ns, att)
-                    strval += element.etree_element.get(att_name, att_def)
-
-                elif term.name == u'uuid':
-                    strval += self.generate_id()
-
-                elif term.name == u'content':
-                    strval += etree.tostring(element.etree_element,
-                                             encoding='unicode',
-                                             method='text',
-                                             with_tail=False)
-
-                elif term.name.startswith('target-'):
-                    if strval:
-                        vals.append(strval)
-                        strval = ''
-                    target_args = split(term.arguments, ',')
-                    vref = self.eval_string_value(element,
-                                                  target_args[0])[0]
-                    vname = self.eval_string_value(element,
-                                                   target_args[1])[0]
-
-                    vtype = term.name[7:]+'s'
-                    vals.append(TargetVal(self, vref[1:], vname, vtype))
-
-                elif term.name == u'first-letter':
-                    tmpstr = self.eval_string_value(element, term.arguments)
-                    if tmpstr:
-                        if isinstance(tmpstr[0], basestring):
-                            strval += tmpstr[0][0]
-                        else:
-                            logger.warning(u"Bad string value:"
-                                           u" nested target-* not allowed. "
-                                           u"{}".format(
-                                               serialize(value)).encode(
-                                                   'utf-8'))
-
-                    # FIXME can we do delayed first-letter
-
-                elif term.name == 'counter':
-                    counterargs = [serialize(t).strip(" \'")
-                                   for t in split(term.arguments, ',')]
-                    count = self.lookup('counters', counterargs)
-                    strval += str(count)
-
-                elif term.name == u'pending':
-                    logger.warning(u"Bad string value: pending() not allowed. "
-                                   u"{}".format(serialize(value)).encode(
-                                       'utf-8'))
-                else:
-                    logger.warning(u"Bad string value: unknown function: {}. "
-                                   u"{}".format(term.name,
-                                                serialize(value)).encode(
-                                                    'utf-8'))
-
-        if strval:
-            vals.append(strval)
-        return vals
+    def resolve_value(self, value):
+        if isinstance(value, css.Value):
+            return value.into_python(self)
+        if isinstance(value, css.Delayed):
+            return value.resolve(self)
+        return value
 
     @log_decl_method
     def do_string_set(self, element, decl, pseudo):
         """Implement string-set declaration."""
-        args = serialize(decl.value)
-        step = self.state[self.state['current_step']]
+        p = css.Parser(self, decl.value)
 
-        strval = ''
-        strname = None
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        for sub in p.separated('literal', ','):
+            try:
+                strname = sub.ident()
+            except css.ParseError as ex:
+                logger.warning(u"Bad string-set: {}"
+                               .format(ex).encode('utf-8'))
+                return
 
-            elif type(term) is ast.StringToken:
-                if strname is not None:
-                    strval += term.value
-                else:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-
-            elif type(term) is ast.IdentToken:
-                if strname is not None:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-                else:
-                    strname = term.value
-
-            elif type(term) is ast.LiteralToken:
-                if strname is None:
-                    logger.warning(u"Bad string-set: {}".format(
-                        args).encode('utf-8'))
-                else:
-                    step['strings'][strname] = strval
-                    strval = ''
-                    strname = None
-
-            elif type(term) is ast.FunctionBlock:
-                if term.name == 'string':
-                    str_args = split(term.arguments, ',')
-                    str_name = self.eval_string_value(element,
-                                                      str_args[0])[0]
-                    val = self.lookup('strings', str_name)
-                    if val == '':
-                        if len(str_args) > 1:
-                            val = self.eval_string_value(element,
-                                                         str_args[1])[0]
-                        else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
-
-                    if strname is not None:
-                        strval += val
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == 'counter':
-                    counterargs = [serialize(t).strip(" \'")
-                                   for t in split(term.arguments, ',')]
-                    count = self.lookup('counters', counterargs)
-                    strval += str(count)
-
-                elif term.name == u'attr':
-                    if strname is not None:
-                        att_args = split(term.arguments, ',')
-                        att_name = self.eval_string_value(element,
-                                                          att_args[0])[0]
-                        att_def = ''
-                        if len(att_args) > 1:
-                            att_def = self.eval_string_value(element,
-                                                             att_args[1])[0]
-                        if '|' in att_name:
-                            ns, att = att_name.split('|')
-                            try:
-                                ns = self.css_namespaces[ns]
-                            except KeyError:
-                                logger.warning(u"Undefined namespace prefix {}"
-                                               .format(ns).encode('utf-8'))
-                                continue
-                            att_name = etree.QName(ns, att)
-                        strval += element.etree_element.get(att_name, att_def)
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == u'content':
-                    if strname is not None:
-                        strval += etree.tostring(element.etree_element,
-                                                 encoding='unicode',
-                                                 method='text',
-                                                 with_tail=False)
-                    else:
-                        logger.warning(u"Bad string-set: {}".format(
-                            args).encode('utf-8'))
-
-                elif term.name == u'first-letter':
-                    tmpstr = self.eval_string_value(element, term.arguments)
-                    if tmpstr:
-                        if isinstance(tmpstr[0], basestring):
-                            strval += tmpstr[0][0]
-                        else:
-                            logger.warning(u"Bad string value:"
-                                           u" nested target-* not allowed. "
-                                           u"{}".format(serialize(
-                                               args)).encode('utf-8'))
-
-                elif term.name == u'pending':
-                    logger.warning(u"Bad string-set:pending() not allowed. {}".
-                                   format(args).encode('utf-8'))
-
-        if strname is not None:
+            strval = self.evaluate(element, sub.remaining(), css.String())
+            step = self.state[self.state['current_step']]
             step['strings'][strname] = strval
 
     @log_decl_method
     def do_counter_reset(self, element, decl, pseudo):
         """Clear specified counters."""
         step = self.state[self.state['current_step']]
-        counter_name = ''
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        p = css.Parser(self, decl.value)
 
-            elif type(term) is ast.IdentToken:
-                if counter_name:
-                    step['counters'][counter_name] = 0
-                counter_name = term.value
+        if p.eat('ident', 'none'):
+            p.ensure_eos()
+            return
 
-            elif type(term) is ast.LiteralToken:
-                if counter_name:
-                    step['counters'][counter_name] = 0
-                    counter_name = ''
+        while not p.is_done:
+            name = p.ident()
+            value = p.try_(css.Parser.number, default=0)
+            step['counters'][name] = value
 
-            elif type(term) is ast.NumberToken:
-                if counter_name:
-                    step['counters'][counter_name] = int(term.value)
-                    counter_name = ''
-
-            else:
-                logger.warning(u"Unrecognized counter-reset term {}".
-                               format(type(term)).encode('utf-8'))
-        if counter_name:
-            step['counters'][counter_name] = 0
+            if p.eat('literal', ','):
+                logger.warning(
+                    u"Using comma in counter-reset is not standard CSS")
 
     @log_decl_method
     def do_counter_increment(self, element, decl, pseudo):
         """Increment specified counters."""
         step = self.state[self.state['current_step']]
-        counter_name = ''
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        p = css.Parser(self, decl.value)
 
-            elif type(term) is ast.IdentToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += 1
-                    else:
-                        step['counters'][counter_name] = 1
-                counter_name = term.value
+        if p.eat('ident', 'none'):
+            p.ensure_eos()
+            return
 
-            elif type(term) is ast.LiteralToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += 1
-                    else:
-                        step['counters'][counter_name] = 1
-                    counter_name = ''
+        while not p.is_done:
+            name = p.ident()
+            value = p.try_(css.Parser.number, default=1)
 
-            elif type(term) is ast.NumberToken:
-                if counter_name:
-                    if counter_name in step['counters']:
-                        step['counters'][counter_name] += int(term.value)
-                    else:
-                        step['counters'][counter_name] = int(term.value)
-                    counter_name = ''
-
+            if name in step['counters']:
+                step['counters'][name] += value
             else:
-                logger.warning(u"Unrecognized counter-increment term {}".
-                               format(type(term)).encode('utf-8'))
-        if counter_name:
-            if counter_name in step['counters']:
-                step['counters'][counter_name] += 1
-            else:
-                step['counters'][counter_name] = 1
+                step['counters'][name] = value
+
+            if p.eat('literal', ','):
+                logger.warning(
+                    u"Using comma in counter-increment is not standard CSS")
 
     @log_decl_method
     def do_node_set(self, element, decl, pseudo):
         """Implement node-set declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
@@ -986,7 +754,9 @@ class Oven():
     @log_decl_method
     def do_copy_to(self, element, decl, pseudo):
         """Implement copy-to declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
         _, valstep = self.lookup('pending', target)
@@ -998,7 +768,9 @@ class Oven():
     @log_decl_method
     def do_move_to(self, element, decl, pseudo):
         """Implement move-to declaration."""
-        target = serialize(decl.value).strip()
+        p = css.Parser(self, decl.value)
+        target = p.ident()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         elem = self.current_target().tree
 
@@ -1019,20 +791,9 @@ class Oven():
     @log_decl_method
     def do_container(self, element, decl, pseudo):
         """Implement setting tag for new wrapper element."""
-        value = serialize(decl.value).strip()
-
-        if '|' in value:
-            namespace, tag = value.split('|', 1)
-
-            try:
-                namespace = self.css_namespaces[namespace]
-            except KeyError:
-                logger.warning(u'undefined namespace prefix: {}'.format(
-                    namespace).encode('utf-8'))
-                value = tag
-            else:
-                value = etree.QName(namespace, tag)
-
+        p = css.Parser(self, decl.value)
+        value = p.qname()
+        p.ensure_eos()
         step = self.state[self.state['current_step']]
         actions = step['actions']
         actions.append(('tag', value))
@@ -1042,7 +803,7 @@ class Oven():
         """Implement class declaration - pre-match."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', ('class', strval)))
 
     @log_decl_method
@@ -1050,7 +811,7 @@ class Oven():
         """Implement generic attribute setting."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', (decl.name[5:], strval)))
 
     @log_decl_method
@@ -1058,7 +819,7 @@ class Oven():
         """Implement generic data attribute setting."""
         step = self.state[self.state['current_step']]
         actions = step['actions']
-        strval = self.eval_string_value(element, decl.value)
+        strval = self.evaluate(element, decl.value, css.String())
         actions.append(('attrib', (decl.name, strval)))
 
     @log_decl_method
@@ -1068,163 +829,37 @@ class Oven():
         step = self.state[self.state['current_step']]
         actions = step['actions']
 
-        wastebin = []
         elem = self.current_target().tree
         if elem == element.etree_element or pseudo == 'inside':
             actions.append(('clear', elem))
 
-        if pseudo:
-            current_actions = len(actions)
-        # decl.value is parsed representation: loop over it
-        # if a string, to pending elem - either text, or tail of last child
-        # if a string(x) retrieve value from state and attach as tail
-        # if a pending(x), do the target/extend dance
-        # content() attr(x), link(x,y) etc.
-        for term in decl.value:
-            if type(term) is ast.WhitespaceToken:
-                continue
+        needs_copy = pseudo in ('before', 'after')
+        action = 'move' if pseudo == 'outside' else 'content'
+        include_nodes = (pseudo is not None) or None
+        type = css.DocumentFragment(needs_copy, action, include_nodes)
+        value = self.evaluate(element, decl.value, type).into_python(self)
+        actions.extend(value)
 
-            elif type(term) is ast.StringToken:
-                actions.append(('string', term.value))
-
-            elif type(term) is ast.LiteralToken:
-                actions.append(('string', term.value))
-
-            elif type(term) is ast.FunctionBlock:
-                if term.name == 'string':
-                    str_args = split(term.arguments, ',')
-                    str_name = self.eval_string_value(element,
-                                                      str_args[0])[0]
-                    val = self.lookup('strings', str_name)
-                    if val == '':
-                        if len(str_args) > 1:
-                            val = self.eval_string_value(element,
-                                                         str_args[1])[0]
-                        else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
-                    if val != '':
-                        actions.append(('string', val))
-
-                elif term.name == 'counter':
-                    counterargs = [serialize(t).strip(" \'")
-                                   for t in split(term.arguments, ',')]
-                    count = self.lookup('counters', counterargs)
-                    actions.append(('string', (count,)))
-
-                elif term.name.startswith('target-'):
-                    target_args = split(term.arguments, ',')
-                    vref = self.eval_string_value(element,
-                                                  target_args[0])[0]
-                    vname = self.eval_string_value(element,
-                                                   target_args[1])[0]
-
-                    vtype = term.name[7:]+'s'
-                    actions.append(('string', [TargetVal(self, vref[1:],
-                                                         vname, vtype)]))
-
-                elif term.name == u'attr':
-                    att_args = split(term.arguments, ',')
-                    att_name = self.eval_string_value(element,
-                                                      att_args[0])[0]
-                    att_def = ''
-                    if len(att_args) > 1:
-                        att_def = self.eval_string_value(element,
-                                                         att_args[1])[0]
-                    if '|' in att_name:
-                        ns, att = att_name.split('|')
-                        try:
-                            ns = self.css_namespaces[ns]
-                        except KeyError:
-                            logger.warning(u"Undefined namespace prefix {}"
-                                           .format(ns).encode('utf-8'))
-                            continue
-                        att_name = etree.QName(ns, att)
-                    att_val = element.etree_element.get(att_name, att_def)
-                    actions.append(('string', att_val))
-
-                elif term.name == u'uuid':
-                    actions.append(('string', self.generate_id()))
-
-                elif term.name == u'first-letter':
-                    tmpstr = self.eval_string_value(element, term.arguments)
-                    if tmpstr:
-                        actions.append(('string', tmpstr[0]))
-
-                elif term.name == u'content':
-                    if pseudo in ('before', 'after'):
-                        mycopy = copy_w_id_suffix(element.etree_element)
-                        actions.append(('content', mycopy))
-                    elif pseudo == 'outside':
-                        actions.append(('move', element.etree_element))
-                    else:
-                        actions.append(('content', None))
-
-                elif term.name == 'pending':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    actions.extend(val)
-                    del self.state[val_step]['pending'][target]
-
-                elif term.name == 'nodes':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    for action in val:
-                            if action[0] == 'move':
-                                actions.append(('nodeset', action[1]))
-                            else:
-                                actions.append(action)
-
-                elif term.name == u'clear':
-                    target = serialize(term.arguments)
-                    val, val_step = self.lookup('pending', target)
-                    if val is None:
-                        logger.info(u"{} empty bucket".format(
-                            target).encode('utf-8'))
-                        continue
-                    wastebin.extend(val)
-                    del self.state[val_step]['pending'][target]
-
-                else:
-                    logger.warning(u"Unknown function {}".format(
-                        term.name).encode('utf-8'))
-            else:
-                logger.warning(u"Unknown term {}".format(
-                    term).encode('utf-8'))
-
-        if pseudo:
-            if len(actions) == current_actions:
-                wastebin.append(('move', elem))
-
-        if len(wastebin) > 0:
-            trashbucket = etree.Element('div',
-                                        attrib={'class': 'delete-me'})
-            if actions[-1][0] == 'target':
-                actions.pop()
-            actions.append(('target', Target(trashbucket)))
-            actions.extend(wastebin)
-            wastebin = []
+        if pseudo and len(filter(lambda x: x[0] != 'drop', value)) == 0:
+            actions.append(('drop', elem))
 
     @log_decl_method
     def do_group_by(self, element, decl, pseudo):
         """Implement group-by declaration - pre-match."""
         sort_css = groupby_css = flags = ''
-        if ',' in decl.value:
-            if decl.value.count(',') == 2:
-                sort_css, groupby_css, flags = \
-                        map(serialize, split(decl.value, ','))
-            else:
-                sort_css, groupby_css = map(serialize, split(decl.value, ','))
+
+        p = css.Parser(self, decl.value)
+        args = map(lambda x: serialize(x.remaining()),
+                   p.separated('literal', ',', 3))
+        p.ensure_eos()
+
+        if len(args) == 1:
+            sort_css, = args
+        elif len(args) == 2:
+            sort_css, groupby_css = args
         else:
-            sort_css = serialize(decl.value)
+            sort_css, groupby_css, flags = args
+
         if groupby_css.strip() == 'nocase':
             flags = groupby_css
             groupby_css = ''
@@ -1555,11 +1190,3 @@ def _to_roman(num):
             result += numeral
             num -= integer
     return result
-
-
-def copy_w_id_suffix(elem, suffix="_copy"):
-    """Make a deep copy of the provided tree, altering ids."""
-    mycopy = deepcopy(elem)
-    for id_elem in mycopy.xpath('//*[@id]'):
-        id_elem.set('id', id_elem.get('id') + suffix)
-    return mycopy

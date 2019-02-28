@@ -7,7 +7,6 @@ cnx-easybake DEBUG Rule (4): div[data-type="chapter"] dl.definition
 cnx-easybake DEBUG     default: move-to eoc-key-terms
 cnx-easybake DEBUG Rule (8): div[data-type="chapter"]::after 
 cnx-easybake DEBUG     default: class eoc-key-terms
-cnx-easybake DEBUG IdentToken as string: eoc-key-terms
 cnx-easybake DEBUG     default: content pending(eoc-key-terms)
 cnx-easybake DEBUG     default: container section
 cnx-easybake DEBUG     default: sort-by xhtml|dl > xhtml|dt

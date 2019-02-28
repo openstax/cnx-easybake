@@ -1,6 +1,6 @@
 /* Counters */
 ul {
-  counter-reset: lights, cardassian-lights, my-lights -1;
+  counter-reset: lights cardassian-lights my-lights -1;
   counter-reset: my-food 0;
   string-set: lname "This is the food and light list";
   attr-title: string(lname);
