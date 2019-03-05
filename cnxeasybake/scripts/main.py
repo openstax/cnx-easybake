@@ -20,7 +20,7 @@ def easybake(css_in, html_in=sys.stdin, html_out=sys.stdout, last_step=None,
     oven.bake(html_doc, last_step)
 
     # serialize out HTML
-    print (etree.tostring(html_doc, method="xml"), file=html_out)
+    print(etree.tostring(html_doc, method="xml"), file=html_out)
 
     # generate CSS coverage_file file
     if coverage_file:
@@ -48,7 +48,7 @@ def main(argv=None):
     parser.add_argument('-v', '--version', action="version",
                         version=__version__, help='Report the library version')
     parser.add_argument("css_rules",
-                        type=argparse.FileType('r'),
+                        type=argparse.FileType('rb'),
                         help="CSS3 ruleset stylesheet recipe")
     parser.add_argument("html_in", nargs="?",
                         type=argparse.FileType('r'),
@@ -84,8 +84,18 @@ def main(argv=None):
     # Debug option takes higher priority than quiet warnings option
     logger.setLevel(use_debug_log or use_quiet_log or logging.WARNING)
 
-    easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
-             args.coverage_file, args.use_repeatable_ids)
+    try:
+        easybake(args.css_rules, args.html_in, args.html_out, args.stop_at,
+                 args.coverage_file, args.use_repeatable_ids)
+    finally:
+        if args.css_rules:
+            args.css_rules.close()
+        if args.html_in:
+            args.html_in.close()
+        if args.html_out:
+            args.html_out.close()
+        if args.coverage_file:
+            args.coverage_file.close()
 
 
 if __name__ == "__main__":

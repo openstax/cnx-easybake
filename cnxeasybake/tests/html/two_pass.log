@@ -1,4 +1,4 @@
-cnx-easybake DEBUG Passes: [u'counter(mine)', u'first', u'second']
+cnx-easybake DEBUG Passes: ['counter(mine)', 'first', 'second']
 cnx-easybake DEBUG Rule (12): :pass(counter(mine)) body::after 
 cnx-easybake DEBUG     counter(mine): content string(onestring)
 cnx-easybake DEBUG IdentToken as string: onestring
