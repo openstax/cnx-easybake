@@ -4,7 +4,10 @@ import unittest
 import os
 import tempfile
 from contextlib import contextmanager
-from StringIO import StringIO
+try:
+    from io import BytesIO as StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
 @contextmanager
@@ -22,11 +25,11 @@ HTML = '''<html xmlns="http://www.w3.org/1999/xhtml"><head><title>example</title
 </body></html>
 '''
 
-CSS = 'div { copy-to: end-of-chapter;}'
+CSS = b'div { copy-to: end-of-chapter;}'
 
-BAD_CSS = 'not a selector {}'
+BAD_CSS = b'not a selector {}'
 
-CSS_TWO_STEP = '''div[data-type="copy-me"] { step: 1; copy-to: "end-of-chapter" }
+CSS_TWO_STEP = b'''div[data-type="copy-me"] { step: 1; copy-to: "end-of-chapter" }
 div[data-type="book"]::after { step: 1; content: pending("end-of-chapter")}
 div[data-type="book"]::after {step: 5; content: "Here is a later step" }
 '''

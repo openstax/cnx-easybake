@@ -1,4 +1,4 @@
-cnx-easybake WARNING Invalid selector: div:nonsuch  (u'Unknown pseudo-class', u'nonsuch')
+cnx-easybake WARNING Invalid selector: div:nonsuch  ('Unknown pseudo-class', 'nonsuch')
 cnx-easybake DEBUG Passes: ['default']
 cnx-easybake DEBUG Rule (2): div 
 cnx-easybake DEBUG     default: string-set content()

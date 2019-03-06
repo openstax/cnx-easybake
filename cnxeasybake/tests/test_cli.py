@@ -16,6 +16,9 @@ from contextlib import contextmanager
 from io import StringIO
 
 
+IS_PY3 = sys.version_info > (3,)
+
+
 # noqa from http://stackoverflow.com/questions/4219717/how-to-assert-output-with-nosetest-unittest-in-python
 @contextmanager
 def captured_output():
@@ -121,7 +124,11 @@ class CliTestCase(unittest.TestCase):
             stderr = str(err.getvalue())
 
         self.assertEqual(stdout, '')
-        self.assertIn("error: too few arguments", stderr)
+        if IS_PY3:
+            self.assertIn("the following arguments are required: css_rules",
+                          stderr)
+        else:
+            self.assertIn("error: too few arguments", stderr)
 
     def test_help(self):
         """Check help usage message."""
@@ -179,7 +186,7 @@ optional arguments:
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
-        coverage_expected = """SF:rulesets/clear.css
+        coverage_expected = b"""SF:rulesets/clear.css
 DA:2,0
 DA:6,0
 DA:2,1

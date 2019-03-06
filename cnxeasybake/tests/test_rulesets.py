@@ -71,7 +71,7 @@ class RulesetTestCase(unittest.TestCase):
             header = []
             logs = []
             desc = None
-            with open('{}.css'.format(filename_no_ext), 'rb') as f_css:
+            with open('{}.css'.format(filename_no_ext), 'r') as f_css:
                 for line in f_css:
                     if line.startswith('/* '):
                         header.append(line[3:-3])
@@ -103,7 +103,7 @@ class RulesetTestCase(unittest.TestCase):
     @classmethod
     def create_test(cls, css, html, baked_html, desc, logs):
         """Create a specific ruleset test."""
-        @mock.patch('cnxeasybake.oven.uuid4', uuids.next)
+        @mock.patch('cnxeasybake.oven.uuid4', lambda: next(uuids))
         def run_test(self):
             element = etree.XML(html)
             oven = Oven(css)

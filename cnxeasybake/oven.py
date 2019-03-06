@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 """Implement a collator that moves content defined by CSS3 rules to HTML."""
 import logging
+from logging import WARN, ERROR, INFO, DEBUG
+import sys
+
 from lxml import etree
 import tinycss2
 from tinycss2 import serialize, parse_declaration_list, ast
@@ -28,6 +31,31 @@ SELF_CLOSING_TAGS = list(map(prefixify, ['area', 'base', 'br', 'col',
                                          'param', 'source', 'track', 'wbr']))
 
 
+IS_PY3 = sys.version_info > (3,)
+
+
+if IS_PY3:
+    basestring = (str, bytes)
+
+
+def to_str(s):
+    if isinstance(s, list):
+        return [to_str(a) for a in s]
+    if isinstance(s, tuple):
+        return tuple([to_str(a) for a in s])
+    if IS_PY3 and hasattr(s, 'decoding'):
+        return s.decode('utf-8')
+    elif not IS_PY3 and hasattr(s, 'encoding'):
+        return s.encode('utf-8')
+    return str(s)
+
+
+def log(level, msg):
+    if IS_PY3 and hasattr(msg, 'decode'):
+        msg = msg.decode('utf-8')
+    return logger.log(level, msg)
+
+
 def log_decl_method(func):
     """Decorate do_declartion methods for debug logging."""
     from functools import wraps
@@ -36,8 +64,9 @@ def log_decl_method(func):
     def with_logging(*args, **kwargs):
         self = args[0]
         decl = args[2]
-        logger.debug(u"    {}: {} {}".format(self.state['current_step'],
-                     decl.name, serialize(decl.value).strip()).encode('utf-8'))
+        log(DEBUG, u"    {}: {} {}".format(
+            self.state['current_step'], decl.name,
+            serialize(decl.value).strip()).encode('utf-8'))
         return func(*args, **kwargs)
     return with_logging
 
@@ -78,18 +107,23 @@ class TargetVal():
 
     def __str__(self):
         """String value."""
-        return self.__unicode__.encode('utf-8')
+        if IS_PY3:
+            return self.__unicode__()
+        return self.__unicode__().encode('utf-8')
 
     def __unicode__(self):
         """Unicode value."""
         if self.vtype == 'counters':
-            return unicode(self.collator.lookup(self.vtype,
-                                                (self.vname, self.vstyle),
-                                                self.el_id))
+            r = str(self.collator.lookup(self.vtype,
+                                         (self.vname, self.vstyle),
+                                         self.el_id))
         else:
-            return unicode(self.collator.lookup(self.vtype,
-                                                self.vname,
-                                                self.el_id))
+            r = str(self.collator.lookup(self.vtype,
+                                         self.vname,
+                                         self.el_id))
+        if not IS_PY3:
+            r = r.decode('utf-8')
+        return r
 
 
 class Oven():
@@ -149,7 +183,7 @@ class Oven():
         if css_in is None:
             return
         try:
-            with open(css_in) as f:  # is it a path/filename?
+            with open(css_in, 'rb') as f:  # is it a path/filename?
                 css = f.read()
         except (IOError, TypeError):
             try:
@@ -187,10 +221,9 @@ class Oven():
                         # and XPath is used to implement `sort-by:`
                         # http://www.goodmami.org/2015/11/04/
                         # ... python-xpath-and-default-namespaces.html
-                        logger.warning(u'Unknown @namespace format at {}:{}'
-                                       .format(rule.source_line,
-                                               rule.source_column)
-                                       .encode('utf-8'))
+                        log(WARN, u'Unknown @namespace format at {}:{}'
+                            .format(rule.source_line, rule.source_column)
+                            .encode('utf-8'))
 
             elif rule.type == 'qualified-rule':
 
@@ -204,8 +237,9 @@ class Oven():
                     try:
                         csel = CompiledSelector(sel)
                     except cssselect2.SelectorError as error:
-                        logger.warning(u'Invalid selector: {} {}'.format(
-                            serialize(rule.prelude), error).encode('utf-8'))
+                        log(WARN, u'Invalid selector: {} {}'.format(
+                            serialize(rule.prelude),
+                            to_str(error.args)).encode('utf-8'))
                     else:
                         steps, extras = extract_selector_info(sel)
                         label = csel.pseudo_element
@@ -227,7 +261,7 @@ class Oven():
             elif rule.type == 'comment':
                 pass
             elif rule.type == 'error':
-                logger.error(u'Parse Error {}: {}'.format(
+                log(ERROR, u'Parse Error {}: {}'.format(
                     rule.kind, rule.message).encode('utf-8'))
                 # Phil does not know how to nicely exit with staus != 0
                 raise ValueError(u'Parse Error {}: {}'.format(
@@ -253,7 +287,7 @@ class Oven():
 
         self.clear_state()
         self.state['steps'] = steps
-        logger.debug(u'Passes: {}'.format(steps).encode('utf-8'))
+        log(DEBUG, 'Passes: {}'.format(to_str(steps)))
 
     def bake(self, element, last_step=None):
         """Apply recipes to HTML tree. Will build recipes if needed."""
@@ -276,7 +310,7 @@ class Oven():
             else:
                 recipe = self.state[step]
 
-            logger.debug(u'Recipe {} length: {}'.format(
+            log(DEBUG, u'Recipe {} length: {}'.format(
                 step, len(recipe['actions'])).encode('utf-8'))
             target = None
             old_content = {}
@@ -326,7 +360,7 @@ class Oven():
                     mycopy.tail = None
                     grouped_insert(target, mycopy)
                 else:
-                    logger.warning(u'Missing action {}'.format(
+                    log(WARN, u'Missing action {}'.format(
                         action).encode('utf-8'))
 
         # Do numbering
@@ -351,7 +385,7 @@ class Oven():
 
     def record_coverage(self, rule):
         """Add entry to coverage saying this selector was matched"""
-        logger.debug(u'Rule ({}): {}'.format(*rule).encode('utf-8'))
+        log(DEBUG, u'Rule ({}): {}'.format(*rule).encode('utf-8'))
         self.coverage_lines.append('DA:{},1'.format(rule[0]))
 
     def record_coverage_line(self, line):
@@ -588,7 +622,7 @@ class Oven():
             elif name.startswith('attr-'):
                 method = getattr(self, 'do_attr_any')
             else:
-                logger.warning(u'Missing method {}'.format(
+                log(WARN, u'Missing method {}'.format(
                                  (name).replace('-', '_')).encode('utf-8'))
         if method:
             self.record_coverage_line(decl.source_line)
@@ -618,7 +652,7 @@ class Oven():
                 state = self.state[vtype][target_id]
                 steps = self.state[vtype][target_id].keys()
             except KeyError:
-                logger.warning(u'Bad ID target lookup {}'.format(
+                log(WARN, u'Bad ID target lookup {}'.format(
                     target_id).encode('utf-8'))
                 return nullval
 
@@ -653,22 +687,20 @@ class Oven():
             if 1 <= val <= 26:
                 valstr = chr(val + 96)
             else:
-                logger.warning('Counter out of range'
-                               ' for latin (must be 1...26)')
+                log(WARN, 'Counter out of range for latin (must be 1...26)')
                 valstr = str(val)
         elif style == 'upper-latin' or style == 'upper-alpha':
             if 1 <= val <= 26:
                 valstr = chr(val + 64)
             else:
-                logger.warning('Counter out of range'
-                               ' for latin (must be 1...26)')
+                log(WARN, 'Counter out of range for latin (must be 1...26)')
                 valstr = str(val)
         elif style == 'decimal':
             valstr = str(val)
         else:
-            logger.warning(u"ERROR: Counter numbering not supported for"
-                           u" list type {}. Using decimal.".format(
-                               style).encode('utf-8'))
+            log(WARN, u"ERROR: Counter numbering not supported for"
+                u" list type {}. Using decimal.".format(
+                    style).encode('utf-8'))
             valstr = str(val)
         return valstr
 
@@ -688,12 +720,12 @@ class Oven():
                 strval += term.value
 
             elif type(term) is ast.IdentToken:
-                logger.debug(u"IdentToken as string: {}".format(
+                log(DEBUG, u"IdentToken as string: {}".format(
                     term.value).encode('utf-8'))
                 strval += term.value
 
             elif type(term) is ast.LiteralToken:
-                logger.debug(u"LiteralToken as string: {}".format(
+                log(DEBUG, u"LiteralToken as string: {}".format(
                     term.value).encode('utf-8'))
                 strval += term.value
 
@@ -708,8 +740,8 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
+                            log(WARN, u"{} blank string"
+                                .format(str_name).encode('utf-8'))
                     strval += val
 
                 elif term.name == u'attr':
@@ -725,8 +757,8 @@ class Oven():
                         try:
                             ns = self.css_namespaces[ns]
                         except KeyError:
-                            logger.warning(u"Undefined namespace prefix {}"
-                                           .format(ns).encode('utf-8'))
+                            log(WARN, u"Undefined namespace prefix {}"
+                                .format(ns).encode('utf-8'))
                             continue
                         att_name = etree.QName(ns, att)
                     strval += element.etree_element.get(att_name, att_def)
@@ -759,11 +791,11 @@ class Oven():
                         if isinstance(tmpstr[0], basestring):
                             strval += tmpstr[0][0]
                         else:
-                            logger.warning(u"Bad string value:"
-                                           u" nested target-* not allowed. "
-                                           u"{}".format(
-                                               serialize(value)).encode(
-                                                   'utf-8'))
+                            log(WARN, u"Bad string value:"
+                                u" nested target-* not allowed. "
+                                u"{}".format(
+                                    serialize(value)).encode(
+                                        'utf-8'))
 
                     # FIXME can we do delayed first-letter
 
@@ -774,14 +806,13 @@ class Oven():
                     strval += str(count)
 
                 elif term.name == u'pending':
-                    logger.warning(u"Bad string value: pending() not allowed. "
-                                   u"{}".format(serialize(value)).encode(
+                    log(WARN, u"Bad string value: pending() not allowed. "
+                        u"{}".format(serialize(value)).encode(
                                        'utf-8'))
                 else:
-                    logger.warning(u"Bad string value: unknown function: {}. "
-                                   u"{}".format(term.name,
-                                                serialize(value)).encode(
-                                                    'utf-8'))
+                    log(WARN, u"Bad string value: unknown function: {}. "
+                        u"{}".format(term.name, serialize(value)).encode(
+                            'utf-8'))
 
         if strval:
             vals.append(strval)
@@ -803,19 +834,19 @@ class Oven():
                 if strname is not None:
                     strval += term.value
                 else:
-                    logger.warning(u"Bad string-set: {}".format(
+                    log(WARN, u"Bad string-set: {}".format(
                         args).encode('utf-8'))
 
             elif type(term) is ast.IdentToken:
                 if strname is not None:
-                    logger.warning(u"Bad string-set: {}".format(
+                    log(WARN, u"Bad string-set: {}".format(
                         args).encode('utf-8'))
                 else:
                     strname = term.value
 
             elif type(term) is ast.LiteralToken:
                 if strname is None:
-                    logger.warning(u"Bad string-set: {}".format(
+                    log(WARN, u"Bad string-set: {}".format(
                         args).encode('utf-8'))
                 else:
                     step['strings'][strname] = strval
@@ -833,13 +864,13 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
+                            log(WARN, u"{} blank string"
+                                .format(str_name).encode('utf-8'))
 
                     if strname is not None:
                         strval += val
                     else:
-                        logger.warning(u"Bad string-set: {}".format(
+                        log(WARN, u"Bad string-set: {}".format(
                             args).encode('utf-8'))
 
                 elif term.name == 'counter':
@@ -862,13 +893,13 @@ class Oven():
                             try:
                                 ns = self.css_namespaces[ns]
                             except KeyError:
-                                logger.warning(u"Undefined namespace prefix {}"
-                                               .format(ns).encode('utf-8'))
+                                log(WARN, u"Undefined namespace prefix {}"
+                                    .format(ns).encode('utf-8'))
                                 continue
                             att_name = etree.QName(ns, att)
                         strval += element.etree_element.get(att_name, att_def)
                     else:
-                        logger.warning(u"Bad string-set: {}".format(
+                        log(WARN, u"Bad string-set: {}".format(
                             args).encode('utf-8'))
 
                 elif term.name == u'content':
@@ -878,7 +909,7 @@ class Oven():
                                                  method='text',
                                                  with_tail=False)
                     else:
-                        logger.warning(u"Bad string-set: {}".format(
+                        log(WARN, u"Bad string-set: {}".format(
                             args).encode('utf-8'))
 
                 elif term.name == u'first-letter':
@@ -887,14 +918,14 @@ class Oven():
                         if isinstance(tmpstr[0], basestring):
                             strval += tmpstr[0][0]
                         else:
-                            logger.warning(u"Bad string value:"
-                                           u" nested target-* not allowed. "
-                                           u"{}".format(serialize(
-                                               args)).encode('utf-8'))
+                            log(WARN, u"Bad string value:"
+                                u" nested target-* not allowed. "
+                                u"{}".format(serialize(
+                                    args)).encode('utf-8'))
 
                 elif term.name == u'pending':
-                    logger.warning(u"Bad string-set:pending() not allowed. {}".
-                                   format(args).encode('utf-8'))
+                    log(WARN, u"Bad string-set:pending() not allowed. {}"
+                        .format(args).encode('utf-8'))
 
         if strname is not None:
             step['strings'][strname] = strval
@@ -924,8 +955,8 @@ class Oven():
                     counter_name = ''
 
             else:
-                logger.warning(u"Unrecognized counter-reset term {}".
-                               format(type(term)).encode('utf-8'))
+                log(WARN, u"Unrecognized counter-reset term {}"
+                    .format(type(term)).encode('utf-8'))
         if counter_name:
             step['counters'][counter_name] = 0
 
@@ -963,8 +994,8 @@ class Oven():
                     counter_name = ''
 
             else:
-                logger.warning(u"Unrecognized counter-increment term {}".
-                               format(type(term)).encode('utf-8'))
+                log(WARN, u"Unrecognized counter-increment term {}"
+                    .format(type(term)).encode('utf-8'))
         if counter_name:
             if counter_name in step['counters']:
                 step['counters'][counter_name] += 1
@@ -1027,7 +1058,7 @@ class Oven():
             try:
                 namespace = self.css_namespaces[namespace]
             except KeyError:
-                logger.warning(u'undefined namespace prefix: {}'.format(
+                log(WARN, u'undefined namespace prefix: {}'.format(
                     namespace).encode('utf-8'))
                 value = tag
             else:
@@ -1101,8 +1132,8 @@ class Oven():
                             val = self.eval_string_value(element,
                                                          str_args[1])[0]
                         else:
-                            logger.warning(u"{} blank string".
-                                           format(str_name).encode('utf-8'))
+                            log(WARN, u"{} blank string"
+                                .format(str_name).encode('utf-8'))
                     if val != '':
                         actions.append(('string', val))
 
@@ -1136,8 +1167,8 @@ class Oven():
                         try:
                             ns = self.css_namespaces[ns]
                         except KeyError:
-                            logger.warning(u"Undefined namespace prefix {}"
-                                           .format(ns).encode('utf-8'))
+                            log(WARN, u"Undefined namespace prefix {}"
+                                .format(ns).encode('utf-8'))
                             continue
                         att_name = etree.QName(ns, att)
                     att_val = element.etree_element.get(att_name, att_def)
@@ -1164,7 +1195,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.info(u"{} empty bucket".format(
+                        log(INFO, u"{} empty bucket".format(
                             target).encode('utf-8'))
                         continue
                     actions.extend(val)
@@ -1174,7 +1205,7 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.info(u"{} empty bucket".format(
+                        log(INFO, u"{} empty bucket".format(
                             target).encode('utf-8'))
                         continue
                     for action in val:
@@ -1187,17 +1218,17 @@ class Oven():
                     target = serialize(term.arguments)
                     val, val_step = self.lookup('pending', target)
                     if val is None:
-                        logger.info(u"{} empty bucket".format(
+                        log(INFO, u"{} empty bucket".format(
                             target).encode('utf-8'))
                         continue
                     wastebin.extend(val)
                     del self.state[val_step]['pending'][target]
 
                 else:
-                    logger.warning(u"Unknown function {}".format(
+                    log(WARN, u"Unknown function {}".format(
                         term.name).encode('utf-8'))
             else:
-                logger.warning(u"Unknown term {}".format(
+                log(WARN, u"Unknown term {}".format(
                     term).encode('utf-8'))
 
         if pseudo:
@@ -1279,8 +1310,8 @@ class Oven():
     @log_decl_method
     def do_pass(self, element, decl, pseudo):
         """No longer valid way to set processing pass."""
-        logger.warning(u"Old-style pass as declaration not allowed."
-                       u"{}".format(decl.value).encpde('utf-8'))
+        log(WARN, u"Old-style pass as declaration not allowed.{}"
+            .format(decl.value).encpde('utf-8'))
 
 
 def _itersplit(li, splitters):
@@ -1318,7 +1349,7 @@ def css_to_func(css, flags, css_namespaces, lang):
                 xpath += '/@' + sel.pseudo_element.arguments[0].value
                 if sel.pseudo_element.name == 'first-letter':
                     first_letter = True
-        elif type(sel.pseudo_element) == unicode:
+        elif isinstance(sel.pseudo_element, type(u'')):
             if sel.pseudo_element == 'first-letter':
                 first_letter = True
 
@@ -1327,7 +1358,7 @@ def css_to_func(css, flags, css_namespaces, lang):
     def toupper(u):
         """Use icu library for locale sensitive uppercasing (python2)."""
         loc = Locale(lang) if lang else Locale()
-        return unicode(UnicodeString(u).toUpper(loc))
+        return UnicodeString(u).toUpper(loc).encode('utf-8').decode('utf-8')
 
     def func(elem):
         res = xp(elem)
@@ -1547,7 +1578,7 @@ def _to_roman(num):
         ('I',  1)
     )
     if not (0 < num < 5000):
-        logger.warning('Number out of range for roman (must be 1..4999)')
+        log(WARN, 'Number out of range for roman (must be 1..4999)')
         return str(num)
     result = ''
     for numeral, integer in roman_numeral_map:

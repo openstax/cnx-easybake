@@ -12,7 +12,7 @@ import versioneer
 install_requires = (
     'cssselect',
     'cnx-cssselect2',  # importable as cssselect2
-    'tinycss2',
+    'tinycss2<1.0.0',  # 1.0.0 does not support python 2.x anymore
     'lxml',
     'PyICU==1.9.8;platform_system=="Darwin"',  # FIXME link/symbol prob OSX
     'PyICU',

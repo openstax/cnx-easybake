@@ -2,9 +2,9 @@ language: python
 sudo: false
 python:
   - "2.7"
-    #  - "3.3" Not yet
+  - "3.6"
 install:
-  - ./scripts/setup
+  - CI=true ./scripts/setup
 script:
   - ./scripts/test
 after_success:
