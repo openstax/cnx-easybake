@@ -2,6 +2,12 @@
 Change Log
 ==========
 
+1.2.1
+-----
+
+- Add tests for stripping away unquoted escape characters in the `match` pseudo-selector
+
+
 1.2.0
 -----
 
