@@ -5,7 +5,9 @@ Change Log
 1.2.1
 -----
 
-- Add tests for stripping away unquoted escape characters in the `match` pseudo-selector
+- Add tests for stripping away unquoted escape characters in the `match` pseudo-selector (#100)
+- Make cnx-easybake python3 compatible (#101)
+- Add Jenkinsfile (#102)
 
 
 1.2.0
