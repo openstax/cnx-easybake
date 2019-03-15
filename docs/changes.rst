@@ -2,6 +2,12 @@
 Change Log
 ==========
 
+
+1.2.3
+-----
+
+- Recognize error from deletion on '::outside' (#91)
+
 1.2.2
 -----
 
