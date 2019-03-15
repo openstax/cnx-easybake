@@ -1459,10 +1459,15 @@ def grouped_insert(t, value):
     elif t.location == 'outside':
         value.tail = t.tree.tail
         t.tree.tail = None
-        parent = [n.getparent() for n in t.parent.iterdescendants()
-                  if n == t.tree][0]
-        parent.insert(parent.index(t.tree), value)
-        value.append(t.tree)
+        target_parent_descendants = (
+            [n.getparent() for n in t.parent.iterdescendants() if n == t.tree])
+        try:
+            parent = target_parent_descendants[0]
+            parent.insert(parent.index(t.tree), value)
+            value.append(t.tree)
+        except IndexError as e:
+            logger.error('Target of outside has been moved or deleted')
+            raise e
 
     elif t.location == 'before':
         value.tail = t.tree.text
