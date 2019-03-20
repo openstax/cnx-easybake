@@ -2,6 +2,10 @@
 Change Log
 ==========
 
+1.2.4
+-----
+
+- Fix unicode encode error in TargetVal.__str__ (#105)
 
 1.2.3
 -----
