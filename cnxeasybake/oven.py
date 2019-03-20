@@ -114,14 +114,16 @@ class TargetVal():
     def __unicode__(self):
         """Unicode value."""
         if self.vtype == 'counters':
-            r = str(self.collator.lookup(self.vtype,
-                                         (self.vname, self.vstyle),
-                                         self.el_id))
+            r = self.collator.lookup(self.vtype,
+                                     (self.vname, self.vstyle),
+                                     self.el_id)
         else:
-            r = str(self.collator.lookup(self.vtype,
-                                         self.vname,
-                                         self.el_id))
-        if not IS_PY3:
+            r = self.collator.lookup(self.vtype,
+                                     self.vname,
+                                     self.el_id)
+        if not isinstance(r, basestring):
+            r = str(r)
+        if isinstance(r, bytes):
             r = r.decode('utf-8')
         return r
 

@@ -8,6 +8,10 @@ try:
     from io import BytesIO as StringIO
 except ImportError:
     from StringIO import StringIO
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 @contextmanager
@@ -119,3 +123,26 @@ class OvenBakeTest(unittest.TestCase):
         html_doc = etree.XML(HTML)
 
         oven.bake(html_doc)
+
+
+class TargetValTest(unittest.TestCase):
+    @property
+    def target_cls(self):
+        from ..oven import TargetVal
+        return TargetVal
+
+    def test___str__(self):
+        """Test TargetVal.__str__ can handle all kinds of values"""
+        collator = mock.Mock()
+
+        test_inputs_outputs = (
+            (16, '16'),
+            (b'\xc4\x86wiczenie', 'Ćwiczenie'),
+            (u'Ćwiczenie', 'Ćwiczenie'),
+            (None, 'None'),
+        )
+
+        for test_input, test_output in test_inputs_outputs:
+            collator.lookup.return_value = test_input
+            tv = self.target_cls(collator, None, None, None)
+            self.assertEqual(str(tv), test_output)
