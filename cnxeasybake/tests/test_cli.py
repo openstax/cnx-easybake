@@ -62,8 +62,10 @@ class CliTestCase(unittest.TestCase):
         """Call cli with basic successful run."""
         os.chdir(here)
         with captured_output() as (out, err):
-            args = ['rulesets/empty.css', 'html/empty_raw.html', '/dev/null']
-            self.target(args)
+            with tempfile.NamedTemporaryFile() as tf:
+                args = ['rulesets/empty.css', 'html/empty_raw.html', tf.name]
+                self.target(args)
+                self.assertEqual(tf.file.read(5), b'<html')
             stdout = str(out.getvalue())
             stderr = str(err.getvalue())
 
