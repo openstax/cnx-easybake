@@ -2,6 +2,11 @@
 Change Log
 ==========
 
+1.2.5
+-----
+
+- Fix py3 cnx-easybake script output invalid html (#106)
+
 1.2.4
 -----
 
