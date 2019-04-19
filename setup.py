@@ -6,21 +6,27 @@ This software is subject to the provisions of the
 GNU AFFERO GENERAL PUBLIC LICENSE Version 3.0 (AGPL).
 See LICENSE.txt for details.
 """
+import os
+
 from setuptools import setup, find_packages
 import versioneer
 
-install_requires = (
-    'cssselect',
-    'cnx-cssselect2',  # importable as cssselect2
-    'tinycss2<1.0.0',  # 1.0.0 does not support python 2.x anymore
-    'lxml',
-    'PyICU==1.9.8;platform_system=="Darwin"',  # FIXME link/symbol prob OSX
-    'PyICU',
-    )
 
-tests_require = (
-    'testfixtures', 'mock',
-    )
+here = os.path.abspath(os.path.dirname(__file__))
+
+
+def read_from_requirements_txt(filepath):
+    f = os.path.join(here, filepath)
+    with open(f) as fb:
+        return tuple([x.strip() for x in fb if not x.strip().startswith('#')])
+
+
+install_requires = read_from_requirements_txt('requirements/main.txt')
+tests_require = read_from_requirements_txt('requirements/test.txt')
+extras_require = {
+    'test': tests_require,
+}
+
 
 setup(
     name='cnx-easybake',
