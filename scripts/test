@@ -14,4 +14,11 @@ pep8 --max-line-length=1000 "${GIT_ROOT}"/cnxeasybake/tests
 
 coverage run --source=cnxeasybake setup.py test
 
+if [ "${CI}" = "true" ]
+then
+  python setup.py bdist_wheel --universal
+  pip install twine
+  twine check dist/*
+fi
+
 # Note: deactivate is not necessary because the virtualenv is deactivated at the end of the script
