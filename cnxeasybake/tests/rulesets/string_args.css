@@ -1,0 +1,11 @@
+div {
+  string-set: maybe-has-child '';
+}
+
+div > span {
+  string-set: maybe-has-child 'has-child';
+}
+
+div:deferred {
+  class: attr(class) string(maybe-has-child, '')
+}
