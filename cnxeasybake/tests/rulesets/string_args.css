@@ -1,9 +1,9 @@
-div.default-none {
+div {
   string-set: maybe-has-child '';
 }
 
-div.default-tag {
-  string-set: maybe-has-child ' no-child';
+div.default-tag-initial {
+  string-set: maybe-has-child ' no-child-initial';
 }
 
 div > span {
@@ -11,9 +11,13 @@ div > span {
 }
 
 div.default-none:deferred {
-  class: attr(class) string(maybe-has-child, '')
+  class: attr(class) string(maybe-has-child, '');
 }
 
-div.default-tag {
-  class: attr(class) string(maybe-has-child, 'this-fallback-should-not-appear')
+div.default-tag-fallback:deferred {
+  class: attr(class) string(maybe-has-child, ' no-child-fallback');
+}
+
+div.default-tag-initial:deferred {
+  class: attr(class) string(maybe-has-child, ' this-fallback-should-not-appear');
 }
