@@ -1,0 +1,16 @@
+cnx-easybake DEBUG Passes: ['default']
+cnx-easybake DEBUG Rule (1): div 
+cnx-easybake DEBUG     default: string-set maybe-has-child ""
+cnx-easybake DEBUG Rule (5): div > span 
+cnx-easybake DEBUG     default: string-set maybe-has-child "has-child"
+cnx-easybake DEBUG Rule (9): div:deferred 
+cnx-easybake DEBUG     default: class attr(class) string(maybe-has-child, "")
+cnx-easybake DEBUG IdentToken as string: class
+cnx-easybake DEBUG IdentToken as string: maybe-has-child
+cnx-easybake DEBUG Rule (1): div 
+cnx-easybake DEBUG     default: string-set maybe-has-child ""
+cnx-easybake DEBUG Rule (9): div:deferred 
+cnx-easybake DEBUG     default: class attr(class) string(maybe-has-child, "")
+cnx-easybake DEBUG IdentToken as string: class
+cnx-easybake DEBUG IdentToken as string: maybe-has-child
+cnx-easybake DEBUG Recipe default length: 4
