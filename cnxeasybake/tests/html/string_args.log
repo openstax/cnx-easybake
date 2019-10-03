@@ -1,16 +1,22 @@
 cnx-easybake DEBUG Passes: ['default']
-cnx-easybake DEBUG Rule (1): div 
+cnx-easybake DEBUG Rule (1): div.default-none 
 cnx-easybake DEBUG     default: string-set maybe-has-child ""
-cnx-easybake DEBUG Rule (5): div > span 
-cnx-easybake DEBUG     default: string-set maybe-has-child "has-child"
-cnx-easybake DEBUG Rule (9): div:deferred 
+cnx-easybake DEBUG Rule (9): div > span 
+cnx-easybake DEBUG     default: string-set maybe-has-child " has-child"
+cnx-easybake DEBUG Rule (13): div.default-none:deferred 
 cnx-easybake DEBUG     default: class attr(class) string(maybe-has-child, "")
 cnx-easybake DEBUG IdentToken as string: class
 cnx-easybake DEBUG IdentToken as string: maybe-has-child
-cnx-easybake DEBUG Rule (1): div 
+cnx-easybake DEBUG Rule (1): div.default-none 
 cnx-easybake DEBUG     default: string-set maybe-has-child ""
-cnx-easybake DEBUG Rule (9): div:deferred 
+cnx-easybake DEBUG Rule (13): div.default-none:deferred 
 cnx-easybake DEBUG     default: class attr(class) string(maybe-has-child, "")
 cnx-easybake DEBUG IdentToken as string: class
 cnx-easybake DEBUG IdentToken as string: maybe-has-child
-cnx-easybake DEBUG Recipe default length: 4
+cnx-easybake DEBUG Rule (5): div.default-tag 
+cnx-easybake DEBUG     default: string-set maybe-has-child " no-child"
+cnx-easybake DEBUG Rule (17): div.default-tag 
+cnx-easybake DEBUG     default: class attr(class) string(maybe-has-child, "this-fallback-should-not-appear")
+cnx-easybake DEBUG IdentToken as string: class
+cnx-easybake DEBUG IdentToken as string: maybe-has-child
+cnx-easybake DEBUG Recipe default length: 6

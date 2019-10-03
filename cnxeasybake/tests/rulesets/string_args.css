@@ -1,11 +1,19 @@
-div {
+div.default-none {
   string-set: maybe-has-child '';
 }
 
-div > span {
-  string-set: maybe-has-child 'has-child';
+div.default-tag {
+  string-set: maybe-has-child ' no-child';
 }
 
-div:deferred {
+div > span {
+  string-set: maybe-has-child ' has-child';
+}
+
+div.default-none:deferred {
   class: attr(class) string(maybe-has-child, '')
+}
+
+div.default-tag {
+  class: attr(class) string(maybe-has-child, 'this-fallback-should-not-appear')
 }
