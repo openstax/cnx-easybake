@@ -1,0 +1,23 @@
+div {
+  string-set: maybe-has-child '';
+}
+
+div.default-tag-initial {
+  string-set: maybe-has-child ' no-child-initial';
+}
+
+div > span {
+  string-set: maybe-has-child ' has-child';
+}
+
+div.default-none:deferred {
+  class: attr(class) string(maybe-has-child, '');
+}
+
+div.default-tag-fallback:deferred {
+  class: attr(class) string(maybe-has-child, ' no-child-fallback');
+}
+
+div.default-tag-initial:deferred {
+  class: attr(class) string(maybe-has-child, ' this-fallback-should-not-appear');
+}

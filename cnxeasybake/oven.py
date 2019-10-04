@@ -816,7 +816,7 @@ class Oven():
                         u"{}".format(term.name, serialize(value)).encode(
                             'utf-8'))
 
-        if strval:
+        if strval or len(vals) == 0:
             vals.append(strval)
         return vals
 
