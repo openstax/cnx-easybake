@@ -2,6 +2,11 @@
 Change Log
 ==========
 
+1.2.6
+-----
+
+- Fix errors when expressions evaluated to the empty string (#109)
+
 1.2.5
 -----
 
