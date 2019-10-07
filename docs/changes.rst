@@ -2,6 +2,11 @@
 Change Log
 ==========
 
+1.2.7
+-----
+
+- Add missing environment variable to Jenkinsfile (#110)
+
 1.2.6
 -----
 
