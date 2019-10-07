@@ -22,6 +22,7 @@ pipeline {
         TWINE_CREDS = credentials('pypi-openstax-creds')
         TWINE_USERNAME = "${TWINE_CREDS_USR}"
         TWINE_PASSWORD = "${TWINE_CREDS_PSW}"
+        release = getVersion()
       }
       steps {
         withDockerRegistry([credentialsId: 'docker-registry', url: '']) {
