@@ -1,7 +1,7 @@
 cssselect
 cnx-cssselect2
 tinycss2<1.0.0
-lxml==4.4.3
+lxml==4.6.3
 # FIXME link/symbol prob OSX
 PyICU==1.9.8;platform_system=="Darwin"
 PyICU
